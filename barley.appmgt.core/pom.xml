@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<groupId>barley.appmgt</groupId>
+	  	<artifactId>barley.appmgt</artifactId>
+	  	<version>0.0.1</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion> 
+	<artifactId>barley.appmgt.core</artifactId>
+	<packaging>jar</packaging>
+   
+	<name>CodeFarm Barley - APP Management Core</name>
+	
+	<dependencies>
+        <dependency>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		</dependency>
+		
+		<!-- barley -->
+		<dependency>
+            <groupId>barley.core</groupId>
+            <artifactId>barley.core</artifactId>
+        </dependency>	
+        <dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache.barley</groupId>
+            <artifactId>javax.cache.barley</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.usage.publisher</artifactId>
+        </dependency>
+        
+        <!-- synapse -->
+        <dependency>
+            <groupId>org.apache.synapse</groupId>
+            <artifactId>synapse-commons</artifactId>
+        </dependency>
+        
+    </dependencies>
+    
+	
+</project>
+

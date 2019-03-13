@@ -1,0 +1,115 @@
+package barley.appmgt.impl.dao;
+
+import barley.appmgt.impl.AppMConstants;
+
+/**
+ * This class is dedicated to store SQL queries in DAO
+ */
+public class SQLConstants {
+    public static final String GET_FAVOURITE_APPS =
+            "SELECT " +
+                    " APP.APP_PROVIDER AS APP_PROVIDER," +
+                    " APP.APP_NAME AS APP_NAME," +
+                    " APP.APP_VERSION AS APP_VERSION" +
+                    " FROM APM_APP APP" +
+                    " INNER JOIN APM_FAVOURITE_APPS FAV_APP" +
+                    " ON  (APP.APP_ID =FAV_APP.APP_ID" +
+                    " AND FAV_APP.USER_ID  = ?" +
+                    " AND FAV_APP.TENANT_ID = ? )" +
+                    " WHERE APP.TENANT_ID = ?";
+    public static final String GET_FAVOURITE_APPS_SORT_BY_CREATED_TIME_DESC =
+            GET_FAVOURITE_APPS + " ORDER BY FAV_APP.CREATED_TIME DESC";
+    public static final String GET_FAVOURITE_APPS_SORT_BY_APP_NAME_ASC =
+            GET_FAVOURITE_APPS + " ORDER BY APP.APP_NAME ASC";
+    public static final String SEARCH_FAVOURITE_APPS =
+            "SELECT " +
+                    " APP.APP_PROVIDER AS APP_PROVIDER," +
+                    " APP.APP_NAME AS APP_NAME," +
+                    " APP.APP_VERSION AS APP_VERSION" +
+                    " FROM APM_APP APP" +
+                    " INNER JOIN APM_FAVOURITE_APPS FAV_APP" +
+                    " ON  (APP.APP_ID =FAV_APP.APP_ID" +
+                    " AND FAV_APP.USER_ID  = ?" +
+                    " AND FAV_APP.TENANT_ID = ? )" +
+                    " WHERE APP.TENANT_ID = ?";
+    public static final String SEARCH_FAVOURITE_APPS_BY_APP_PROVIDER =
+            SEARCH_FAVOURITE_APPS + " AND  APP.APP_PROVIDER LIKE ?";
+    public static final String SEARCH_FAVOURITE_APPS_BY_APP_NAME =
+            SEARCH_FAVOURITE_APPS + " AND  APP.APP_NAME LIKE ?";
+    public static final String SEARCH_USER_ACCESSIBLE_APPS =
+            "SELECT APP_NAME,APP_PROVIDER,APP_VERSION" +
+                    " FROM APM_APP LEFT JOIN APM_SUBSCRIPTION ON APM_APP.APP_ID = APM_SUBSCRIPTION.APP_ID" +
+                    " WHERE APM_APP.TREAT_AS_SITE = ? AND APM_APP.TENANT_ID = ?" +
+                    " AND (APM_SUBSCRIPTION.APPLICATION_ID =? OR APM_APP.APP_ALLOW_ANONYMOUS= ?)" +
+                    " AND APM_SUBSCRIPTION.SUB_STATUS = 'UNBLOCKED'";
+    public static final String SEARCH_USER_ACCESSIBLE_APPS_BY_APP_PROVIDER =
+            SEARCH_USER_ACCESSIBLE_APPS + " AND  APM_APP.APP_PROVIDER LIKE ?";
+    public static final String SEARCH_USER_ACCESSIBLE_APPS_BY_APP_NAME =
+            SEARCH_USER_ACCESSIBLE_APPS + " AND  APM_APP.APP_NAME LIKE ?";
+    public static final String GET_USER_ACCESSIBlE_APPS =
+            "SELECT APP_NAME,APP_PROVIDER,APP_VERSION" +
+                    " FROM APM_APP LEFT JOIN APM_SUBSCRIPTION ON APM_APP.APP_ID = APM_SUBSCRIPTION.APP_ID" +
+                    " WHERE APM_APP.TREAT_AS_SITE = ? AND APM_APP.TENANT_ID = ?" +
+                    " AND (APM_SUBSCRIPTION.APPLICATION_ID =? OR APM_APP.APP_ALLOW_ANONYMOUS= ?)" +
+                    " AND APM_SUBSCRIPTION.SUB_STATUS = 'UNBLOCKED'";
+    public static final String GET_USER_ACCESSIBlE_APPS_ORDER_BY_SUBSCRIPTION_TIME = GET_USER_ACCESSIBlE_APPS +
+            " ORDER BY APM_SUBSCRIPTION.SUBSCRIPTION_TIME DESC";
+    public static final String GET_USER_ACCESSIBlE_APPS_ORDER_BY_APP_NAME = GET_USER_ACCESSIBlE_APPS +
+            " ORDER BY APM_APP.APP_NAME ASC";
+
+    
+    // (추가) 2018.03.21  
+    public static final String GET_ACCESS_TOKEN_DATA_PREFIX =
+            " SELECT " +
+            "   IAT.ACCESS_TOKEN, " +
+            "   IAT.AUTHZ_USER, " +
+//            "   IAT.DOMAIN_NAME, " +
+			"   IAT.USER_DOMAIN, " +
+            "   ISAT.TOKEN_SCOPE, " +
+            "   ICA.CONSUMER_KEY, " +
+            "   IAT.TIME_CREATED, " +
+            "   IAT.VALIDITY_PERIOD " +
+            " FROM ";
+    
+    // (추가) 2018.03.21
+    public static final String GET_ACCESS_TOKEN_DATA_SUFFIX =
+            "   IAT, " +
+            AppMConstants.TOKEN_SCOPE_ASSOCIATION_TABLE + " ISAT, " +
+            AppMConstants.CONSUMER_KEY_SECRET_TABLE + " ICA " +
+            " WHERE IAT.TOKEN_ID = ISAT.TOKEN_ID " +
+            "   AND IAT.CONSUMER_KEY_ID = ICA.ID " +
+            "   AND IAT.ACCESS_TOKEN= ? " +
+            "   AND IAT.TOKEN_STATE='ACTIVE' ";
+    
+    // (추가) 2018.03.21
+    public static final String GET_ACCESS_TOKEN_BY_USER_PREFIX =
+            " SELECT " +
+            "   IAT.ACCESS_TOKEN, " +
+            "   IAT.AUTHZ_USER, " +
+            "   IAT.USER_DOMAIN, " +
+            "   ISAT.TOKEN_SCOPE, " +
+            "   ICA.CONSUMER_KEY, " +
+            "   IAT.TIME_CREATED, " +
+            "   IAT.VALIDITY_PERIOD " +
+            " FROM ";
+    
+    // (추가) 2018.03.21
+    public static final String GET_ACCESS_TOKEN_BY_USER_SUFFIX =
+            "   IAT, " +
+            AppMConstants.TOKEN_SCOPE_ASSOCIATION_TABLE + " ISAT, " +
+            AppMConstants.CONSUMER_KEY_SECRET_TABLE + " ICA " +
+            " WHERE IAT.AUTHZ_USER= ? " +
+            "   AND IAT.TOKEN_STATE='ACTIVE'" +
+            "   AND IAT.TOKEN_ID = ISAT.TOKEN_ID " +
+            "   AND IAT.CONSUMER_KEY_ID = ICA.ID " +
+            " ORDER BY IAT.TOKEN_ID";
+    
+    public static final String IS_ACCESS_TOKEN_EXISTS_PREFIX = " SELECT ACCESS_TOKEN " + " FROM ";
+    
+    public static final String IS_ACCESS_TOKEN_EXISTS_SUFFIX = " WHERE ACCESS_TOKEN= ? ";
+    
+    public static final String IS_ACCESS_TOKEN_REVOKED_PREFIX = " SELECT TOKEN_STATE " + " FROM ";
+
+    public static final String IS_ACCESS_TOKE_REVOKED_SUFFIX = " WHERE ACCESS_TOKEN= ? ";
+    
+}

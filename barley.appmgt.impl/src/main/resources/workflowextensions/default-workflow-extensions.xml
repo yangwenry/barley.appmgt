@@ -1,0 +1,30 @@
+<WorkFlowExtensions>
+    <ApplicationCreation executor="barley.appmgt.impl.workflow.ApplicationCreationSimpleWorkflowExecutor"/>
+    <!--ApplicationCreation executor="barley.appmgt.impl.workflow.ApplicationCreationWSWorkflowExecutor">
+         <Property name="serviceEndpoint">http://localhost:9765/services/ApplicationApprovalWorkFlowProcess/</Property>
+         <Property name="username">admin</Property>
+         <Property name="password">admin</Property>
+         <Property name="callbackURL">https://localhost:8243/services/WorkflowCallbackService</Property>
+    </ApplicationCreation-->
+    <SubscriptionCreation executor="barley.appmgt.impl.workflow.SubscriptionCreationSimpleWorkflowExecutor"/>
+    <!--SubscriptionCreation executor="barley.appmgt.impl.workflow.SubscriptionCreationWSWorkflowExecutor">
+        <Property name="serviceEndpoint">http://localhost:9765/services/SubscriptionApprovalWorkFlowProcess/</Property>
+        <Property name="username">admin</Property>
+        <Property name="password">admin</Property>
+        <Property name="callbackURL">https://localhost:8243/services/WorkflowCallbackService</Property>
+    </SubscriptionCreation-->
+    <UserSignUp executor="barley.appmgt.impl.workflow.UserSignUpSimpleWorkflowExecutor"/>
+    <!--UserSignUp executor="barley.appmgt.impl.workflow.UserSignUpWSWorkflowExecutor">
+         <Property name="serviceEndpoint">http://localhost:9765/services/UserSignupProcess/</Property>
+         <Property name="username">admin</Property>
+         <Property name="password">admin</Property>
+         <Property name="callbackURL">https://localhost:8243/services/WorkflowCallbackService</Property>
+    </UserSignUp-->
+    <PublishAPP executor="barley.appmgt.impl.workflow.PublishAPPSimpleWorkflowExecutor"/>
+    <!--PublishAPP executor="barley.appmgt.impl.workflow.PublishAPPWSWorkflowExecutor">
+        <Property name="serviceEndpoint">http://localhost:9765/services/PublishAppApprovalWorkFlowProcess/</Property>
+        <Property name="username">admin</Property>
+        <Property name="password">admin</Property>
+        <Property name="callbackURL">https://localhost:8243/services/WorkflowCallbackService</Property>
+    </PublishAPP-->
+</WorkFlowExtensions>

@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<groupId>barley.appmgt</groupId>
+	  	<artifactId>barley.appmgt</artifactId>
+	  	<version>0.0.1</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion> 
+	<artifactId>barley.appmgt.impl</artifactId>
+	<packaging>jar</packaging>
+   
+	<name>CodeFarm Barley - APP Management Impl</name>
+	
+	<dependencies>        
+        <!-- barley -->
+		<dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.governance</groupId> 
+	    	<artifactId>barley.governance.api</artifactId>
+	    	<exclusions>
+	    		<exclusion>
+	    			<groupId>org.wso2.orbit.wadl.core</groupId>
+	    			<artifactId>wadl-core</artifactId>
+	    		</exclusion>
+	    	</exclusions>
+        </dependency>
+        <dependency>
+            <groupId>barley.governance</groupId> 
+	    	<artifactId>barley.governance.lcm</artifactId>
+        </dependency>
+        <dependency>
+		    <groupId>barley.governance</groupId> 
+		    <artifactId>barley.governance.custom.lifecycle.checklist</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>barley.governance</groupId> 
+		    <artifactId>barley.governance.registry.extensions</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>barley.user.api</groupId>
+            <artifactId>barley.user.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.user</groupId>
+            <artifactId>barley.user.core</artifactId>
+        </dependency>
+        <dependency> 
+            <groupId>barley.registry.api</groupId>
+            <artifactId>barley.registry.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.registry</groupId>
+            <artifactId>barley.registry.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.identity</groupId>
+            <artifactId>barley.identity.base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.identity</groupId>
+            <artifactId>barley.identity.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.identity</groupId>
+            <artifactId>barley.identity.oauth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache.barley</groupId>
+            <artifactId>javax.cache.barley</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.core</groupId>
+            <artifactId>barley.core</artifactId>
+        </dependency>
+        
+        <dependency>
+        	<groupId>org.slf4j</groupId>
+		    <artifactId>log4j-over-slf4j</artifactId>
+		    <version>1.7.7</version>
+        </dependency>        
+        <!-- <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.6</version>
+            <scope>test</scope>
+        </dependency> -->
+        
+        <dependency>
+        	<groupId>org.apache.httpcomponents</groupId>
+	    	<artifactId>httpclient</artifactId>
+    		<version>4.5.3</version>
+		</dependency>
+        
+        <!-- wso2 -->
+        <dependency>
+          <groupId>org.wso2.carbon.store</groupId>
+          <artifactId>jaggery-scxml-executors</artifactId>
+        </dependency>
+        <dependency>
+          	<groupId>org.wso2.carbon</groupId>
+          	<artifactId>org.wso2.carbon.webapp.mgt.stub</artifactId>
+      	</dependency>
+      	<dependency>
+	        <groupId>org.wso2.carbon.identity</groupId>
+	        <artifactId>org.wso2.carbon.identity.entitlement</artifactId>
+	    </dependency>
+      	<dependency>
+	        <groupId>org.wso2.carbon.identity</groupId>
+	        <artifactId>org.wso2.carbon.identity.entitlement.stub</artifactId>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.wso2.carbon.identity</groupId>
+	        <artifactId>org.wso2.carbon.identity.entitlement.proxy</artifactId>
+	    </dependency>
+	    <dependency>
+          	<groupId>org.wso2.carbon.identity</groupId>
+          	<artifactId>org.wso2.carbon.identity.sso.saml.stub</artifactId>
+        </dependency>
+        <dependency>
+	        <groupId>org.wso2.carbon.identity</groupId>
+	        <artifactId>org.wso2.carbon.identity.application.mgt.stub</artifactId>
+		</dependency>
+		<dependency>
+	        <groupId>org.wso2.carbon.identity</groupId>
+	        <artifactId>org.wso2.carbon.idp.mgt.stub</artifactId>
+	    </dependency>	     
+	    <dependency>
+			<groupId>org.wso2.carbon.appmgt</groupId>
+	        <artifactId>org.wso2.carbon.appmgt.gateway.stub</artifactId>
+      	</dependency>
+      	<dependency>
+		    <groupId>org.wso2.carbon.store</groupId>
+		    <artifactId>jaggery-scxml-executors</artifactId>
+		</dependency>
+        
+		<!-- util -->	        
+	    <dependency>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+	        <groupId>org.apache.httpcomponents.wso2</groupId>
+	        <artifactId>httpcore</artifactId>
+	    </dependency>
+	    <dependency>
+		    <groupId>rhino</groupId>
+		    <artifactId>js</artifactId>
+		</dependency>
+        <dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>3.8.2</version>
+		    <scope>test</scope>
+		</dependency>
+		
+        
+    </dependencies>
+    
+</project>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<groupId>barley.appmgt</groupId>
+	  	<artifactId>barley.appmgt</artifactId>
+	  	<version>0.0.1</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion> 
+	<artifactId>barley.appmgt.oauth.endpoint</artifactId>
+	<packaging>jar</packaging>
+   
+	<name>CodeFarm Barley - APP Management OAuth Endpoint</name>
+
+	<dependencies>
+		<dependency>
+            <groupId>org.apache.cxf.wso2</groupId>
+            <artifactId>cxf-bundle</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.gateway</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>barley.identity</groupId>
+            <artifactId>barley.identity.oauth</artifactId>
+		</dependency>	
+	</dependencies>
+</project>

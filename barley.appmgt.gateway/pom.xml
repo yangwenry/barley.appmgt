@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<groupId>barley.appmgt</groupId>
+	  	<artifactId>barley.appmgt</artifactId>
+	  	<version>0.0.1</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion> 
+	<artifactId>barley.appmgt.gateway</artifactId>
+	<packaging>jar</packaging>
+   
+	<name>CodeFarm Barley - APP Management Gateway</name>
+	
+	<dependencies>
+		<!-- barley -->
+		<dependency>
+            <groupId>barley.core</groupId>
+            <artifactId>barley.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.mediation</groupId>
+            <artifactId>barley.mediation.registry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.identity</groupId>
+            <artifactId>barley.identity.oauth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache.barley</groupId>
+            <artifactId>javax.cache.barley</artifactId>
+        </dependency>
+	
+        <!-- wso2 -->
+        <dependency>
+            <groupId>org.wso2.carbon.identity</groupId>
+            <artifactId>org.wso2.carbon.identity.sso.saml</artifactId>
+         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity</groupId>
+            <artifactId>org.wso2.carbon.identity.authenticator.saml2.sso.stub</artifactId>
+        </dependency>
+        <dependency>
+           <groupId>org.wso2.carbon.mediation</groupId>
+           <artifactId>org.wso2.carbon.rest.api.stub</artifactId>
+       	</dependency>
+       	<dependency>
+            <groupId>org.wso2.carbon.mediation</groupId>
+            <artifactId>org.wso2.carbon.sequences</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.apache.synapse</groupId>
+            		<artifactId>synapse-core</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.apache.synapse</groupId>
+            		<artifactId>synapse-extensions</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- synapse -->		
+        <dependency>
+            <groupId>org.apache.synapse</groupId>
+            <artifactId>synapse.core.barley</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.synapse</groupId>
+            <artifactId>synapse-commons</artifactId>
+        </dependency>
+        
+    </dependencies>
+    
+</project>

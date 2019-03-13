@@ -1,0 +1,71 @@
+<APIManager>
+	<DataSourceName>java:/comp/env/jdbc/WSO2APPM_DB</DataSourceName>
+    <!-- <Database>
+        <URL>jdbc:mysql://172.16.2.201/barley_appmgt?useSSL=false&amp;relaxAutoCommit=true</URL>
+        <Username>cdfcloud</Username>
+        <Password>cdfcloud</Password>
+        <Driver>com.mysql.jdbc.Driver</Driver>
+        <maxActive>50</maxActive>
+        <maxWait>60000</maxWait>
+        <minIdle>5</minIdle>
+    </Database> -->
+    
+    <AppConsumerAuthConfiguration>
+        <EnableTokenGeneration>false</EnableTokenGeneration>
+    </AppConsumerAuthConfiguration>
+    
+    <Analytics>
+        <Enabled>false</Enabled>
+        <ThriftPort>7612</ThriftPort>
+        <DASServerURL>https://localhost:9444/</DASServerURL>
+        <DASUsername>admin</DASUsername>
+        <DASPassword>admin</DASPassword>
+    </Analytics>
+    
+    <TierManagement>
+        <!--
+            Enable the providers to expose their APIs over the special 'Unlimited' tier which
+            basically disables tier based throttling for the specified APIs.
+        -->
+        <EnableUnlimitedTier>true</EnableUnlimitedTier>
+    </TierManagement>
+    
+    <GatewayType>Synapse</GatewayType>
+    
+    <APIGateway>
+        <!-- The environments to which an API will be published -->
+        <Environments>
+            <!-- TODO : Get rid of gateway type -->
+            <Environment type="hybrid">
+
+                <Name>Gateway Endpoint</Name>
+
+                <!--
+                Server URL of the API gateway.
+                -->
+                <ServerURL>https://${carbon.local.ip}:${mgt.transport.https.port}/services/</ServerURL>
+
+                <!--
+                Admin username for the API gateway.
+                -->
+                <Username>admin</Username>
+
+                <!--
+                Admin password for the API gateway.
+                -->
+                <Password>admin</Password>
+
+                <!--
+                Endpoint URLs for the APIs hosted in this API gateway.
+                -->
+                <GatewayEndpoint>http://localhost:8291</GatewayEndpoint>
+                <ServiceEndpoint>http://localhost:9020</ServiceEndpoint>
+                
+                <!-- <GatewayEndpoint>http://demo.app.taac.co.kr:8291</GatewayEndpoint>
+                <ServiceEndpoint>http://demo.app.taac.co.kr:80</ServiceEndpoint> -->
+
+            </Environment>
+        </Environments>
+    </APIGateway>
+    
+</APIManager>

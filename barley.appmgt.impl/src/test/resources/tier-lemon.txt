@@ -1,0 +1,11 @@
+<wsp:Policy xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    <throttle:ID xmlns:throttle="http://www.wso2.org/products/wso2commons/throttle" throttle:type="ROLE">Lemon</throttle:ID>
+    <wsp:Policy>
+        <throttle:Control xmlns:throttle="http://www.wso2.org/products/wso2commons/throttle">
+            <wsp:Policy>
+                <throttle:MaximumCount>1</throttle:MaximumCount>
+                <throttle:UnitTime>60000</throttle:UnitTime>
+            </wsp:Policy>
+        </throttle:Control>
+    </wsp:Policy>
+</wsp:Policy>
