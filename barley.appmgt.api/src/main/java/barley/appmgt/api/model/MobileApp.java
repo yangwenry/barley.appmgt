@@ -27,7 +27,10 @@ import java.util.Set;
  */
 public class MobileApp extends App{
 
-    private String appName;
+
+	private String appName;
+	// (추가) 2019.05.29
+	private String title;
     private String appId;
     private String appUrl;
     private String version;
@@ -212,5 +215,13 @@ public class MobileApp extends App{
 
 	public void setPreviousVersionAppID(String previousVersionAppID) {
 		this.previousVersionAppID = previousVersionAppID;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

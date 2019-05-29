@@ -2145,8 +2145,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         return isAppDeleted;
     }
 
-    public List<WebApp> searchAPIs(String searchTerm, String searchType, String providerId) throws
-                                                                                            AppManagementException {
+    public List<WebApp> searchAPIs(String searchTerm, String searchType, String providerId) throws AppManagementException {
         List<WebApp> apiSortedList = new ArrayList<WebApp>();
         String regex = "(?i)[\\w.|-]*" + searchTerm.trim() + "[\\w.|-]*";
 
@@ -2154,44 +2153,118 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         Matcher matcher;
         try {
             List<WebApp> apiList;
-            if(providerId!=null){
+            if(providerId != null){
                 apiList= getAPIsByProvider(providerId);
-            }else{
-                apiList= getAllAPIs();
-            }
-            if (apiList == null || apiList.size() == 0) {
-                return apiSortedList;
-            }
-            pattern = Pattern.compile(regex);
-            for (WebApp api : apiList) {
+                
+                pattern = Pattern.compile(regex);
+                for (WebApp api : apiList) {
 
-                if (searchType.equalsIgnoreCase("Name")) {
-                    String api1 = api.getId().getApiName();
-                    matcher = pattern.matcher(api1);
-                }else if (searchType.equalsIgnoreCase("Provider")) {
-                    String api1 = api.getId().getProviderName();
-                    matcher = pattern.matcher(api1);
-                } else if (searchType.equalsIgnoreCase("Version")) {
-                    String api1 = api.getId().getVersion();
-                    matcher = pattern.matcher(api1);
-                } else if (searchType.equalsIgnoreCase("Context")) {
-                    String api1 = api.getContext();
-                    matcher = pattern.matcher(api1);
-                } else {
-                    String apiName = api.getId().getApiName();
-                    matcher = pattern.matcher(apiName);
+                	// 검색을 위해 title 추가
+                	if (searchType.equalsIgnoreCase("Title")) {
+                        String title = api.getTitle();
+                        matcher = pattern.matcher(title);
+                    } else if (searchType.equalsIgnoreCase("Name")) {
+                        String api1 = api.getId().getApiName();
+                        matcher = pattern.matcher(api1);
+                    } else if (searchType.equalsIgnoreCase("Provider")) {
+                        String api1 = api.getId().getProviderName();
+                        matcher = pattern.matcher(api1);
+                    } else if (searchType.equalsIgnoreCase("Version")) {
+                        String api1 = api.getId().getVersion();
+                        matcher = pattern.matcher(api1);
+                    } else if (searchType.equalsIgnoreCase("Context")) {
+                        String api1 = api.getContext();
+                        matcher = pattern.matcher(api1);
+                    } else {
+                        String apiName = api.getId().getApiName();
+                        matcher = pattern.matcher(apiName);
+                    }
+
+                    if (matcher.find()) {
+                        apiSortedList.add(api);
+                    }
                 }
-
-                if (matcher.find()) {
-                    apiSortedList.add(api);
-                }
-
+            } else {
+            	// (수정) 주석처리하고 검색 메소드 추가 
+                //apiList= getAllAPIs();
+            	apiList= searchAPIs(searchTerm, searchType);
             }
+            
+            // (주석) 필요없어서 주석처리 
+//            if (apiList == null || apiList.size() == 0) {
+//                return apiSortedList;
+//            }            
         } catch (AppManagementException e) {
             handleException("Failed to search APIs with type", e);
         }
         Collections.sort(apiSortedList, new APINameComparator());
         return apiSortedList;
+    }
+    
+    private List<WebApp> searchAPIs(String searchTerm, String searchType) throws AppManagementException {
+        List<WebApp> apiList = new ArrayList<WebApp>();
+        Pattern pattern;
+		Matcher matcher;
+		// 기본값 수정 
+		String searchCriteria = AppMConstants.API_OVERVIEW_TITLE;
+		boolean isTenantFlowStarted = false;
+		String userName = this.username;
+		try {
+			if (tenantDomain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+				isTenantFlowStarted = true;
+				PrivilegedBarleyContext.startTenantFlow();
+				PrivilegedBarleyContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
+			}
+			PrivilegedBarleyContext.getThreadLocalCarbonContext().setUsername(userName);
+			GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.WEBAPP_ASSET_TYPE);
+			if (artifactManager != null) {
+				if ("Title".equalsIgnoreCase(searchType)) {
+					// 한글명 검색을 위해 필드추가  
+					searchCriteria = AppMConstants.API_OVERVIEW_TITLE;
+				} else if ("Name".equalsIgnoreCase(searchType)) {
+					searchCriteria = AppMConstants.API_OVERVIEW_NAME;
+				} else if ("Version".equalsIgnoreCase(searchType)) {
+					searchCriteria = AppMConstants.API_OVERVIEW_VERSION;
+				} else if ("Context".equalsIgnoreCase(searchType)) {
+					searchCriteria = AppMConstants.API_OVERVIEW_CONTEXT;
+				} else if ("Provider".equalsIgnoreCase(searchType)) {
+					searchCriteria = AppMConstants.API_OVERVIEW_PROVIDER;
+					searchTerm = searchTerm.replaceAll("@", "-AT-");
+				} else if ("Status".equalsIgnoreCase(searchType)) {
+					searchCriteria = AppMConstants.API_OVERVIEW_STATUS;
+				}
+
+				String regex = "(?i)[\\w.|-]*" + searchTerm.trim() + "[\\w.|-]*";
+				pattern = Pattern.compile(regex);
+				
+				// api 전체를 가져온다. 
+				GenericArtifact[] genericArtifacts = artifactManager.getAllGenericArtifacts();
+				if (genericArtifacts == null || genericArtifacts.length == 0) {
+					return apiList;
+				}
+
+				for (GenericArtifact artifact : genericArtifacts) {
+					String value = artifact.getAttribute(searchCriteria);
+
+					if (value != null) {
+						matcher = pattern.matcher(value);
+						if (matcher.find()) {
+							WebApp resultAPI = AppManagerUtil.getAPI(artifact, registry);
+                            if (resultAPI != null) {
+                                apiList.add(resultAPI);
+                            }
+						}
+					}
+			    }
+			}
+		} catch (RegistryException e) {
+			handleException("Failed to search APIs with type", e);
+		} finally {
+			if (isTenantFlowStarted) {
+				PrivilegedBarleyContext.endTenantFlow();
+			}
+		}
+        return apiList;
     }
 
     /**

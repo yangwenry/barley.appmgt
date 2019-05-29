@@ -199,8 +199,11 @@ public final class AppManagerUtil {
 			api.setRating(1f);
             //set name
             api.setApiName(apiName);
-			// set description
+            
+            // (추가) 2019.05.29 - 타이틀 추가
+            api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
 
+            // set description
 			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
 			// set last access time
 			api.setLastUpdated(registry.get(artifactPath).getLastModified());
@@ -510,8 +513,11 @@ public final class AppManagerUtil {
             api.setRating(1f);
             //set name
             api.setApiName(apiName);
-            // set description
+            
+            // (추가) 2019.05.29 - 타이틀 추가
+            api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
 
+            // set description
             api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
             // set last access time
             api.setLastUpdated(registry.get(artifactPath).getLastModified());
@@ -715,6 +721,10 @@ public final class AppManagerUtil {
 //            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.APP_IMAGES_THUMBNAIL));
             // (추가) 2018.10.12 - apiName, apiDisplayName도 가져오도록 처리
             api.setApiName(artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME));
+            
+            // (추가) 2019.05.29 - 타이틀 추가
+            api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
+            
             api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
 
             int cacheTimeout = AppMConstants.API_RESPONSE_CACHE_TIMEOUT;
@@ -794,6 +804,8 @@ public final class AppManagerUtil {
 		try {
 			String apiStatus = api.getStatus().getStatus();
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_NAME, api.getId().getApiName());
+			// (추가) 2019.05.29 - 타이틀 추가
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_TITLE, api.getTitle());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_VERSION, api.getId().getVersion());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_CONTEXT, api.getContext());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_PROVIDER, api.getId().getProviderName());
@@ -914,6 +926,8 @@ public final class AppManagerUtil {
 
 		try {
             artifact.setAttribute(AppMConstants.API_OVERVIEW_NAME, mobileApp.getAppName());
+            // (추가) 2019.05.29 - 타이틀 추가
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_TITLE, mobileApp.getTitle());
             artifact.setAttribute(AppMConstants.MOBILE_APP_OVERVIEW_URL, mobileApp.getAppUrl());
             //artifact.setAttribute(AppMConstants.API_OVERVIEW_VISIBILITY, mobileApp.getVisibility());
             artifact.setAttribute(AppMConstants.MOBILE_APP_OVERVIEW_BUNDLE_VERSION, mobileApp.getBundleVersion());
@@ -956,6 +970,8 @@ public final class AppManagerUtil {
             AppManagementException {
         try {
             artifact.setAttribute(AppMConstants.API_OVERVIEW_NAME, webApp.getId().getApiName());
+            // (추가) 2019.05.29 - 타이틀 추가
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_TITLE, webApp.getTitle());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_VERSION, webApp.getId().getVersion());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_CONTEXT, webApp.getContext());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME, webApp.getDisplayName());

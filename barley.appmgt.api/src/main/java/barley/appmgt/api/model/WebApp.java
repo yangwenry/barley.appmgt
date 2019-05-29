@@ -23,10 +23,13 @@ import java.util.*;
  * Provider's & system's view of WebApp
  */
 @SuppressWarnings("unused")
-public class WebApp extends App{
+public class WebApp extends App {
 
     private int databaseId;
     private APIIdentifier id;
+    
+    // 2019.05.29 - 검색을 title 추가 
+    private String title;
 
     private String description;
     private String url;
@@ -809,4 +812,12 @@ public class WebApp extends App{
     public boolean isServiceProviderCreationEnabled() {
         return serviceProviderCreationEnabled;
     }
+    
+    public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 }

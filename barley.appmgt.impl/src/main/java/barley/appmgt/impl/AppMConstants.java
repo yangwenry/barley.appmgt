@@ -159,6 +159,8 @@ public final class AppMConstants {
 
     // Those constance are used in WebApp artifact.
     public static final String API_OVERVIEW_NAME = "overview_name";
+    // (추가) 2019.05.29 - 신규로 추가 
+    public static final String API_OVERVIEW_TITLE = "overview_title";
     public static final String API_OVERVIEW_DISPLAY_NAME = "overview_displayName";
     public static final String API_OVERVIEW_VERSION = "overview_version";
     public static final String API_OVERVIEW_CONTEXT = "overview_context";
