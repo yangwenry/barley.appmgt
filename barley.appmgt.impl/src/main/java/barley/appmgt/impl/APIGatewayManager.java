@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.model.APIIdentifier;
+import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.WebApp;
 import barley.appmgt.impl.dto.Environment;
 import barley.appmgt.impl.service.ServiceReferenceHolder;
@@ -196,16 +197,22 @@ public class APIGatewayManager {
 	 * @throws Exception
 	 *             - Thrown if a check to at least one Gateway fails.
 	 */
-	public boolean isAPIPublished(WebApp api, String tenantDomain) throws Exception {
+	public boolean isAPIPublished(WebApp api, String tenantDomain) throws AppManagementException {
 		APIIdentifier appId = api.getId();
 		for (Environment environment : environments) {
-			// (수정) 2018.03.29
-//			AppGatewayAdminClient client = new AppGatewayAdminClient(appId, environment);
-			AppGatewayAdminRestClient client = new AppGatewayAdminRestClient(appId, environment);
-			// If the WebApp exists in at least one environment, consider as
-			// published and return true.
-			if (client.getVersionedWebApp(appId,tenantDomain) != null) {
-				return true;
+			try {
+				// (수정) 2018.03.29
+	//			AppGatewayAdminClient client = new AppGatewayAdminClient(appId, environment);
+				AppGatewayAdminRestClient client = new AppGatewayAdminRestClient(appId, environment);
+				// If the WebApp exists in at least one environment, consider as
+				// published and return true.
+				if (client.getVersionedWebApp(appId,tenantDomain) != null) {
+					return true;
+				}
+			} catch (AppManagementException ex) {
+				if (api.getStatus() != APIStatus.CREATED) {
+                    log.error("Error occurred when check api is published on gateway" + environment.getName(), ex);
+                }
 			}
 		}
 		return false;
