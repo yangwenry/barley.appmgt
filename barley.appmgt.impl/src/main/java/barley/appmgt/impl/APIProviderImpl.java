@@ -2187,7 +2187,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             } else {
             	// (수정) 주석처리하고 검색 메소드 추가 
                 //apiList= getAllAPIs();
-            	apiList= searchAPIs(searchTerm, searchType);
+            	apiSortedList = searchAPIs(searchTerm, searchType);
             }
             
             // (주석) 필요없어서 주석처리 
