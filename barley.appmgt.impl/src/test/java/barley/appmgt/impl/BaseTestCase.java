@@ -17,14 +17,23 @@
 package barley.appmgt.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.CacheConfiguration;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.io.FileUtils;
 
 import barley.appmgt.impl.BaseTestCase.RealmUnawareRegistryCoreServiceComponent;
 import barley.core.MultitenantConstants;
@@ -57,6 +66,7 @@ public class BaseTestCase extends TestCase {
         setSession();
         setUpCache();
         setUpRegistry();
+        initializeDatabase();
     }
 
     protected void setupCarbonHome() {
@@ -72,8 +82,8 @@ public class BaseTestCase extends TestCase {
             }
         }
         */
-    	System.setProperty(ServerConstants.CARBON_HOME, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APPM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\");
-        System.setProperty(ServerConstants.CARBON_CONFIG_DIR_PATH, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APPM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\repository\\conf\\");
+    	System.setProperty(ServerConstants.CARBON_HOME, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APIM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\");
+        System.setProperty(ServerConstants.CARBON_CONFIG_DIR_PATH, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APIM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\repository\\conf\\");
         System.setProperty("registry.config", "registry.xml");
         // BLOB 값을 쓰고 읽을 때 사용 
         System.setProperty("carbon.registry.character.encoding", "UTF-8");
@@ -154,6 +164,51 @@ public class BaseTestCase extends TestCase {
             fail("Failed to initialize the registry. Caused by: " + e.getMessage());
         }
     }
+    
+    private void initializeDatabase() {
+
+    	String configFilePath = BarleyUtils.getCarbonConfigDirPath() + "app-manager.xml";
+        InputStream in = null;
+        try {
+            in = FileUtils.openInputStream(new File(configFilePath));
+            StAXOMBuilder builder = new StAXOMBuilder(in);
+            OMElement databaseElement = builder.getDocumentElement().getFirstChildWithName(new QName("Database"));
+            String databaseURL = databaseElement.getFirstChildWithName(new QName("URL")).getText();
+            String databaseUser = databaseElement.getFirstChildWithName(new QName("Username")).getText();
+            String databasePass = databaseElement.getFirstChildWithName(new QName("Password")).getText();
+            String databaseDriver = databaseElement.getFirstChildWithName(new QName("Driver")).getText();
+
+            BasicDataSource basicDataSource = new BasicDataSource();
+            basicDataSource.setDriverClassName(databaseDriver);
+            basicDataSource.setUrl(databaseURL);
+            basicDataSource.setUsername(databaseUser);
+            basicDataSource.setPassword(databasePass);
+
+            // Create initial context
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                        "org.apache.naming.java.javaURLContextFactory");
+            System.setProperty(Context.URL_PKG_PREFIXES,
+                    "org.apache.naming");
+            try {
+                InitialContext.doLookup("java:/comp/env/jdbc/WSO2APPM_DB");
+            } catch (NamingException e) {
+                InitialContext ic = new InitialContext();
+                ic.createSubcontext("java:");
+                ic.createSubcontext("java:/comp");
+                ic.createSubcontext("java:/comp/env");
+                ic.createSubcontext("java:/comp/env/jdbc");
+
+                ic.bind("java:/comp/env/jdbc/WSO2APPM_DB", basicDataSource);
+            }
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+    }
+    
 
     public class RealmUnawareRegistryCoreServiceComponent extends RegistryCoreServiceComponent {
 
