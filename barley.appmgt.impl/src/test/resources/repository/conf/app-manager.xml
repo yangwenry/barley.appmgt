@@ -1,6 +1,7 @@
 <APIManager>
 	<DataSourceName>java:/comp/env/jdbc/WSO2APPM_DB</DataSourceName>
-    <!-- <Database>
+	<!-- 테스트 용도로 필요 -->
+    <Database>
         <URL>jdbc:mysql://172.16.2.201/barley_appmgt?useSSL=false&amp;relaxAutoCommit=true</URL>
         <Username>cdfcloud</Username>
         <Password>cdfcloud</Password>
@@ -8,7 +9,7 @@
         <maxActive>50</maxActive>
         <maxWait>60000</maxWait>
         <minIdle>5</minIdle>
-    </Database> -->
+    </Database>
     
     <AppConsumerAuthConfiguration>
         <EnableTokenGeneration>false</EnableTokenGeneration>
