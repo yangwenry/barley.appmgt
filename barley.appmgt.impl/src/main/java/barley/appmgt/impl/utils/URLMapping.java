@@ -5,7 +5,9 @@ public class URLMapping {
 	private String authScheme;
 	private String httpMethod;
 	private String throttlingTier;
-    private String userRoles;
+    private String userRoles;    
+    // (추가)
+    private int policyGroupId;
 
     public String getUserRoles() { return  userRoles; }
 
@@ -41,6 +43,14 @@ public class URLMapping {
 
 	public void setThrottlingTier(String throttlingTier) {
 		this.throttlingTier = throttlingTier;
+	}
+	
+	public int getPolicyGroupId() {
+		return policyGroupId;
+	}
+
+	public void setPolicyGroupId(int policyGroupId) {
+		this.policyGroupId = policyGroupId;
 	}
 
 }

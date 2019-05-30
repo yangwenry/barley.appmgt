@@ -97,6 +97,7 @@ import barley.appmgt.api.model.AppDefaultVersion;
 import barley.appmgt.api.model.AppStore;
 import barley.appmgt.api.model.Documentation;
 import barley.appmgt.api.model.DocumentationType;
+import barley.appmgt.api.model.EntitlementPolicyGroup;
 import barley.appmgt.api.model.ExternalAppStorePublisher;
 import barley.appmgt.api.model.MobileApp;
 import barley.appmgt.api.model.Provider;
@@ -306,6 +307,7 @@ public final class AppManagerUtil {
 			Set<URITemplate> uriTemplates = new LinkedHashSet<URITemplate>();
 			List<String> uriTemplateNames = new ArrayList<String>();
 
+			// api-manager에서는 uri-template을 registry에서 가져오지만 app-manager에서는 dao에서 가져온다. 
 			List<URLMapping> urlPatterns = AppMDAO.getURITemplatesPerAPIAsString(apiId);
 
 			for (URLMapping urlMapping : urlPatterns) {
@@ -314,7 +316,9 @@ public final class AppManagerUtil {
 				String method = urlMapping.getHttpMethod();
 				String authType = urlMapping.getHttpMethod();
 				String throttlingTier = urlMapping.getThrottlingTier();
-                String userRoles = urlMapping.getUserRoles();
+                String userRoles = urlMapping.getUserRoles(); 
+                // (추가)
+                int policyGroupId = urlMapping.getPolicyGroupId();
 
 				uriTemplate.setHTTPVerb(method);
 				uriTemplate.setAuthType(authType);
@@ -326,6 +330,9 @@ public final class AppManagerUtil {
 				uriTemplate.setResourceSandboxURI(api.getSandboxUrl());
 				uriTemplate.setThrottlingTiers(throttlingTier);
                 uriTemplate.setUserRoles(userRoles);
+                // (추가)
+                uriTemplate.setPolicyGroupId(policyGroupId);
+                
 				// Checking for duplicate uri template names
 				if (uriTemplateNames.contains(uTemplate)) {
 					for (URITemplate tmp : uriTemplates) {
@@ -624,6 +631,8 @@ public final class AppManagerUtil {
                 String authType = urlMapping.getHttpMethod();
                 String throttlingTier = urlMapping.getThrottlingTier();
                 String userRoles = urlMapping.getUserRoles();
+                // (추가)
+                int policyGroupId = urlMapping.getPolicyGroupId();
 
                 uriTemplate.setHTTPVerb(method);
                 uriTemplate.setAuthType(authType);
@@ -635,6 +644,9 @@ public final class AppManagerUtil {
                 uriTemplate.setResourceSandboxURI(api.getSandboxUrl());
                 uriTemplate.setThrottlingTiers(throttlingTier);
                 uriTemplate.setUserRoles(userRoles);
+                // (추가)
+                uriTemplate.setPolicyGroupId(policyGroupId);
+                
                 // Checking for duplicate uri template names
                 if (uriTemplateNames.contains(uTemplate)) {
                     for (URITemplate tmp : uriTemplates) {
@@ -891,12 +903,24 @@ public final class AppManagerUtil {
 
 			Set<URITemplate> uriTemplateSet = api.getUriTemplates();
 			int i = 0;
+			// (수정) policy group id가 없어서 주석처리하고 아래 코드 추가 
+			/*
 			for (URITemplate uriTemplate : uriTemplateSet) {
 				artifact.addAttribute(AppMConstants.API_URI_PATTERN + i,
 				                      uriTemplate.getUriTemplate());
 				artifact.addAttribute(AppMConstants.API_URI_HTTP_METHOD + i,
 				                      uriTemplate.getHTTPVerb());
-				artifact.addAttribute(AppMConstants.API_URI_AUTH_TYPE + i, uriTemplate.getAuthType());
+				artifact.addAttribute(AppMConstants.API_URI_AUTH_TYPE + i, uriTemplate.getAuthType());				
+				i++;
+			}
+			*/
+			for (URITemplate uriTemplate : uriTemplateSet) {
+				artifact.addAttribute(AppMConstants.API_URI_PATTERN + i,
+				                      uriTemplate.getUriTemplate());
+				artifact.addAttribute(AppMConstants.API_URI_HTTP_METHOD + i,
+				                      uriTemplate.getHTTPVerb());
+				artifact.addAttribute(AppMConstants.API_URI_AUTH_TYPE + i, uriTemplate.getAuthType());				
+				artifact.addAttribute(AppMConstants.APP_URITEMPLATE_POLICYGROUP_IDS + i, String.valueOf(uriTemplate.getPolicyGroupId()));
 				i++;
 			}
 			
@@ -907,8 +931,8 @@ public final class AppManagerUtil {
 		}
 		return artifact;
 	}
-
-
+	
+	
 	/**
 	 * Create Governance artifact from given attributes
 	 *
@@ -965,6 +989,7 @@ public final class AppManagerUtil {
      * @return GenericArtifact
      * @throws AppManagementException
      */
+	@Deprecated
     public static GenericArtifact createWebAppArtifactContent(GenericArtifact artifact, WebApp webApp)
             throws
             AppManagementException {

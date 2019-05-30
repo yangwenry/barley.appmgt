@@ -4387,6 +4387,7 @@ public class AppMDAO {
             if (rs.next()) {
                 webAppId = rs.getInt(1);
             }
+            // apm_app_url_mapping 테이블에 저장한다. 
             addURLTemplates(webAppId, app, connection);
             //Set default versioning details
             saveDefaultVersionDetails(app, connection);
@@ -4874,7 +4875,8 @@ public class AppMDAO {
 		PreparedStatement prepStmt = null;
 		ResultSet rs = null;
 		ArrayList<URITemplate> uriTemplates = new ArrayList<URITemplate>();
-        String query = " SELECT AUM.HTTP_METHOD, AUTH_SCHEME, URL_PATTERN, THROTTLING_TIER, SKIP_THROTTLING,USER_ROLES "
+		// POLICY_GRP_ID 추가
+        String query = " SELECT AUM.HTTP_METHOD, AUTH_SCHEME, URL_PATTERN, THROTTLING_TIER, SKIP_THROTTLING, USER_ROLES, AUM.POLICY_GRP_ID "
                 + " FROM APM_APP_URL_MAPPING AUM "
                 + " LEFT JOIN APM_APP API ON API.APP_ID=AUM.APP_ID "
                 + " LEFT JOIN APM_POLICY_GROUP POLICY ON AUM.POLICY_GRP_ID= POLICY.POLICY_GRP_ID "
@@ -4896,6 +4898,8 @@ public class AppMDAO {
 				uriTemplate.setThrottlingTier(rs.getString("THROTTLING_TIER"));
 				uriTemplate.setSkipThrottling(rs.getBoolean("SKIP_THROTTLING"));
 				uriTemplate.setUserRoles(rs.getString("USER_ROLES"));
+				// POLICY_GRP_ID 추가
+				uriTemplate.setPolicyGroupId(rs.getInt("POLICY_GRP_ID"));
 				uriTemplates.add(uriTemplate);
 			}
 		} catch (SQLException e) {
@@ -5332,7 +5336,8 @@ public class AppMDAO {
 		try {
 			conn = APIMgtDBUtil.getConnection();
 
-            String sqlQuery = "SELECT URL_PATTERN, HTTP_METHOD, AUTH_SCHEME, THROTTLING_TIER, USER_ROLES "
+			// POLICY_GRP_ID 필드 추가 
+            String sqlQuery = "SELECT URL_PATTERN, HTTP_METHOD, AUTH_SCHEME, THROTTLING_TIER, USER_ROLES, MAP.POLICY_GRP_ID "
                     + "FROM  APM_APP_URL_MAPPING MAP "
                     + "LEFT JOIN APM_APP  APP ON MAP.APP_ID = APP.APP_ID "
                     + "LEFT JOIN APM_POLICY_GROUP POLICY ON MAP.POLICY_GRP_ID=POLICY.POLICY_GRP_ID "
@@ -5354,6 +5359,8 @@ public class AppMDAO {
 				mapping.setAuthScheme(resultSet.getString("AUTH_SCHEME"));
 				mapping.setThrottlingTier(resultSet.getString("THROTTLING_TIER"));
 				mapping.setUserRoles(resultSet.getString("USER_ROLES"));
+				// POLICY_GRP_ID 추가
+				mapping.setPolicyGroupId(resultSet.getInt("POLICY_GRP_ID"));
 			}
 		} catch (SQLException e) {
 			if (conn != null) {
