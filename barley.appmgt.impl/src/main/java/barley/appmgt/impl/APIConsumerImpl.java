@@ -403,7 +403,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
      */
     public Map<String,Object> getAllPaginatedPublishedAPIs(String tenantDomain,int start,int end) throws
                                                                                                   AppManagementException {
-    	
+    	// (주석)
+    	/*
     	Boolean displayAPIsWithMultipleStatus = isAllowDisplayAPIsWithMultipleStatus();
     	Map<String, List<String>> listMap = new HashMap<String, List<String>>();
         //Check the app-manager.xml config file entry <DisplayAllAPIs> value is false
@@ -415,7 +416,7 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         } else{
             return getAllPaginatedAPIs(tenantDomain, start, end);
         }
-        
+        */
         
         Map<String,Object> result=new HashMap<String, Object>();
         SortedSet<WebApp> apiSortedSet = new TreeSet<WebApp>(new APINameComparator());
@@ -445,17 +446,22 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
             
             GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(userRegistry, AppMConstants.API_KEY);
             if (artifactManager != null) {
-                GenericArtifact[] genericArtifacts = artifactManager.findGenericArtifacts(listMap);
-                totalLength=PaginationContext.getInstance().getLength();
+            	// (수정) - 라이프사이클의 상태값으로 가져오도록 변경
+                //GenericArtifact[] genericArtifacts = artifactManager.findGenericArtifacts(listMap);
+                //totalLength=PaginationContext.getInstance().getLength();
+                String status = APIStatus.PUBLISHED.getStatus();
+            	GenericArtifact[] genericArtifacts = artifactManager.getAllGenericArtifactsByLifecycleStatus(AppMConstants.WEBAPP_LIFE_CYCLE, status);
+            	totalLength = Integer.MAX_VALUE;
+            	
                 if (genericArtifacts == null || genericArtifacts.length == 0) {
-                    result.put("apis",apiSortedSet);
-                    result.put("totalLength",totalLength);
+                    result.put("apis", apiSortedSet);
+                    result.put("totalLength", totalLength);
                     return result;
                 }
 
                 for (GenericArtifact artifact : genericArtifacts) {
                     // adding the WebApp provider can mark the latest WebApp .
-                    String status = artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS);
+                    //String status = artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS);
 
                     WebApp api  = AppManagerUtil.getAPI(artifact);
 
