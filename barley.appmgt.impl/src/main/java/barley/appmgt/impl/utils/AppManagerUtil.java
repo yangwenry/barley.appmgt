@@ -4200,4 +4200,12 @@ public final class AppManagerUtil {
         }
         return false;
     }
+    
+    // (추가) 2019.06.03 - APIUtils에 있는 걸 가져와 추가
+    public static String appendDomainWithUser(String username, String domain) {
+        if (username.contains(AppMConstants.EMAIL_DOMAIN_SEPARATOR) || username.contains(AppMConstants.EMAIL_DOMAIN_SEPARATOR_REPLACEMENT) || MultitenantConstants.SUPER_TENANT_NAME.equalsIgnoreCase(username)) {
+            return username;
+        }
+        return username + AppMConstants.EMAIL_DOMAIN_SEPARATOR + domain;
+    }
 }
