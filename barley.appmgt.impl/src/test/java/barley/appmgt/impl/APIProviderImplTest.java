@@ -101,7 +101,7 @@ public class APIProviderImplTest extends BaseTestCase {
 			public void loadTenantRegistry(int tenantId) {
 				
 			}
-		});		
+		});	
         
         AppManagerComponent component = new AppManagerComponent();
     	component.activate();
@@ -201,20 +201,33 @@ public class APIProviderImplTest extends BaseTestCase {
 //    	app.setThumbnailUrl("http://app.codefarm.co.kr/default/images/main/app_icon03m.png");
 //    	app.setDescription("코드팜에서 제공하는 날씨 어플리케이션입니다.");
 //    	app.setApiName("날씨 어플리케이션");
-    	app.setDescription("코드팜에서 제공하는 통합 수업관리 프로그램입니다.<br/><br/>" +
-"코드팜 NCS기반 교육과정 운영 및 관리 시스템은 대학교육업무처리의 효율성을 높이기 위해 현행 학사시스템과의 연계 처리를 통한 확장성과 유연성을 고려한 환경 조성 및 유지보수가 용이한 시스템으로 대학교의 교육품질을 개선함으로써 직무능력을 갖 춘 인재 양성에 목적을 두고 있습니다.<br/><br/>" +
-"교육부 특성화 지침에 따른 NCS 교과과정 프로세스 확보<br/><br/>" +
-"직무능력구성요소에 맞는 교과과정수립<br/>" +
-"NCS 교과과정이 반영된 NCS기반교육과정 관리시스템 확보<br/>" +
-"NCS교육과정 운영 관리시스템과의 연계한 학사시스템 보유<br/><br/>" +
-"NCS기반 교육과정 관리스스템과의 연동된 학사시스템 확보<br/>" +
-"학습자 주도의 학습관리 체계 구축<br/>" +
-"최신요소 기술이 적용된 시스템 보유<br/><br/>" +
-"전자정부프레임워크 기반의 Framework도입<br/>" +
-"JAVA,JSP,iBatis의 최신 개발 방법 적용(협의에 따른 X-PLATFORM도입)<br/>" +
-"최신요소기술이 적용된 시스템 보유<br/><br/>" +
-"직무능력구성에 맞는 교과과정 수립<br/>" +
-"NCS교과과정이 반영된 NCS 기반교육과정 관리시스템 확보");
+//    	app.setDescription("코드팜에서 제공하는 통합 수업관리 프로그램입니다.<br/><br/>" +
+//"코드팜 NCS기반 교육과정 운영 및 관리 시스템은 대학교육업무처리의 효율성을 높이기 위해 현행 학사시스템과의 연계 처리를 통한 확장성과 유연성을 고려한 환경 조성 및 유지보수가 용이한 시스템으로 대학교의 교육품질을 개선함으로써 직무능력을 갖 춘 인재 양성에 목적을 두고 있습니다.<br/><br/>" +
+//"교육부 특성화 지침에 따른 NCS 교과과정 프로세스 확보<br/><br/>" +
+//"직무능력구성요소에 맞는 교과과정수립<br/>" +
+//"NCS 교과과정이 반영된 NCS기반교육과정 관리시스템 확보<br/>" +
+//"NCS교육과정 운영 관리시스템과의 연계한 학사시스템 보유<br/><br/>" +
+//"NCS기반 교육과정 관리스스템과의 연동된 학사시스템 확보<br/>" +
+//"학습자 주도의 학습관리 체계 구축<br/>" +
+//"최신요소 기술이 적용된 시스템 보유<br/><br/>" +
+//"전자정부프레임워크 기반의 Framework도입<br/>" +
+//"JAVA,JSP,iBatis의 최신 개발 방법 적용(협의에 따른 X-PLATFORM도입)<br/>" +
+//"최신요소기술이 적용된 시스템 보유<br/><br/>" +
+//"직무능력구성에 맞는 교과과정 수립<br/>" +
+//"NCS교과과정이 반영된 NCS 기반교육과정 관리시스템 확보");
+    	app.setTitle("종합학사시스템");
+    	
+    	Set<URITemplate> uriTemplates = new HashSet();
+    	URITemplate template1 = new URITemplate();
+    	template1.setUriTemplate("/*");
+    	template1.setHttpVerbs("GET");
+    	template1.setHTTPVerb("GET");
+    	template1.setPolicyGroupId(1);
+    	// AUTH_NO_AUTHENTICATION, AUTH_APPLICATION_LEVEL_TOKEN
+    	template1.setAuthType(AppMConstants.AUTH_NO_AUTHENTICATION);
+    	uriTemplates.add(template1);
+    	app.setUriTemplates(uriTemplates);
+    	
     	provider.updateAPI(app, authorizedAdminCookie);
 
     }
@@ -224,6 +237,7 @@ public class APIProviderImplTest extends BaseTestCase {
     	APIIdentifier apiId = new APIIdentifier(userName, "MapDemo", "1.0.0");
     	WebApp app = new WebApp(apiId);
     	app.setApiName("MapDemo");
+    	app.setTitle("메모 데모");
     	app.setContext("/mapdemo/default/jsp");
     	app.setDisplayName("MapDemo");
     	app.setTransports("http");
