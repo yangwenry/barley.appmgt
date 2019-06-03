@@ -25,6 +25,7 @@ import java.util.Set;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.Application;
 import barley.appmgt.api.model.BusinessOwner;
+import barley.appmgt.api.model.Comment;
 import barley.appmgt.api.model.SubscribedAPI;
 import barley.appmgt.api.model.Subscriber;
 import barley.appmgt.api.model.Subscription;
@@ -494,5 +495,35 @@ public interface APIConsumer extends APIManager {
     public Map<String, Set<WebApp>> getTaggedAPIs();
 
     public void addSubscription(String subscriberName, WebApp webApp, String applicationName) throws AppManagementException;
+    
+    /**
+     * @param identifier Api identifier
+     * @param comment comment text
+     * @param user Username of the comment author                        
+     * @throws APIManagementException if failed to add comment for API
+     */
+    void addComment(APIIdentifier identifier, String comment, String userId) throws AppManagementException;
+    
+    /**
+     * 댓글 수정 
+     * @param commentId
+     * @param comment
+     * @throws APIManagementException
+     */
+    void updateComment(int commentId, String comment) throws AppManagementException;
+    
+    /**
+     * 댓글 삭제 
+     * @param commentId
+     * @throws APIManagementException
+     */
+    void deleteComment(int commentId) throws AppManagementException;
+
+    /**
+     * @param identifier Api identifier
+     * @return Comments
+     * @throws APIManagementException if failed to get comments for identifier
+     */
+    Comment[] getComments(APIIdentifier identifier) throws AppManagementException;
 
 }
