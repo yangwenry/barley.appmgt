@@ -24,8 +24,21 @@ import java.util.Date;
  * This class represent the model for WebApp comments
  */
 public class Comment {
+	
+	private int commentId;
+	private String user;
+    private String text;
+    private Date createdTime;
 
-    public String getUser() {
+    public int getCommentId() {
+		return commentId;
+	}
+
+	public void setCommentId(int commentId) {
+		this.commentId = commentId;
+	}
+
+	public String getUser() {
         return user;
     }
 
@@ -49,7 +62,5 @@ public class Comment {
         this.createdTime = createdTime;
     }
 
-    private String user;
-    private String text;
-    private Date createdTime;
+    
 }
