@@ -113,7 +113,7 @@ public class SQLConstants {
     public static final String IS_ACCESS_TOKE_REVOKED_SUFFIX = " WHERE ACCESS_TOKEN= ? ";
     
     public static final String ADD_COMMENT_SQL =
-            " INSERT INTO AM_API_COMMENTS (COMMENT_TEXT,COMMENTED_USER,DATE_COMMENTED,API_ID)" +
+            " INSERT INTO APM_APP_COMMENTS (COMMENT_TEXT,COMMENTED_USER,DATE_COMMENTED, APP_ID)" +
             " VALUES (?,?,?,?)";
     
     // (추가) 2019.05.16 
@@ -139,10 +139,10 @@ public class SQLConstants {
             "   APM_APP_COMMENTS, " +
             "   APM_APP APP " +
             " WHERE " +
-            "   APP.API_PROVIDER = ? " +
-            "   AND APP.API_NAME = ? " +
-            "   AND APP.API_VERSION  = ? " +
-            "   AND APP.API_ID = APM_APP_COMMENTS.API_ID";
+            "   APP.APP_PROVIDER = ? " +
+            "   AND APP.APP_NAME = ? " +
+            "   AND APP.APP_VERSION  = ? " +
+            "   AND APP.APP_ID = APM_APP_COMMENTS.APP_ID";
     
     // (추가) 2019.06.03
     public static final String GET_APP_ID_SQL =
