@@ -90,6 +90,7 @@ import barley.appmgt.impl.template.APITemplateBuilder;
 import barley.appmgt.impl.template.APITemplateBuilderImpl;
 import barley.appmgt.impl.utils.APINameComparator;
 import barley.appmgt.impl.utils.AppManagerUtil;
+import barley.core.BarleyConstants;
 import barley.core.MultitenantConstants;
 import barley.core.context.PrivilegedBarleyContext;
 import barley.core.multitenancy.MultitenantUtils;
@@ -109,6 +110,7 @@ import barley.registry.core.Resource;
 import barley.registry.core.config.RegistryContext;
 import barley.registry.core.exceptions.RegistryException;
 import barley.registry.core.jdbc.realm.RegistryAuthorizationManager;
+import barley.registry.core.pagination.PaginationContext;
 import barley.registry.core.session.UserRegistry;
 import barley.registry.core.utils.RegistryUtils;
 import barley.user.api.AuthorizationManager;
@@ -3201,7 +3203,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         return gatewayUrl;
     }
 
-    public String getAppUUIDbyName(String appName, String appVersion, int tenantId) throws AppManagementException{
+    public String getAppUUIDbyName(String appName, String appVersion, int tenantId) throws AppManagementException {
        return appRepository.getAppUUIDbyName(appName, appVersion, tenantId);
     }
 
@@ -3228,4 +3230,99 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         String uuid = String.valueOf(Hex.encodeHex(result));
         return uuid;
     }
+    
+    // (추가) 2019.06.03 
+    @Override
+    public Map<String, Object> getAllPaginatedAPIs(String tenantDomain, int start, int end) throws AppManagementException {
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<WebApp> apiSortedList = new ArrayList<WebApp>();
+        int totalLength = 0;
+        boolean isTenantFlowStarted = false;
+
+        try {
+            final int maxPaginationLimit = Integer.MAX_VALUE;
+            Registry userRegistry;
+            boolean isTenantMode = (tenantDomain != null);
+            if ((isTenantMode && this.tenantDomain == null) ||
+                (isTenantMode && isTenantDomainNotMatching(tenantDomain))) {
+                if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+                    PrivilegedBarleyContext.startTenantFlow();
+                    PrivilegedBarleyContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
+                    isTenantFlowStarted = true;
+                }
+                int tenantId = ServiceReferenceHolder.getInstance().getRealmService().getTenantManager()
+                                                     .getTenantId(tenantDomain);
+                AppManagerUtil.loadTenantRegistry(tenantId);
+                userRegistry = ServiceReferenceHolder.getInstance().
+                        getRegistryService().getGovernanceUserRegistry(BarleyConstants.REGISTRY_ANONNYMOUS_USERNAME,
+                                                                       tenantId);
+                PrivilegedBarleyContext.getThreadLocalCarbonContext()
+                                       .setUsername(BarleyConstants.REGISTRY_ANONNYMOUS_USERNAME);
+            } else {
+                userRegistry = registry;
+                PrivilegedBarleyContext.getThreadLocalCarbonContext().setUsername(this.username);
+            }
+            PaginationContext.init(start, end, "ASC", AppMConstants.PROVIDER_OVERVIEW_NAME, maxPaginationLimit);
+            GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(userRegistry, AppMConstants.API_KEY);
+            Map<String, List<String>> listMap = new HashMap<String, List<String>>();
+
+            if (artifactManager != null) {
+            	// (수정) 전체 가져오는것으로 변경
+                //GenericArtifact[] genericArtifacts = artifactManager.findGenericArtifacts(listMap);
+                //totalLength = PaginationContext.getInstance().getLength();
+            	GenericArtifact[] genericArtifacts = artifactManager.getAllGenericArtifacts();
+            	totalLength = Integer.MAX_VALUE;
+                
+                if (genericArtifacts == null || genericArtifacts.length == 0) {
+                    result.put("apis", apiSortedList);
+                    result.put("totalLength", totalLength);
+                    return result;
+                }
+                // Check to see if we can speculate that there are more APIs to be loaded
+                if (maxPaginationLimit == totalLength) {
+                    // performance hit
+                    --totalLength; // Remove the additional 1 we added earlier when setting max pagination limit
+                }
+                int tempLength = 0;
+                for (GenericArtifact artifact : genericArtifacts) {
+                	// 날짜를 가져오기 위해 수정 	
+                	//API api = APIUtil.getAPI(artifact);
+                    WebApp api = AppManagerUtil.getAPI(artifact, userRegistry);
+
+                    if (api != null) {
+                        apiSortedList.add(api);
+                    }
+                    tempLength++;
+                    if (tempLength >= totalLength) {
+                        break;
+                    }
+                }
+                // 이미 정렬해서 오기 때문에 주석처리 
+                //Collections.sort(apiSortedList, new APINameComparator());
+            }
+
+        } catch (RegistryException e) {
+            handleException("Failed to get all APIs", e);
+        } catch (UserStoreException e) {
+            handleException("Failed to get all APIs", e);
+        } finally {
+            PaginationContext.destroy();
+            if (isTenantFlowStarted) {
+                PrivilegedBarleyContext.endTenantFlow();
+            }
+        }
+
+        result.put("apis", apiSortedList);
+        result.put("totalLength", totalLength);
+        return result;
+    }
+    
+    // (추가) 2019.06.03 
+    private boolean isTenantDomainNotMatching(String tenantDomain) {
+        if (this.tenantDomain != null) {
+            return !(this.tenantDomain.equals(tenantDomain));
+        }
+        return true;
+    }
+    
 }

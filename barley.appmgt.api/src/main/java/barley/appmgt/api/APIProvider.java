@@ -858,5 +858,8 @@ public interface APIProvider extends APIManager {
     public String getAppUUIDbyName(String appName, String appVersion, int tenantId) throws AppManagementException;
 
     public String uploadImage(FileContent fileContent) throws AppManagementException;
+    
+    // (추가) 2019.06.03
+    public Map<String, Object> getAllPaginatedAPIs(String tenantDomain, int start, int end) throws AppManagementException;
 
 }
