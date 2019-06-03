@@ -112,4 +112,40 @@ public class SQLConstants {
 
     public static final String IS_ACCESS_TOKE_REVOKED_SUFFIX = " WHERE ACCESS_TOKEN= ? ";
     
+    public static final String ADD_COMMENT_SQL =
+            " INSERT INTO AM_API_COMMENTS (COMMENT_TEXT,COMMENTED_USER,DATE_COMMENTED,API_ID)" +
+            " VALUES (?,?,?,?)";
+    
+    // (추가) 2019.05.16 
+    public static final String UPDATE_COMMENT_SQL =
+    		"UPDATE " +
+            "   APM_APP_COMMENTS " +
+            " SET " +
+            "   COMMENT_TEXT = ? " +            
+            " WHERE " +
+            "   COMMENT_ID = ? ";
+    
+    // (추가) 2019.05.16 
+    public static final String DELETE_COMMENT_SQL =
+            " DELETE FROM APM_APP_COMMENTS WHERE COMMENT_ID = ? ";
+
+    public static final String GET_COMMENTS_SQL =
+            " SELECT " +
+            "   APM_APP_COMMENTS.COMMENT_ID AS COMMENT_ID," +
+            "   APM_APP_COMMENTS.COMMENT_TEXT AS COMMENT_TEXT," +
+            "   APM_APP_COMMENTS.COMMENTED_USER AS COMMENTED_USER," +
+            "   APM_APP_COMMENTS.DATE_COMMENTED AS DATE_COMMENTED " +
+            " FROM " +
+            "   APM_APP_COMMENTS, " +
+            "   APM_APP APP " +
+            " WHERE " +
+            "   APP.API_PROVIDER = ? " +
+            "   AND APP.API_NAME = ? " +
+            "   AND APP.API_VERSION  = ? " +
+            "   AND APP.API_ID = APM_APP_COMMENTS.API_ID";
+    
+    // (추가) 2019.06.03
+    public static final String GET_APP_ID_SQL =
+            "SELECT APP.APP_ID FROM APM_APP APP WHERE APP.APP_PROVIDER = ? AND APP.APP_NAME = ? AND APP.APP_VERSION = ?";
+
 }

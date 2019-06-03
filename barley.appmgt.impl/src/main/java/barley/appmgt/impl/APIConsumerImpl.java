@@ -41,6 +41,7 @@ import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.Application;
 import barley.appmgt.api.model.BusinessOwner;
+import barley.appmgt.api.model.Comment;
 import barley.appmgt.api.model.SubscribedAPI;
 import barley.appmgt.api.model.Subscriber;
 import barley.appmgt.api.model.Subscription;
@@ -1886,4 +1887,26 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         int subscriptionId = appRepository.addSubscription(subscriberName, webApp, applicationName);
         executeWorkflow(webApp, applicationName, subscriberName, subscriptionId, webApp.getId().getTier());
     }
+    
+    // (추가) 
+    @Override
+    public void addComment(APIIdentifier identifier, String commentText, String userId) throws AppManagementException {
+    	appMDAO.addComment(identifier, commentText, userId);
+    }
+    
+    @Override
+	public void updateComment(int commentId, String comment) throws AppManagementException {
+    	appMDAO.updateComment(commentId, comment);
+	}
+
+	@Override
+	public void deleteComment(int commentId) throws AppManagementException {
+		appMDAO.deleteComment(commentId);
+	}
+
+    @Override
+    public Comment[] getComments(APIIdentifier identifier) throws AppManagementException {
+        return appMDAO.getComments(identifier);
+    }
+
 }
