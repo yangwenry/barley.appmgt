@@ -19,6 +19,7 @@
 package barley.appmgt.impl.dao;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -5160,11 +5161,13 @@ public class AppMDAO {
 		PreparedStatement prepStmt = null;
 		ResultSet rs = null;
 		int id = -1;
+		/* (수정) 아래코드로 변경 
 		String getAPIQuery =
 		                     "SELECT " + "API.APP_ID FROM APM_APP API" + " WHERE "
 		                             + "API.APP_PROVIDER = ?" + " AND API.APP_NAME = ?"
 		                             + " AND API.APP_VERSION = ?";
-
+		*/
+		String getAPIQuery = SQLConstants.GET_APP_ID_SQL;
 		try {
 			prepStmt = connection.prepareStatement(getAPIQuery);
 			prepStmt.setString(1, AppManagerUtil.replaceEmailDomainBack(apiId.getProviderName()));
@@ -9461,4 +9464,346 @@ public class AppMDAO {
         return commentList.toArray(new Comment[commentList.size()]);
     }
 
+    
+    public void addRating(APIIdentifier apiId, int rating, String user) throws AppManagementException {
+        Connection conn = null;
+        try {
+            conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
+            addRating(apiId, rating, user, conn);
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e1) {
+                    log.error("Failed to rollback the add Application ", e1);
+                }
+            }
+            handleException("Failed to add Application", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(null, conn, null);
+        }
+    }
+
+    /**
+     * @param apiIdentifier API Identifier
+     * @param userId        User Id
+     * @throws APIManagementException if failed to add Application
+     */
+    public void addRating(APIIdentifier apiIdentifier, int rating, String userId, Connection conn)
+            throws AppManagementException, SQLException {
+        PreparedStatement ps = null;
+        PreparedStatement psSelect = null;
+        ResultSet rs = null;
+
+        try {
+            int tenantId;
+            tenantId = AppManagerUtil.getTenantId(userId);
+            //Get subscriber Id
+            Subscriber subscriber = getSubscriber(userId, tenantId, conn);
+            if (subscriber == null) {
+                String msg = "Could not load Subscriber records for: " + userId;
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            int apiId;
+            apiId = getAPIID(apiIdentifier, conn);
+            if (apiId == -1) {
+                String msg = "Could not load API record for: " + apiIdentifier.getApiName();
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            boolean userRatingExists = false;
+            //This query to check the ratings already exists for the user in the AM_API_RATINGS table
+            String sqlQuery = SQLConstants.GET_API_RATING_SQL;
+
+            psSelect = conn.prepareStatement(sqlQuery);
+            psSelect.setInt(1, apiId);
+            psSelect.setInt(2, subscriber.getId());
+            rs = psSelect.executeQuery();
+
+            while (rs.next()) {
+                userRatingExists = true;
+            }
+
+            String sqlAddQuery;
+            if (!userRatingExists) {
+                //This query to update the AM_API_RATINGS table
+                sqlAddQuery = SQLConstants.APP_API_RATING_SQL;
+            } else {
+                //This query to insert into the AM_API_RATINGS table
+                sqlAddQuery = SQLConstants.UPDATE_API_RATING_SQL;
+            }
+            // Adding data to the AM_API_RATINGS  table
+            ps = conn.prepareStatement(sqlAddQuery);
+            ps.setInt(1, rating);
+            ps.setInt(2, apiId);
+            ps.setInt(3, subscriber.getId());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            handleException("Failed to add API rating of the user:" + userId, e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, null, rs);
+            APIMgtDBUtil.closeAllConnections(psSelect, null, null);
+        }
+    }
+
+    public void removeAPIRating(APIIdentifier apiId, String user) throws AppManagementException {
+        Connection conn = null;
+        try {
+            conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            removeAPIRating(apiId, user, conn);
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e1) {
+                    log.error("Failed to rollback the add Application ", e1);
+                }
+            }
+            handleException("Failed to add Application", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(null, conn, null);
+        }
+    }
+
+    /**
+     * @param apiIdentifier API Identifier
+     * @param userId        User Id
+     * @throws APIManagementException if failed to add Application
+     */
+    public void removeAPIRating(APIIdentifier apiIdentifier, String userId, Connection conn)
+            throws AppManagementException, SQLException {
+        PreparedStatement ps = null;
+        PreparedStatement psSelect = null;
+        ResultSet rs = null;
+
+        try {
+            int tenantId;
+            int rateId = -1;
+            tenantId = AppManagerUtil.getTenantId(userId);
+            //Get subscriber Id
+            Subscriber subscriber = getSubscriber(userId, tenantId, conn);
+            if (subscriber == null) {
+                String msg = "Could not load Subscriber records for: " + userId;
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            //Get API Id
+            int apiId = -1;
+            apiId = getAPIID(apiIdentifier, conn);
+            if (apiId == -1) {
+                String msg = "Could not load API record for: " + apiIdentifier.getApiName();
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+
+            //This query to check the ratings already exists for the user in the AM_API_RATINGS table
+            String sqlQuery = SQLConstants.GET_RATING_ID_SQL;
+
+            psSelect = conn.prepareStatement(sqlQuery);
+            psSelect.setInt(1, apiId);
+            psSelect.setInt(2, subscriber.getId());
+            rs = psSelect.executeQuery();
+
+            while (rs.next()) {
+                rateId = rs.getInt("RATING_ID");
+            }
+            String sqlAddQuery;
+            if (rateId != -1) {
+                //This query to delete the specific rate row from the AM_API_RATINGS table
+                sqlAddQuery = SQLConstants.REMOVE_RATING_SQL;
+                // Adding data to the AM_API_RATINGS  table
+                ps = conn.prepareStatement(sqlAddQuery);
+                ps.setInt(1, rateId);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            handleException("Failed to delete API rating", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, null, null);
+            APIMgtDBUtil.closeAllConnections(psSelect, null, rs);
+        }
+    }
+
+    public int getUserRating(APIIdentifier apiId, String user) throws AppManagementException {
+        Connection conn = null;
+        int userRating = 0;
+        try {
+            conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            userRating = getUserRating(apiId, user, conn);
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e1) {
+                    log.error("Failed to rollback getting user ratings ", e1);
+                }
+            }
+            handleException("Failed to get user ratings", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(null, conn, null);
+        }
+        return userRating;
+    }
+
+    /**
+     * @param apiIdentifier API Identifier
+     * @param userId        User Id
+     * @throws APIManagementException if failed to add Application
+     */
+    public int getUserRating(APIIdentifier apiIdentifier, String userId, Connection conn)
+            throws AppManagementException, SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int userRating = 0;
+        try {
+            int tenantId;
+            tenantId = AppManagerUtil.getTenantId(userId);
+            //Get subscriber Id
+            Subscriber subscriber = getSubscriber(userId, tenantId, conn);
+            if (subscriber == null) {
+                String msg = "Could not load Subscriber records for: " + userId;
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            //Get API Id
+            int apiId = -1;
+            apiId = getAPIID(apiIdentifier, conn);
+            if (apiId == -1) {
+                String msg = "Could not load API record for: " + apiIdentifier.getApiName();
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            //This query to update the AM_API_RATINGS table
+            String sqlQuery = SQLConstants.GET_RATING_SQL;
+            // Adding data to the AM_API_RATINGS  table
+            ps = conn.prepareStatement(sqlQuery);
+            ps.setInt(1, subscriber.getId());
+            ps.setInt(2, apiId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                userRating = rs.getInt("RATING");
+            }
+
+        } catch (SQLException e) {
+            handleException("Failed to add Application", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, null, rs);
+        }
+        return userRating;
+    }
+
+    public float getAverageRating(int apiId) throws AppManagementException {
+        Connection conn = null;
+        float avrRating = 0;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            if (apiId == -1) {
+                String msg = "Invalid APIId : " + apiId;
+                log.error(msg);
+                return Float.NEGATIVE_INFINITY;
+            }
+            //This query to update the AM_API_RATINGS table
+            String sqlQuery = SQLConstants.GET_AVERAGE_RATING_SQL;
+
+            ps = conn.prepareStatement(sqlQuery);
+            ps.setInt(1, apiId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                avrRating = rs.getFloat("RATING");
+            }
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e1) {
+                    log.error("Failed to rollback getting user ratings ", e1);
+                }
+            }
+            handleException("Failed to get user ratings", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+        }
+        return avrRating;
+    }
+    
+    public float getAverageRating(APIIdentifier apiId) throws AppManagementException {
+        Connection conn = null;
+        float avrRating = 0;
+        try {
+            conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            avrRating = getAverageRating(apiId, conn);
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e1) {
+                    log.error("Failed to rollback getting user ratings ", e1);
+                }
+            }
+            handleException("Failed to get user ratings", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(null, conn, null);
+        }
+        return avrRating;
+    }
+
+    /**
+     * @param apiIdentifier API Identifier
+     * @throws APIManagementException if failed to add Application
+     */
+    public float getAverageRating(APIIdentifier apiIdentifier, Connection conn)
+            throws AppManagementException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        float avrRating = 0;
+        try {
+            //Get API Id
+            int apiId;
+            apiId = getAPIID(apiIdentifier, conn);
+            if (apiId == -1) {
+                String msg = "Could not load API record for: " + apiIdentifier.getApiName();
+                log.error(msg);
+                return Float.NEGATIVE_INFINITY;
+            }
+            //This query to update the AM_API_RATINGS table
+            String sqlQuery = SQLConstants.GET_AVERAGE_RATING_SQL;
+
+            ps = conn.prepareStatement(sqlQuery);
+            ps.setInt(1, apiId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                avrRating = rs.getFloat("RATING");
+            }
+
+        } catch (SQLException e) {
+            handleException("Failed to add Application", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, null, rs);
+        }
+
+        BigDecimal decimal = new BigDecimal(avrRating);
+        return Float.parseFloat(decimal.setScale(1, BigDecimal.ROUND_UP).toString());
+    }
 }

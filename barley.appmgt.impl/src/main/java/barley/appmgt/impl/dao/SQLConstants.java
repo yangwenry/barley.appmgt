@@ -148,4 +148,32 @@ public class SQLConstants {
     public static final String GET_APP_ID_SQL =
             "SELECT APP.APP_ID FROM APM_APP APP WHERE APP.APP_PROVIDER = ? AND APP.APP_NAME = ? AND APP.APP_VERSION = ?";
 
+    // (추가) 2019.06.04
+    public static final String GET_API_RATING_SQL =
+            "SELECT RATING FROM APM_APP_RATINGS WHERE APP_ID= ? AND SUBSCRIBER_ID=? ";
+
+    public static final String APP_API_RATING_SQL =
+            "INSERT INTO APM_APP_RATINGS (RATING, APP_ID, SUBSCRIBER_ID)  VALUES (?,?,?)";
+
+    public static final String UPDATE_API_RATING_SQL =
+            "UPDATE APM_APP_RATINGS SET RATING=? WHERE APP_ID= ? AND SUBSCRIBER_ID=?";
+
+    public static final String GET_RATING_ID_SQL =
+            "SELECT RATING_ID FROM APM_APP_RATINGS WHERE APP_ID= ? AND SUBSCRIBER_ID=? ";
+
+    public static final String REMOVE_RATING_SQL =
+            "DELETE FROM APM_APP_RATINGS WHERE RATING_ID =? ";
+
+    public static final String GET_RATING_SQL =
+            "SELECT RATING FROM APM_APP_RATINGS WHERE SUBSCRIBER_ID  = ? AND APP_ID= ? ";
+
+    public static final String GET_AVERAGE_RATING_SQL =
+            " SELECT " +
+            "   CAST( SUM(RATING) AS DECIMAL)/COUNT(RATING) AS RATING " +
+            " FROM " +
+            "   APM_APP_RATINGS " +
+            " WHERE " +
+            "   APP_ID =? " +
+            " GROUP BY " +
+            "   APP_ID ";
 }

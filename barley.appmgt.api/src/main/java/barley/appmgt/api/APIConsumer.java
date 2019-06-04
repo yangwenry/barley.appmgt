@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import barley.appmgt.api.model.APIIdentifier;
+import barley.appmgt.api.model.APIRating;
 import barley.appmgt.api.model.Application;
 import barley.appmgt.api.model.BusinessOwner;
 import barley.appmgt.api.model.Comment;
@@ -526,4 +527,10 @@ public interface APIConsumer extends APIManager {
      */
     Comment[] getComments(APIIdentifier identifier) throws AppManagementException;
 
+    void rateAPI(APIIdentifier apiId, APIRating rating, String user) throws AppManagementException;
+
+    void removeAPIRating(APIIdentifier apiId, String user) throws AppManagementException;
+
+    int getUserRating(APIIdentifier apiId, String user) throws AppManagementException;
+    
 }

@@ -862,4 +862,6 @@ public interface APIProvider extends APIManager {
     // (추가) 2019.06.03
     public Map<String, Object> getAllPaginatedAPIs(String tenantDomain, int start, int end) throws AppManagementException;
 
+    // (추가) 2019.06.04
+    public float getAverageRating(APIIdentifier apiId) throws AppManagementException;
 }

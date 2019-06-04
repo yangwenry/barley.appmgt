@@ -38,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import barley.appmgt.api.APIConsumer;
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.model.APIIdentifier;
+import barley.appmgt.api.model.APIRating;
 import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.Application;
 import barley.appmgt.api.model.BusinessOwner;
@@ -739,7 +740,23 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         }
         return rating;
     }
+    
+    @Override
+    public void rateAPI(APIIdentifier apiId, APIRating rating,
+                        String user) throws AppManagementException {
+    	appMDAO.addRating(apiId, rating.getRating(), user);
+    }
 
+    @Override
+    public void removeAPIRating(APIIdentifier apiId, String user) throws AppManagementException {
+    	appMDAO.removeAPIRating(apiId, user);
+    }
+
+    @Override
+    public int getUserRating(APIIdentifier apiId, String user) throws AppManagementException {
+        return appMDAO.getUserRating(apiId, user);
+    }
+    
     /**
      * Get the recently added APIs set
      *

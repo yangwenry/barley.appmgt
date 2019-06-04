@@ -191,11 +191,14 @@ public final class AppManagerUtil {
 			String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
 			APIIdentifier apiId = new APIIdentifier(AppManagerUtil.replaceEmailDomainBack(providerName), apiName, apiVersion);
 			api = new WebApp(apiId);
-			// set rating
+			// set rating - 
+			// (수정)
 			String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
-			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
-			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
-			api.setRating(res.floatValue());
+//			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
+//			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
+//			api.setRating(res.floatValue());
+			api.setRating(getAverageRating(apiId));
+			
             //set name
             api.setApiName(apiName);
             
@@ -510,10 +513,13 @@ public final class AppManagerUtil {
             APIIdentifier apiId = new APIIdentifier(AppManagerUtil.replaceEmailDomainBack(providerName), apiName, apiVersion);
             api = new WebApp(apiId);
             // set rating
+            // (수정) 
             String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
-			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
-			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
-			api.setRating(res.floatValue());
+//			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
+//			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
+//			api.setRating(res.floatValue());
+            api.setRating(getAverageRating(apiId));
+            
             //set name
             api.setApiName(apiName);
             
@@ -2107,12 +2113,16 @@ public final class AppManagerUtil {
 			String providerName = artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER);
 			String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
 			String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
-			api = new WebApp(new APIIdentifier(providerName, apiName, apiVersion));
+			APIIdentifier apiId = new APIIdentifier(providerName, apiName, apiVersion);
+			api = new WebApp(apiId);
 			// set rating
+			// (수정)
 			String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
-			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
-			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
-			api.setRating(res.floatValue());
+//			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
+//			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
+//			api.setRating(res.floatValue());
+			api.setRating(getAverageRating(apiId));
+			
 			// set description
 			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
 			// set last access time
@@ -4203,5 +4213,15 @@ public final class AppManagerUtil {
             return username;
         }
         return username + AppMConstants.EMAIL_DOMAIN_SEPARATOR + domain;
+    }
+    
+    public static float getAverageRating(APIIdentifier apiId) throws AppManagementException {
+    	AppMDAO appMDAO = new AppMDAO();
+        return appMDAO.getAverageRating(apiId);
+    }
+
+    public static float getAverageRating(int apiId) throws AppManagementException {
+    	AppMDAO appMDAO = new AppMDAO();
+        return appMDAO.getAverageRating(apiId);
     }
 }

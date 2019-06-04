@@ -3325,4 +3325,9 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         return true;
     }
     
+    @Override
+    public float getAverageRating(APIIdentifier apiId) throws AppManagementException {
+    	return appMDAO.getAverageRating(apiId);
+    }
+    
 }
