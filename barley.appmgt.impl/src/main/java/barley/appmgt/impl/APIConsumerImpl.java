@@ -341,11 +341,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                     if (!displayAPIsWithMultipleStatus) {
                         // then we are only interested in published APIs here...
                         if (status.equals(AppMConstants.PUBLISHED)) {
-                            api = AppManagerUtil.getAPI(artifact);
+                            api = AppManagerUtil.getAPI(artifact, userRegistry);
                         }
                     } else {   // else we are interested in both deprecated/published APIs here...
                         if (status.equals(AppMConstants.PUBLISHED) || status.equals(AppMConstants.DEPRECATED)) {
-                            api = AppManagerUtil.getAPI(artifact);
+                            api = AppManagerUtil.getAPI(artifact, userRegistry);
 
                         }
 
@@ -464,7 +464,7 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                     // adding the WebApp provider can mark the latest WebApp .
                     //String status = artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS);
 
-                    WebApp api  = AppManagerUtil.getAPI(artifact);
+                    WebApp api  = AppManagerUtil.getAPI(artifact, userRegistry);
 
                     if (api != null) {
                         String key;
@@ -577,7 +577,7 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                     // adding the WebApp provider can mark the latest WebApp .
                     String status = artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS);
 
-                    WebApp api  = AppManagerUtil.getAPI(artifact);
+                    WebApp api  = AppManagerUtil.getAPI(artifact, userRegistry);
 
                     if (api != null) {
                         String key;
@@ -635,7 +635,7 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
 	                    // adding the WebApp provider can mark the latest WebApp .
 	                    String status = artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS);
 	
-	                    WebApp api  = AppManagerUtil.getAPI(artifact);
+	                    WebApp api  = AppManagerUtil.getAPI(artifact, userRegistry);
 	
 	                    if (api != null) {
 	                        String key;
@@ -964,11 +964,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                     if (!displayAPIsWithMultipleStatus) {
                         // then we are only interested in published APIs here...
                         if (status.equals(AppMConstants.PUBLISHED)) {
-                            api = AppManagerUtil.getAPI(artifact);
+                        	api = AppManagerUtil.getAPI(artifact, registry);
                         }
                     } else {   // else we are interested in both deprecated/published APIs here...
                         if (status.equals(AppMConstants.PUBLISHED) || status.equals(AppMConstants.DEPRECATED)) {
-                            api = AppManagerUtil.getAPI(artifact);
+                        	api = AppManagerUtil.getAPI(artifact, registry);
 
                         }
 
@@ -1097,12 +1097,12 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                     if (!showAllAPIs) {
                         // then we are only interested in published APIs here...
                         if (status.equals(AppMConstants.PUBLISHED)) {
-                            api = AppManagerUtil.getAPI(artifact);
+                        	api = AppManagerUtil.getAPI(artifact, registry);
                             publishedAPICount++;
                         }
                     } else {   // else we are interested in both deprecated/published APIs here...
                         if (status.equals(AppMConstants.PUBLISHED) || status.equals(AppMConstants.DEPRECATED)) {
-                            api = AppManagerUtil.getAPI(artifact);
+                        	api = AppManagerUtil.getAPI(artifact, registry);
                             publishedAPICount++;
 
                         }

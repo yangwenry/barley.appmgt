@@ -193,11 +193,9 @@ public final class AppManagerUtil {
 			api = new WebApp(apiId);
 			// set rating
 			String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
-			// BigDecimal bigDecimal = new BigDecimal(getAverageRating(apiId));
-			// BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
-
-			// TODO revert this once proper db saving is done
-			api.setRating(1f);
+			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
+			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
+			api.setRating(res.floatValue());
             //set name
             api.setApiName(apiName);
             
@@ -359,7 +357,7 @@ public final class AppManagerUtil {
 				tags.add(tag1.getTagName());
 			}
 			api.addTags(tags);
-			api.setLastUpdated(registry.get(artifactPath).getLastModified());
+			//api.setLastUpdated(registry.get(artifactPath).getLastModified());
 
             String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
                                                               AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
@@ -513,11 +511,9 @@ public final class AppManagerUtil {
             api = new WebApp(apiId);
             // set rating
             String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
-            // BigDecimal bigDecimal = new BigDecimal(getAverageRating(apiId));
-            // BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
-
-            // TODO revert this once proper db saving is done
-            api.setRating(1f);
+			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
+			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
+			api.setRating(res.floatValue());
             //set name
             api.setApiName(apiName);
             
@@ -673,7 +669,7 @@ public final class AppManagerUtil {
                 tags.add(tag1.getTagName());
             }
             api.addTags(tags);
-            api.setLastUpdated(registry.get(artifactPath).getLastModified());
+            //api.setLastUpdated(registry.get(artifactPath).getLastModified());
 
             String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
                                                               AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
@@ -2203,7 +2199,7 @@ public final class AppManagerUtil {
 				tags.add(tag1.getTagName());
 			}
 			api.addTags(tags);
-			api.setLastUpdated(registry.get(artifactPath).getLastModified());
+			//api.setLastUpdated(registry.get(artifactPath).getLastModified());
 
             //Set Lifecycle status
             if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {

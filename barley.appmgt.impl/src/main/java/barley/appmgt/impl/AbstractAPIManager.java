@@ -280,7 +280,9 @@ public abstract class AbstractAPIManager implements APIManager {
                                                                                 AppMConstants.API_KEY);
             GenericArtifact[] artifacts = artifactManager.getAllGenericArtifacts();
             for (GenericArtifact artifact : artifacts) {
-                apiSortedList.add(AppManagerUtil.getAPI(artifact));
+            	// (수정) 날짜를 가져오기 위해 변경  
+                //apiSortedList.add(AppManagerUtil.getAPI(artifact));
+            	apiSortedList.add(AppManagerUtil.getAPI(artifact, registry));
             }
 
         } catch (RegistryException e) {
@@ -307,7 +309,9 @@ public abstract class AbstractAPIManager implements APIManager {
             GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, appType);
             GenericArtifact[] artifacts = artifactManager.getAllGenericArtifacts();
             for (GenericArtifact artifact : artifacts) {
-                apiSortedList.add(AppManagerUtil.getGenericApp(artifact));
+            	// (수정) 날짜를 가져오기 위해 변경
+                //apiSortedList.add(AppManagerUtil.getGenericApp(artifact));
+            	apiSortedList.add(AppManagerUtil.getGenericApp(artifact, registry));
             }
 
         } catch (RegistryException e) {
