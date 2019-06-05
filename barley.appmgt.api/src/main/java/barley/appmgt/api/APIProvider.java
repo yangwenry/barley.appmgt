@@ -30,6 +30,7 @@ import barley.appmgt.api.model.AppDefaultVersion;
 import barley.appmgt.api.model.AppStore;
 import barley.appmgt.api.model.BusinessOwner;
 import barley.appmgt.api.model.Documentation;
+import barley.appmgt.api.model.Documentation.DocumentSourceType;
 import barley.appmgt.api.model.EntitlementPolicyGroup;
 import barley.appmgt.api.model.FileContent;
 import barley.appmgt.api.model.LifeCycleEvent;
@@ -485,8 +486,12 @@ public interface APIProvider extends APIManager {
      * @param contentType content type of the file
      * @throws AppManagementException if failed to add the file
      */
-    void addFileToDocumentation(WebApp appId, Documentation documentation, String filename, InputStream content,
-                                String contentType) throws AppManagementException;
+    // (수정)
+//    void addFileToDocumentation(WebApp appId, Documentation documentation, String filename, InputStream content,
+//                                String contentType) throws AppManagementException;
+    
+    void addFileToDocumentation(APIIdentifier apiId, Documentation documentation, String filename, InputStream content,
+    		String contentType) throws AppManagementException;
 
 
     /**
@@ -499,6 +504,15 @@ public interface APIProvider extends APIManager {
      */
     public void addDocumentationContent(APIIdentifier identifier, String documentationName, String text)
             throws AppManagementException;
+    
+    /**
+     * 문서의 파일을 삭제한다.  
+     * @param apiId
+     * @param documentation
+     * @param filename
+     * @throws APIManagementException
+     */
+    void removeFileFromDocumentation(APIIdentifier apiId, DocumentSourceType docSourceType, String filename) throws AppManagementException;
 
     /**
      * This method used to update the WebApp definition content - Swagger
@@ -864,4 +878,8 @@ public interface APIProvider extends APIManager {
 
     // (추가) 2019.06.04
     public float getAverageRating(APIIdentifier apiId) throws AppManagementException;
+    
+    // (추가) 2019.06.04
+    public boolean checkIfAPIExists(APIIdentifier identifier) throws AppManagementException;
+    
 }

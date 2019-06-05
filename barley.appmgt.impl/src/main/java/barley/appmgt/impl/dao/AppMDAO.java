@@ -219,6 +219,7 @@ public class AppMDAO {
                 log.debug("Deleting a Business Owner :" + businessOwnerId);
             }
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
 
             String queryToDeleteRecordTwo = "DELETE FROM APM_BUSINESS_OWNER_PROPERTY WHERE OWNER_ID = ?";
 
@@ -302,6 +303,7 @@ public class AppMDAO {
                 log.debug("Updating a Business Owner" + businessOwner.getBusinessOwnerId());
             }
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
             String queryToInsertRecord = "UPDATE APM_BUSINESS_OWNER SET OWNER_NAME=?,OWNER_EMAIL=?,OWNER_DESC=?," +
                     "OWNER_SITE=? WHERE OWNER_ID=?";
 
@@ -451,6 +453,7 @@ public class AppMDAO {
                 log.debug("Adding a Business Owner" + businessOwnerName);
             }
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
             String queryToInsertRecord = "INSERT INTO APM_BUSINESS_OWNER(OWNER_NAME,OWNER_EMAIL,OWNER_DESC," +
                     "OWNER_SITE, TENANT_ID) VALUES (?,?,?,?,?)";
 
@@ -832,6 +835,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 			ps = conn.prepareStatement(applicationSqlQuery);
 			String encryptedAccessToken = AppManagerUtil.encryptToken(accessToken);
 			ps.setString(1, encryptedAccessToken);
@@ -1224,6 +1228,7 @@ public class AppMDAO {
 		PreparedStatement ps = null;
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
             String query = "INSERT INTO APM_SUBSCRIBER (USER_ID, TENANT_ID, EMAIL_ADDRESS, " +
                     "DATE_SUBSCRIBED) VALUES (?,?,?,?)";
 
@@ -1421,6 +1426,7 @@ public class AppMDAO {
 
         try{
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
 
             String queryToUpdateSubscription = "UPDATE " +
                     "APM_SUBSCRIPTION " +
@@ -1462,6 +1468,7 @@ public class AppMDAO {
 
         try {
             conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
             String getApiQuery =
                     "SELECT APP_ID FROM APM_APP API WHERE APP_PROVIDER = ? AND APP_NAME = ? AND " +
                             "APP_VERSION = ?";
@@ -1542,6 +1549,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
             String getApiQuery =
                     "SELECT APP_ID FROM APM_APP API WHERE APP_PROVIDER = ? AND APP_NAME = ? AND " +
                             "APP_VERSION = ?";
@@ -1612,6 +1620,7 @@ public class AppMDAO {
 
 			try {
 				conn = APIMgtDBUtil.getConnection();
+				conn.setAutoCommit(false);
 				ps = conn.prepareStatement(getAppIdQuery);
 			} catch (SQLException e) {
 				handleException("Failed to create database connection ", e);
@@ -1707,6 +1716,7 @@ public class AppMDAO {
 
         try {
             conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
             String getApiQuery =
                     "SELECT APP_ID FROM APM_APP API WHERE APP_PROVIDER = ? AND APP_NAME = ? AND " +
                             "APP_VERSION = ?";
@@ -1761,6 +1771,7 @@ public class AppMDAO {
 
         try {
             conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
             String getApiQuery =
                     "SELECT APP_ID FROM APM_APP API WHERE APP_PROVIDER = ? AND "
                             + "APP_NAME = ? AND APP_VERSION = ?";
@@ -1829,6 +1840,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 			// Remove entry from APM_SUBSCRIPTION table
 			String sqlQuery = "DELETE FROM APM_SUBSCRIPTION WHERE SUBSCRIPTION_ID = ?";
 
@@ -2871,6 +2883,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
             String getTierPermissionQuery =
                     "SELECT TIER_PERMISSIONS_ID FROM APM_TIER_PERMISSIONS WHERE TIER = ? AND " +
                             "TENANT_ID = ?";
@@ -3349,6 +3362,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 			String getApiQuery =
 			                     "SELECT APP_ID FROM APM_APP API WHERE APP_PROVIDER = ? AND "
 			                             + "APP_NAME = ? AND APP_VERSION = ?";
@@ -3408,6 +3422,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 
             // This query is to update the APM_SUBSCRIPTION table
             String sqlQuery =
@@ -3706,6 +3721,7 @@ public class AppMDAO {
 		                         + "SET CALLBACK_URL = ? WHERE APP_NAME = ?";
 		try {
 			connection = APIMgtDBUtil.getConnection();
+			connection.setAutoCommit(false);
 			prepStmt = connection.prepareStatement(sqlStmt);
 			prepStmt.setString(1, callbackUrl);
 			prepStmt.setString(2, appName);
@@ -3752,6 +3768,7 @@ public class AppMDAO {
 		String loginUserName = getLoginUserName(userId);
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 			applicationId = addApplication(application, loginUserName, conn);
 			conn.commit();
 		} catch (SQLException e) {
@@ -3847,6 +3864,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 
 			// This query to update the APM_APPLICATION table
 			String sqlQuery =
@@ -3900,6 +3918,7 @@ public class AppMDAO {
 
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 
 			String updateSqlQuery =
 					"UPDATE " + " APM_APPLICATION" + " SET APPLICATION_STATUS = ? "
@@ -3945,6 +3964,7 @@ public class AppMDAO {
 		int applicationId = getApplicationId(appName, userId);
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
             String sqlQuery = "SELECT APPLICATION_STATUS FROM APM_APPLICATION WHERE APPLICATION_ID = ?";
 
 			ps = conn.prepareStatement(sqlQuery);
@@ -4131,6 +4151,52 @@ public class AppMDAO {
             APIMgtDBUtil.closeAllConnections(prepStmt, connection, rs);
         }
         return applications;
+    }
+    
+    public Application getApplicationByName(String applicationName, String userId, String groupId)
+            throws AppManagementException {
+        //mysql> select APP.APPLICATION_ID, APP.NAME, APP.SUBSCRIBER_ID,APP.APPLICATION_TIER,APP.CALLBACK_URL,APP
+        // .DESCRIPTION,
+        // APP.APPLICATION_STATUS from AM_SUBSCRIBER as SUB,AM_APPLICATION as APP
+        // where SUB.user_id='admin' AND APP.name='DefaultApplication' AND SUB.SUBSCRIBER_ID=APP.SUBSCRIBER_ID;
+        Connection connection = null;
+        PreparedStatement prepStmt = null;
+        ResultSet rs = null;
+
+        Application application = null;
+        try {
+            connection = APIMgtDBUtil.getConnection();
+
+            String query = SQLConstants.GET_APPLICATION_BY_NAME_PREFIX;
+            String whereClause = "  WHERE SUB.USER_ID =? AND APP.NAME=? AND SUB.SUBSCRIBER_ID=APP.SUBSCRIBER_ID";
+            query = query + whereClause;
+
+            prepStmt = connection.prepareStatement(query);
+
+            prepStmt.setString(1, userId);
+            prepStmt.setString(2, applicationName);
+
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                String subscriberId = rs.getString("SUBSCRIBER_ID");
+                String subscriberName = rs.getString("USER_ID");
+
+                Subscriber subscriber = new Subscriber(subscriberName);
+                subscriber.setId(Integer.parseInt(subscriberId));
+                application = new Application(applicationName, subscriber);
+
+                application.setDescription(rs.getString("DESCRIPTION"));
+                application.setStatus(rs.getString("APPLICATION_STATUS"));
+                application.setCallbackUrl(rs.getString("CALLBACK_URL"));
+                application.setId(rs.getInt("APPLICATION_ID"));
+                application.setTier(rs.getString("APPLICATION_TIER"));
+            }
+        } catch (SQLException e) {
+            handleException("Error while obtaining details of the Application : " + applicationName, e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(prepStmt, connection, rs);
+        }
+        return application;
     }
 
 	/**
@@ -4449,6 +4515,7 @@ public class AppMDAO {
 			Timestamp cratedDateStamp = new Timestamp(workflow.getCreatedTime());
 
 			connection = APIMgtDBUtil.getConnection();
+			connection.setAutoCommit(false);
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.setString(1, workflow.getWorkflowReference());
 			prepStmt.setString(2, workflow.getWorkflowType());
@@ -4482,6 +4549,7 @@ public class AppMDAO {
 			Timestamp updatedTimeStamp = new Timestamp(System.currentTimeMillis());
 
 			connection = APIMgtDBUtil.getConnection();
+			connection.setAutoCommit(false);
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.setString(1, workflowDTO.getStatus().toString());
 			prepStmt.setString(2, workflowDTO.getWorkflowDescription());
@@ -5203,6 +5271,7 @@ public class AppMDAO {
 
 		try {
 			connection = APIMgtDBUtil.getConnection();
+			connection.setAutoCommit(false);
 			id = getAPIID(apiId, connection);
 
             //Remove webapp url mapping related entitlement policies from IDP
@@ -5259,6 +5328,7 @@ public class AppMDAO {
 		PreparedStatement ps = null;
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 			String query =
 					"UPDATE " + accessTokenStoreTable +
 							" SET TOKEN_STATE='REVOKED' WHERE ACCESS_TOKEN= ? ";
@@ -5493,6 +5563,7 @@ public class AppMDAO {
 						policyPartialName + " from author : " + policyAuthor);
 			}
 			connection = APIMgtDBUtil.getConnection();
+			connection.setAutoCommit(false);
 			String queryToInsertRecord = "INSERT INTO "
 					+ "APM_ENTITLEMENT_POLICY_PARTIAL(NAME,CONTENT,SHARED,AUTHOR,DESCRIPTION,TENANT_ID)"
 					+ " VALUES (?,?,?,?,?,?)";
@@ -5561,6 +5632,7 @@ public class AppMDAO {
 			}
 
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
             partialAuthor = this.getPolicyPartialAuthor(policyPartialId,connection);
 
 
@@ -5833,6 +5905,7 @@ public class AppMDAO {
 			}
 
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
 
             partialAuthor = this.getPolicyPartialAuthor(policyPartialId,connection);
 
@@ -6618,6 +6691,7 @@ public class AppMDAO {
 
 		try {
 			connection = APIMgtDBUtil.getConnection();
+			connection.setAutoCommit(false);
             prepStmt = connection.prepareStatement(getAppConsumerKeyQuery);
 			prepStmt.setString(1, webApp.getId().getApiName());
 			prepStmt.setInt(2, tenantId);
@@ -6662,6 +6736,7 @@ public class AppMDAO {
 
         try {
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
             prepStmt = connection.prepareStatement(getAppConsumerKeyQuery);
             prepStmt.setString(1, webApp.getId().getApiName());
             prepStmt.setInt(2, tenantId);
@@ -8426,6 +8501,7 @@ public class AppMDAO {
         PreparedStatement ps = null;
         try {
             connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
             PreparedStatement prepStmt = null;
             String query =
                     "UPDATE APM_APP_DEFAULT_VERSION SET PUBLISHED_DEFAULT_APP_VERSION=? " +
@@ -8621,6 +8697,7 @@ public class AppMDAO {
         int apiId = -1;
         try {
             conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
             String getApiQuery =
                     "SELECT APP_ID FROM APM_APP  WHERE APP_PROVIDER = ? AND APP_NAME = ? AND " +
                             "APP_VERSION = ? AND TENANT_ID = ? ";
@@ -8697,6 +8774,7 @@ public class AppMDAO {
 
         try {
             conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
             String getApiQuery =
                     "SELECT APP_ID FROM APM_APP  WHERE APP_PROVIDER = ? AND APP_NAME = ? AND " +
                             "APP_VERSION = ? AND TENANT_ID = ? ";
@@ -9167,6 +9245,7 @@ public class AppMDAO {
         PreparedStatement ps = null;
         try {
             conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
             // This query to insert to the APM_STORE_FAVOURITE_PAGE table
             String sqlQuery =
                     "INSERT INTO APM_STORE_FAVOURITE_PAGE (USER_ID, TENANT_ID_OF_USER, TENANT_ID_OF_STORE) "
@@ -9210,6 +9289,7 @@ public class AppMDAO {
 
         try {
             conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
             ps = conn.prepareStatement(sqlQuery);
             ps.setString(1, username);
             ps.setInt(2, tenantIdOfUser);

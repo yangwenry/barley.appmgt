@@ -61,6 +61,7 @@ import barley.appmgt.api.model.AppDefaultVersion;
 import barley.appmgt.api.model.AppStore;
 import barley.appmgt.api.model.BusinessOwner;
 import barley.appmgt.api.model.Documentation;
+import barley.appmgt.api.model.Documentation.DocumentSourceType;
 import barley.appmgt.api.model.EntitlementPolicyGroup;
 import barley.appmgt.api.model.ExternalAppStorePublisher;
 import barley.appmgt.api.model.FileContent;
@@ -1660,16 +1661,17 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
      * @param contentType content type of the file
      * @throws AppManagementException if failed to add the file
      */
-    public void addFileToDocumentation(WebApp webApp, Documentation documentation, String filename,
+    public void addFileToDocumentation(APIIdentifier apiId, Documentation documentation, String filename,
                                        InputStream content, String contentType) throws AppManagementException {
         if (Documentation.DocumentSourceType.FILE.equals(documentation.getSourceType())) {
             FileContent documentContent = new FileContent();
             documentContent.setContent(content);
             documentContent.setContentType(contentType);
 
-            String filePath = AppManagerUtil.getDocumentationFilePath(webApp.getId(), filename);
-
+            String filePath = AppManagerUtil.getDocumentationFilePath(apiId, filename);
+            WebApp webApp;
             try {
+            	webApp = getAPI(apiId);
                 String visibleRolesList = webApp.getVisibleRoles();
                 String[] visibleRoles = new String[0];
                 if (visibleRolesList != null) {
@@ -1689,6 +1691,21 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         }
     }
 
+    
+    // (추가) 2019.06.04 
+    public void removeFileFromDocumentation(APIIdentifier apiId, DocumentSourceType docSourceType, String filename) 
+    		throws AppManagementException {
+        if (Documentation.DocumentSourceType.FILE.equals(docSourceType)) {
+	        try {
+	        	String docFilePath = AppManagerUtil.getDocumentationFilePath(apiId, filename);	        	
+	        	if(registry.resourceExists(docFilePath)) {
+                    registry.delete(docFilePath);
+                }
+	        } catch (RegistryException e) {
+	            handleException("Failed to remove documentation file", e);
+	        }
+    	}
+    }
 
 
     /**
@@ -3325,9 +3342,50 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         return true;
     }
     
-    @Override
     public float getAverageRating(APIIdentifier apiId) throws AppManagementException {
     	return appMDAO.getAverageRating(apiId);
+    }
+    
+    /**
+     * Function returns true if the specified API already exists in the registry
+     * @param identifier
+     * @return
+     * @throws AppManagementException
+     */
+    public boolean checkIfAPIExists(APIIdentifier identifier) throws AppManagementException {
+        String apiPath = AppManagerUtil.getAPIPath(identifier);
+        try {
+            String tenantDomain = MultitenantUtils
+                    .getTenantDomain(AppManagerUtil.replaceEmailDomainBack(identifier.getProviderName()));
+            Registry registry;
+            if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+                int id = ServiceReferenceHolder.getInstance().getRealmService().getTenantManager()
+                        .getTenantId(tenantDomain);
+                registry = ServiceReferenceHolder.getInstance().getRegistryService().getGovernanceSystemRegistry(id);
+            } else {
+                if (this.tenantDomain != null
+                        && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(this.tenantDomain)) {
+                    registry = ServiceReferenceHolder.getInstance().getRegistryService().getGovernanceUserRegistry(
+                            identifier.getProviderName(), MultitenantConstants.SUPER_TENANT_ID);
+                } else {
+                    if (this.tenantDomain != null
+                            && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(this.tenantDomain)) {
+                        registry = ServiceReferenceHolder.getInstance().getRegistryService().getGovernanceUserRegistry(
+                                identifier.getProviderName(), MultitenantConstants.SUPER_TENANT_ID);
+                    } else {
+                        registry = this.registry;
+                    }
+                }
+            }
+
+            return registry.resourceExists(apiPath);
+        } catch (RegistryException e) {
+            handleException("Failed to get API from : " + apiPath, e);
+            return false;
+        } catch (UserStoreException e) {
+            handleException("Failed to get API from : " + apiPath, e);
+            return false;
+        }
     }
     
 }

@@ -359,6 +359,9 @@ public interface APIConsumer extends APIManager {
      * @throws AppManagementException if failed to applications for given subscriber
      */
     public Application[] getApplications(Subscriber subscriber) throws AppManagementException;
+    
+    // (추가) 2019.06.05
+    public Application getApplicationsByName(String userId , String ApplicationName, String groupId) throws AppManagementException;
 
     /**
      * Add the given app as favourite app for given user.

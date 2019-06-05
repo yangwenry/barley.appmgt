@@ -774,7 +774,9 @@ public abstract class AbstractAPIManager implements APIManager {
 	            Resource resource;
 	            try {
 	                resource = registry.get(apiPath);
-	                GenericArtifactManager artifactManager = new GenericArtifactManager(registry, AppMConstants.API_KEY);
+	                // (수정) 2019.06.05 - configuration을 로드하지 못해서 로직 수정 
+	                //GenericArtifactManager artifactManager = new GenericArtifactManager(registry, AppMConstants.API_KEY);
+	                GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.API_KEY);
 	                GenericArtifact artifact = artifactManager.getGenericArtifact(
 	                        resource.getUUID());
 	                WebApp api = AppManagerUtil.getAPI(artifact, registry);

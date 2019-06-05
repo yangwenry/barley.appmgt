@@ -176,4 +176,20 @@ public class SQLConstants {
             "   APP_ID =? " +
             " GROUP BY " +
             "   APP_ID ";
+    
+    // (추가) 2019.06.05
+    public static final String GET_APPLICATION_BY_NAME_PREFIX =
+            " SELECT " +
+            "   APP.APPLICATION_ID," +
+            "   APP.NAME," +
+            "   APP.SUBSCRIBER_ID," +
+            "   APP.APPLICATION_TIER," +
+            "   APP.CALLBACK_URL," +
+            "   APP.DESCRIPTION, " +
+            "   APP.SUBSCRIBER_ID," +
+            "   APP.APPLICATION_STATUS," +
+            "   SUB.USER_ID" +
+            " FROM " +
+            "   APM_SUBSCRIBER SUB," +
+            "   APM_APPLICATION APP";
 }

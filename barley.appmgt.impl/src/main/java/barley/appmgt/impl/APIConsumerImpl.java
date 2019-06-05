@@ -1799,6 +1799,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     public Application[] getApplications(Subscriber subscriber) throws AppManagementException {
         return appMDAO.getApplications(subscriber);
     }
+    
+    @Override
+    public Application getApplicationsByName(String userId, String ApplicationName, String groupingId) throws AppManagementException {
+        return appMDAO.getApplicationByName(ApplicationName, userId, groupingId);
+    }
 
     @Override
     public void addToFavouriteApps(APIIdentifier identifier, String username, int tenantIdOfUser, int tenantIdOfStore)
