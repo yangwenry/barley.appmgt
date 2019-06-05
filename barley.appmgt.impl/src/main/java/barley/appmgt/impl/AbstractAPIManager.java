@@ -860,7 +860,7 @@ public abstract class AbstractAPIManager implements APIManager {
                 throw new AppManagementException("artifact id is null for : " + apiPath);
             }
             GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
-            return AppManagerUtil.getAPI(apiArtifact, registry,oldIdentifier);
+            return AppManagerUtil.getAPI(apiArtifact, registry, oldIdentifier);
 
         } catch (RegistryException e) {
             handleException("Failed to get WebApp from : " + apiPath, e);

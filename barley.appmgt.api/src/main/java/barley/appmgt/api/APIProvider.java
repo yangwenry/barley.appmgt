@@ -30,6 +30,7 @@ import barley.appmgt.api.model.AppDefaultVersion;
 import barley.appmgt.api.model.AppStore;
 import barley.appmgt.api.model.BusinessOwner;
 import barley.appmgt.api.model.Documentation;
+import barley.appmgt.api.model.DuplicateAPIException;
 import barley.appmgt.api.model.Documentation.DocumentSourceType;
 import barley.appmgt.api.model.EntitlementPolicyGroup;
 import barley.appmgt.api.model.FileContent;
@@ -377,6 +378,9 @@ public interface APIProvider extends APIManager {
      * @throws AppManagementException
      */
     public String createNewVersion(App app)throws AppManagementException;
+    
+    // (추가)
+    public void createNewVersion(WebApp api, String newVersion) throws DuplicateAPIException, AppManagementException;
 
     /**
      * Updates an existing WebApp. This method must not be used to change WebApp status. Implementations should throw an

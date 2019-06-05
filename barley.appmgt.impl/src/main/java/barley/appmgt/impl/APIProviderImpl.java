@@ -62,6 +62,7 @@ import barley.appmgt.api.model.AppStore;
 import barley.appmgt.api.model.BusinessOwner;
 import barley.appmgt.api.model.Documentation;
 import barley.appmgt.api.model.Documentation.DocumentSourceType;
+import barley.appmgt.api.model.DuplicateAPIException;
 import barley.appmgt.api.model.EntitlementPolicyGroup;
 import barley.appmgt.api.model.ExternalAppStorePublisher;
 import barley.appmgt.api.model.FileContent;
@@ -605,6 +606,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         return artifactId;
     }
 
+    @Deprecated
     @Override
     public String createWebApp(WebApp webApp) throws AppManagementException {
 
@@ -647,11 +649,198 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
      * @return app UUID
      * @throws AppManagementException
      */
+    @Deprecated
     @Override
     public String createNewVersion(App app) throws AppManagementException {
         AppRepository appRepository = new DefaultAppRepository(registry);
         String uuid = appRepository.createNewVersion(app);
         return uuid;
+    }
+    
+    // (추가)
+    public void createNewVersion(WebApp api, String newVersion) throws DuplicateAPIException, AppManagementException {
+    	String apiSourcePath = AppManagerUtil.getAPIPath(api.getId());
+
+        // target 경로 만들기 
+        String targetPath = AppMConstants.API_LOCATION + RegistryConstants.PATH_SEPARATOR +
+        		AppManagerUtil.replaceEmailDomain(api.getId().getProviderName()) +
+                            RegistryConstants.PATH_SEPARATOR + api.getId().getApiName() +
+                            RegistryConstants.PATH_SEPARATOR + newVersion +
+                            AppMConstants.API_RESOURCE_NAME;
+
+        boolean transactionCommitted = false;
+        try {
+            if (registry.resourceExists(targetPath)) {
+                throw new DuplicateAPIException("API already exists with version: " + newVersion);
+            }
+            registry.beginTransaction();
+            Resource apiSourceArtifact = registry.get(apiSourcePath);
+            GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.WEBAPP_ASSET_TYPE);
+            GenericArtifact artifact = artifactManager.getGenericArtifact(apiSourceArtifact.getUUID());
+
+            //Create new API version
+            artifact.setId(UUID.randomUUID().toString());
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_VERSION, newVersion);
+
+            //Check the status of the existing api,if its not in 'CREATED' status set
+            //the new api status as "CREATED"
+            String status = artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS);
+            if (!AppMConstants.CREATED.equals(status)) {
+                artifact.setAttribute(AppMConstants.API_OVERVIEW_STATUS, AppMConstants.CREATED);
+            }
+
+            // default version 처리 
+            if(api.isDefaultVersion())  {
+                artifact.setAttribute(AppMConstants.APP_OVERVIEW_MAKE_AS_DEFAULT_VERSION, "true");
+                //Check whether an existing API is set as default version.
+                //String defaultVersion = getDefaultVersion(api.getId());
+                String defaultVersion = getDefaultVersion(api.getId().getApiName(), api.getId().getProviderName(), 
+                				AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
+
+                //if so, change its DefaultAPIVersion attribute to false
+                if(defaultVersion != null)    {
+                	APIIdentifier defaultAPIId = new APIIdentifier(api.getId().getProviderName(), api.getId().getApiName(),
+                                                                   defaultVersion);
+                	updateDefaultAPIInRegistry(defaultAPIId, false);
+                }
+            } else  {
+                artifact.setAttribute(AppMConstants.APP_OVERVIEW_MAKE_AS_DEFAULT_VERSION, "false");
+            }
+            
+            // 썸네일 처리 
+            String thumbUrl = AppMConstants.API_IMAGE_LOCATION + RegistryConstants.PATH_SEPARATOR +
+            		AppManagerUtil.replaceEmailDomain(api.getId().getProviderName()) + RegistryConstants.PATH_SEPARATOR +
+                              api.getId().getApiName() + RegistryConstants.PATH_SEPARATOR +
+                              api.getId().getVersion() + RegistryConstants.PATH_SEPARATOR + AppMConstants.API_ICON_IMAGE;
+            if (registry.resourceExists(thumbUrl)) {
+                Resource oldImage = registry.get(thumbUrl);
+                apiSourceArtifact.getContentStream();
+                APIIdentifier newApiId = new APIIdentifier(api.getId().getProviderName(),
+                                                           api.getId().getApiName(), newVersion);
+                FileContent icon = new FileContent();
+                icon.setContent(oldImage.getContentStream());
+                icon.setContentType(oldImage.getMediaType());
+                artifact.setAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL,
+                                      addResourceFile(AppManagerUtil.getIconPath(newApiId), icon));
+            }
+            
+            //String oldContext =  artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT);
+            
+            // We need to change the context by setting the new version
+            // This is a change that is coming with the context version strategy
+            String contextTemplate = artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT);
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_CONTEXT, contextTemplate.replace("{version}", newVersion));
+
+            artifactManager.addGenericArtifact(artifact);
+            String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
+            
+            // 라이프사이클 추가 
+            artifact.attachLifecycle(AppMConstants.WEBAPP_LIFE_CYCLE);
+            registry.addAssociation(AppManagerUtil.getAPIProviderPath(api.getId()), targetPath,
+            		AppMConstants.PROVIDER_ASSOCIATION);
+            // 권한 추가 
+            String roles=artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES);
+            String[] rolesSet = new String[0];
+            if (roles != null) {
+                rolesSet = roles.split(",");
+            }
+            AppManagerUtil.setResourcePermissions(api.getId().getProviderName(),
+            		artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY), rolesSet, artifactPath);
+            //Here we have to set permission specifically to image icon we added
+            String iconPath = artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL);
+            if (iconPath != null && iconPath.lastIndexOf("/appmgt") != -1) {
+                iconPath = iconPath.substring(iconPath.lastIndexOf("/appmgt"));
+                AppManagerUtil.copyResourcePermissions(api.getId().getProviderName(), thumbUrl, iconPath);
+            }
+            
+            // tag 처리 
+            barley.registry.core.Tag[] tags = registry.getTags(apiSourcePath);
+            if (tags != null) {
+                for (barley.registry.core.Tag tag : tags) {
+                    registry.applyTag(targetPath, tag.getTagName());
+                }
+            }
+            
+            // 저장된 app 가져오기 
+            APIIdentifier newId = new APIIdentifier(api.getId().getProviderName(),
+                                                    api.getId().getApiName(), newVersion);
+            WebApp newAPI = getAPI(newId, api.getId());
+
+            if(api.isDefaultVersion()){
+                newAPI.setDefaultVersion(true);
+            }else{
+                newAPI.setDefaultVersion(false);
+            }
+            
+            // old artifact 가져와서 변경 
+            GenericArtifact oldArtifact = artifactManager.getGenericArtifact(
+                    apiSourceArtifact.getUUID());
+            oldArtifact.setAttribute(AppMConstants.API_OVERVIEW_IS_LATEST, "false");
+            artifactManager.updateGenericArtifact(oldArtifact);
+
+            String tenantDomain = MultitenantUtils.getTenantDomain(AppManagerUtil.replaceEmailDomainBack(api.getId().getProviderName()));
+            try {
+                tenantId = ServiceReferenceHolder.getInstance().getRealmService().getTenantManager().getTenantId(tenantDomain);
+            } catch (UserStoreException e) {
+                throw new AppManagementException("Error in retrieving Tenant Information while adding api :"
+                        +api.getId().getApiName(),e);
+            }
+
+            // dao 처리 
+            appMDAO.addWebApp(newAPI);
+            
+            // 문서 처리
+            copyWebappDocumentations(api, newVersion);
+            
+            registry.commitTransaction();
+            transactionCommitted = true;
+
+            if(log.isDebugEnabled()) {
+                String logMessage = "Successfully created new version : " + newVersion + " of : " + api.getId().getApiName();
+                log.debug(logMessage);
+            }
+        } catch (Exception e) {
+            try {
+                registry.rollbackTransaction();
+            } catch (RegistryException re) {
+                handleException("Error while rolling back the transaction for API: " + api.getId(), re);
+            }
+            String msg = "Failed to create new version : " + newVersion + " of : " + api.getId().getApiName();
+            handleException(msg, e);
+        } finally {
+            try {
+                if (!transactionCommitted) {
+                    registry.rollbackTransaction();
+                }
+            } catch (RegistryException ex) {
+                handleException("Error while rolling back the transaction for API: " + api.getId(), ex);
+            }
+        }
+        
+    }
+    
+    public void updateDefaultAPIInRegistry(APIIdentifier apiIdentifier,boolean value) throws AppManagementException {
+        try {
+
+            GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry,
+                    AppMConstants.WEBAPP_ASSET_TYPE);
+            String defaultAPIPath = AppMConstants.API_LOCATION + RegistryConstants.PATH_SEPARATOR +
+            		AppManagerUtil.replaceEmailDomain(apiIdentifier.getProviderName()) +
+                    RegistryConstants.PATH_SEPARATOR + apiIdentifier.getApiName() +
+                    RegistryConstants.PATH_SEPARATOR + apiIdentifier.getVersion() +
+                    AppMConstants.API_RESOURCE_NAME;
+
+            Resource defaultAPISourceArtifact = registry.get(defaultAPIPath);
+            GenericArtifact defaultAPIArtifact = artifactManager.getGenericArtifact(
+                    defaultAPISourceArtifact.getUUID());
+            defaultAPIArtifact.setAttribute(AppMConstants.APP_OVERVIEW_MAKE_AS_DEFAULT_VERSION, String.valueOf(value));
+            artifactManager.updateGenericArtifact(defaultAPIArtifact);
+
+        } catch (RegistryException e) {
+            String msg = "Failed to update default API version : " + apiIdentifier.getVersion() + " of : "
+                    + apiIdentifier.getApiName();
+            handleException(msg, e);
+        }
     }
 
     /**

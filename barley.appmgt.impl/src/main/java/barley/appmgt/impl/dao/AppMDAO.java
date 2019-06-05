@@ -5237,6 +5237,10 @@ public class AppMDAO {
 		*/
 		String getAPIQuery = SQLConstants.GET_APP_ID_SQL;
 		try {
+			if(connection == null) {
+				connection = APIMgtDBUtil.getConnection();
+			}
+			
 			prepStmt = connection.prepareStatement(getAPIQuery);
 			prepStmt.setString(1, AppManagerUtil.replaceEmailDomainBack(apiId.getProviderName()));
 			prepStmt.setString(2, apiId.getApiName());

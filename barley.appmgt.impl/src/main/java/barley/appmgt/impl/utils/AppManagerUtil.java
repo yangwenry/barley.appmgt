@@ -2115,13 +2115,17 @@ public final class AppManagerUtil {
 			String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
 			APIIdentifier apiId = new APIIdentifier(providerName, apiName, apiVersion);
 			api = new WebApp(apiId);
+			int oldApiId = AppMDAO.getAPIID(oldId, null);
+            if (oldApiId == -1) {
+                return null;
+            }
 			// set rating
 			// (수정)
 			String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
 //			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
 //			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
 //			api.setRating(res.floatValue());
-			api.setRating(getAverageRating(apiId));
+			api.setRating(getAverageRating(oldApiId));
 			
 			// set description
 			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
@@ -2154,6 +2158,10 @@ public final class AppManagerUtil {
 			api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
 
 			api.setResponseCache(artifact.getAttribute(AppMConstants.API_OVERVIEW_RESPONSE_CACHING));
+			
+			api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));
+			api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
+            api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));
 
             api.setSsoEnabled(artifact.getAttribute("sso_enableSso"));
             api.setUUID(artifact.getId());
