@@ -87,13 +87,16 @@ public abstract class AbstractAPIManager implements APIManager {
     protected String tenantDomain;
     protected String username;
     protected AppRepository appRepository;
+    // (수정) 로컬변수를 멤버변수로 변경 
+    protected UserRegistry configRegistry;
 
     public AbstractAPIManager() throws AppManagementException {
     }
 
     public AbstractAPIManager(String username) throws AppManagementException {
         appMDAO = new AppMDAO();
-        UserRegistry configRegistry;
+        // (수정) 멤버변수로 변경 
+        //UserRegistry configRegistry;
         try {
             if (username == null) {
                 this.registry = ServiceReferenceHolder.getInstance().
