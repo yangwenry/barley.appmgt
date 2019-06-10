@@ -132,6 +132,7 @@ import barley.governance.api.generic.GenericArtifactManager;
 import barley.governance.api.generic.dataobjects.GenericArtifact;
 import barley.governance.api.util.GovernanceConstants;
 import barley.governance.api.util.GovernanceUtils;
+import barley.governance.lcm.util.CommonUtil;
 import barley.identity.oauth.config.OAuthServerConfiguration;
 import barley.registry.core.ActionConstants;
 import barley.registry.core.Registry;
@@ -4231,5 +4232,9 @@ public final class AppManagerUtil {
     public static float getAverageRating(int apiId) throws AppManagementException {
     	AppMDAO appMDAO = new AppMDAO();
         return appMDAO.getAverageRating(apiId);
+    }
+    
+    public static String getFullLifeCycleData(Registry registry) throws XMLStreamException, RegistryException {
+        return CommonUtil.getLifecycleConfiguration(AppMConstants.WEBAPP_LIFE_CYCLE, registry);
     }
 }
