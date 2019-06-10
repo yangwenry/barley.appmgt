@@ -706,7 +706,9 @@ public class AppMDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				APIInfoDTO infoDTO = new APIInfoDTO();
-				infoDTO.setProviderId(AppManagerUtil.replaceEmailDomain(rs.getString("APP_PROVIDER")));
+				// (수정)
+				//infoDTO.setProviderId(AppManagerUtil.replaceEmailDomain(rs.getString("APP_PROVIDER")));
+				infoDTO.setProviderId(AppManagerUtil.replaceEmailDomainBack(rs.getString("APP_PROVIDER")));
 				infoDTO.setApiName(rs.getString("APP_NAME"));
 				infoDTO.setVersion(rs.getString("APP_VERSION"));
 				apiInfoDTOList.add(infoDTO);
@@ -1997,9 +1999,17 @@ public class AppMDAO {
 			}
 
             while (result.next()) {
+            	// (수정)
+            	/*
                 APIIdentifier apiIdentifier =
                         new APIIdentifier(
                                 AppManagerUtil.replaceEmailDomain(result.getString("APP_PROVIDER")),
+                                result.getString("APP_NAME"),
+                                result.getString("APP_VERSION"));
+                                */
+            	APIIdentifier apiIdentifier =
+                        new APIIdentifier(
+                                AppManagerUtil.replaceEmailDomainBack(result.getString("APP_PROVIDER")),
                                 result.getString("APP_NAME"),
                                 result.getString("APP_VERSION"));
 
@@ -2117,9 +2127,11 @@ public class AppMDAO {
 			                                                                                     100);
 
 			while (result.next()) {
+				// (수정)
 				APIIdentifier apiIdentifier =
 				                              new APIIdentifier(
-				                                                AppManagerUtil.replaceEmailDomain(result.getString("APP_PROVIDER")),
+				                                                //AppManagerUtil.replaceEmailDomain(result.getString("APP_PROVIDER")),
+				                            		  			AppManagerUtil.replaceEmailDomainBack(result.getString("APP_PROVIDER")),
 				                                                result.getString("APP_NAME"),
 				                                                result.getString("APP_VERSION")
                                                                 );
