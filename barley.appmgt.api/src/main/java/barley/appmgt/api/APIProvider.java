@@ -773,6 +773,10 @@ public interface APIProvider extends APIManager {
      * @throws AppManagementException
      */
     public void changeLifeCycleStatus(String appType, String appId, String action) throws AppManagementException;
+    
+    
+    // (추가) 2019.06.10 
+    public String getAPILifeCycleStatus(APIIdentifier apiIdentifier) throws AppManagementException;
 
     /**
      * Get allowed lifecycle actions to perform on a given application
@@ -886,4 +890,6 @@ public interface APIProvider extends APIManager {
     // (추가) 2019.06.04
     public boolean checkIfAPIExists(APIIdentifier identifier) throws AppManagementException;
     
+    // (추가) 2019.06.04
+    public String getLifecycleConfiguration(String tenantDomain) throws AppManagementException;
 }

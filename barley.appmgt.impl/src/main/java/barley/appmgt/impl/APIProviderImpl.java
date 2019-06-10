@@ -3577,4 +3577,47 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         }
     }
     
+    // (추가) 2019.06.10 
+    @Override
+    public String getAPILifeCycleStatus(APIIdentifier apiIdentifier) throws AppManagementException {
+        try {
+            PrivilegedBarleyContext.startTenantFlow();
+            PrivilegedBarleyContext.getThreadLocalCarbonContext().setUsername(this.username);
+            PrivilegedBarleyContext.getThreadLocalCarbonContext().setTenantDomain(this.tenantDomain, true);
+            String appArtifactPath = AppManagerUtil.getAPIPath(apiIdentifier);
+            Resource appArtifactResource = registry.get(appArtifactPath);
+            return appArtifactResource.getProperty(AppMConstants.WEB_APP_LIFECYCLE_STATUS);
+        } catch (RegistryException e) {
+        	handleException("Failed to get the life cycle status : " + e.getMessage(), e);
+            return null;
+        } finally {
+            PrivilegedBarleyContext.endTenantFlow();
+        }
+    }
+    
+    // (추가) 2019.06.10
+    public String getLifecycleConfiguration(String tenantDomain) throws AppManagementException {
+        boolean isTenantFlowStarted = false;
+        try {
+            if (tenantDomain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+                isTenantFlowStarted = true;
+                PrivilegedBarleyContext.startTenantFlow();
+                PrivilegedBarleyContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
+            }
+             return AppManagerUtil.getFullLifeCycleData(configRegistry);
+        } catch (XMLStreamException e) {
+            handleException("Parsing error while getting the lifecycle configuration content.", e);
+            return null;
+        } catch (RegistryException e) {
+            handleException("Registry error while getting the lifecycle configuration content.", e);
+            return null;
+        } finally {
+            if (isTenantFlowStarted) {
+                PrivilegedBarleyContext.endTenantFlow();
+            }
+        }
+
+    }
+    
+    
 }
