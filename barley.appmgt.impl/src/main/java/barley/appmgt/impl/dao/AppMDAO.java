@@ -4268,7 +4268,9 @@ public class AppMDAO {
 		Connection conn = null;
 		try {
 			conn = APIMgtDBUtil.getConnection();
+			conn.setAutoCommit(false);
 			recordAPILifeCycleEvent(identifier, oldStatus.toString(), newStatus.toString(), userId, conn);
+			conn.commit();
 		} catch (SQLException e) {
 			handleException("Failed to record WebApp state change", e);
 		} finally {
@@ -4349,7 +4351,7 @@ public class AppMDAO {
 			ps.executeUpdate();
 
 			// finally commit transaction
-			conn.commit();
+//			conn.commit();
 
 		} catch (SQLException e) {
 			if (conn != null) {

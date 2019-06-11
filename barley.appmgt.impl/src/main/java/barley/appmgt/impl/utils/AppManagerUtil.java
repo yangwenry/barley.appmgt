@@ -4237,4 +4237,28 @@ public final class AppManagerUtil {
     public static String getFullLifeCycleData(Registry registry) throws XMLStreamException, RegistryException {
         return CommonUtil.getLifecycleConfiguration(AppMConstants.WEBAPP_LIFE_CYCLE, registry);
     }
+    
+    /**
+     * Util method to return the artifact from a registry resource path
+     * @param apiIdentifier
+     * @param registry
+     * @return
+     * @throws APIManagementException
+     */
+    public static GenericArtifact getAPIArtifact(APIIdentifier apiIdentifier, Registry registry)
+            throws AppManagementException {
+        String apiPath = AppManagerUtil.getAPIPath(apiIdentifier);
+        GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.API_KEY);
+        try {
+            Resource apiResource = registry.get(apiPath);
+            String artifactId = apiResource.getUUID();
+            if (artifactId == null) {
+                throw new AppManagementException("artifact id is null for : " + apiPath);
+            }
+            return artifactManager.getGenericArtifact(artifactId);
+        } catch (RegistryException e) {
+            handleException("Failed to get API artifact from : " + apiPath, e);
+            return null;
+        }
+    }
 }

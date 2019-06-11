@@ -613,7 +613,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         final String appName = webApp.getId().getApiName();
         try {
             GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry,
-                    AppMConstants.WEBAPP_ASSET_TYPE);
+                    AppMConstants.API_KEY);
             // (수정) 2018.02.19 검색엔진이 동작하지 않으므로 attribute검색이 아닌 filter 검색으로 변경해야 한다. 
             /*
             Map<String, List<String>> attributeListMap = new HashMap<String, List<String>>();
@@ -675,7 +675,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             }
             registry.beginTransaction();
             Resource apiSourceArtifact = registry.get(apiSourcePath);
-            GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.WEBAPP_ASSET_TYPE);
+            GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.API_KEY);
             GenericArtifact artifact = artifactManager.getGenericArtifact(apiSourceArtifact.getUUID());
 
             //Create new API version
@@ -823,7 +823,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         try {
 
             GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry,
-                    AppMConstants.WEBAPP_ASSET_TYPE);
+                    AppMConstants.API_KEY);
             String defaultAPIPath = AppMConstants.API_LOCATION + RegistryConstants.PATH_SEPARATOR +
             		AppManagerUtil.replaceEmailDomain(apiIdentifier.getProviderName()) +
                     RegistryConstants.PATH_SEPARATOR + apiIdentifier.getApiName() +
@@ -855,7 +855,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         WebApp webApp = null;
 
         try {
-            GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.WEBAPP_ASSET_TYPE);
+            GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.API_KEY);
             artifact = artifactManager.getGenericArtifact(uuid);
             if (artifact == null) {
                 handleResourceNotFoundException("Webapp does not exist with app id :" + uuid);
@@ -902,7 +902,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             Map<String, List<String>> attributeListMap = new HashMap<String, List<String>>();
 
             artifactManager = AppManagerUtil.getArtifactManager(registry,
-                    AppMConstants.WEBAPP_ASSET_TYPE);
+                    AppMConstants.API_KEY);
 
             attributeListMap.put(AppMConstants.API_OVERVIEW_NAME, new ArrayList<String>() {{
                 add(webAppName);
@@ -1334,7 +1334,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                 if (visibleRolesList != null) {
                     visibleRoles = visibleRolesList.split(",");
                 }
-                AppManagerUtil.setResourcePermissions(api.getId().getProviderName(), api.getVisibility(),visibleRoles,artifactPath);
+                AppManagerUtil.setResourcePermissions(api.getId().getProviderName(), api.getVisibility(), visibleRoles, artifactPath);
             }
             registry.commitTransaction();
         } catch (Exception e) {
@@ -1435,17 +1435,15 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         if (!currentStatus.equals(status)) {
             api.setStatus(status);
             try {
-            	// (주석해제) 2018.03.13 - 왜 주석이 되어있는지 이유를 알 수 없다. 굳이 주석할 이유가 없다.
-            	updateApiArtifact(api, false, false);
-            	appMDAO.recordAPILifeCycleEvent(api.getId(), currentStatus, status, userId);
-
-                APIStatusObserverList observerList = APIStatusObserverList.getInstance();
+            	APIStatusObserverList observerList = APIStatusObserverList.getInstance();
                 observerList.notifyObservers(currentStatus, status, api);
                 AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
                         getAPIManagerConfigurationService().getAPIManagerConfiguration();
                 String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
                 if (!api.isAdvertiseOnly()) { // no need to publish to gateway if webb is only for advertising
-                    if (updateGatewayConfig) {
+                	// (수정) 2019.06.10 - 게이트웨이 타입 체크 
+                    //if (updateGatewayConfig) {
+                	if (AppMConstants.API_GATEWAY_TYPE_SYNAPSE.equalsIgnoreCase(gatewayType) && updateGatewayConfig) {
 
                         if (api.isDefaultVersion()) {
                             if (status.equals(APIStatus.UNPUBLISHED)) {
@@ -1477,6 +1475,10 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                         }
                     }
                 }
+                
+                // (주석해제) 2018.03.13 - 왜 주석이 되어있는지 이유를 알 수 없다. 굳이 주석할 이유가 없다.
+            	updateApiArtifact(api, false, false);
+            	appMDAO.recordAPILifeCycleEvent(api.getId(), currentStatus, status, userId);
 
             } catch (AppManagementException e) {
             	handleException("Error occured in the status change : " + api.getId().getApiName() , e);
@@ -2424,7 +2426,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 				PrivilegedBarleyContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
 			}
 			PrivilegedBarleyContext.getThreadLocalCarbonContext().setUsername(userName);
-			GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.WEBAPP_ASSET_TYPE);
+			GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry, AppMConstants.API_KEY);
 			if (artifactManager != null) {
 				if ("Title".equalsIgnoreCase(searchType)) {
 					// 한글명 검색을 위해 필드추가  
@@ -2968,7 +2970,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 
             //Get system registry for logged in tenant domain
             Registry systemRegistry = ServiceReferenceHolder.getInstance().
-                    getRegistryService().getGovernanceSystemRegistry(tenantId);
+                    getRegistryService().getGovernanceSystemRegistry(tenantId);             
             GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(systemRegistry, appType);
             GenericArtifact appArtifact = artifactManager.getGenericArtifact(appId);
             String resourcePath = RegistryUtils.getAbsolutePath(RegistryContext.getBaseInstance(),
@@ -3004,7 +3006,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                 }
             } else {
                 handleResourceNotFoundException("Failed to get " + appType + " artifact corresponding to artifactId " +
-                        appId + ". Artifact does not exist");
+                		appId + ". Artifact does not exist");
             }
         } catch (UserStoreException e) {
             handleException("Error occurred while performing lifecycle action : " + lifecycleAction + " on " + appType +
@@ -3015,6 +3017,11 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         } finally {
             PrivilegedBarleyContext.endTenantFlow();
         }
+    }
+    
+    public void changeLifeCycleStatus(String appType, APIIdentifier apiIdentifier, String lifecycleAction) throws AppManagementException {
+    	GenericArtifact appArtifact = AppManagerUtil.getAPIArtifact(apiIdentifier, registry);
+    	changeLifeCycleStatus(appType, appArtifact.getId(), lifecycleAction);
     }
 
     /**

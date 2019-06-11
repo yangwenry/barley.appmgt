@@ -505,7 +505,7 @@ public class APIProviderImplTest extends BaseTestCase {
     	
     	// changeApiStatus를 실행하여 dao쪽에도 데이터를 입력 후 라이프사이클 상태값도 따로 변경해야한다.
     	String action = LifecycleActions.SUBMIT_FOR_REVIEW;
-    	provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, resourceId, action);
+    	provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, apiId, action);
     }
     
     public void testLifecycleConfiguration() throws RegistryException, XMLStreamException {

@@ -774,6 +774,9 @@ public interface APIProvider extends APIManager {
      */
     public void changeLifeCycleStatus(String appType, String appId, String action) throws AppManagementException;
     
+    // (추가) 2019.06.10 
+    public void changeLifeCycleStatus(String appType, APIIdentifier apiIdentifier, String action) throws AppManagementException;
+    
     
     // (추가) 2019.06.10 
     public String getAPILifeCycleStatus(APIIdentifier apiIdentifier) throws AppManagementException;
