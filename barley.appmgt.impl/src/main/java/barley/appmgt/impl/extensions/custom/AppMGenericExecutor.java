@@ -106,7 +106,7 @@ public class AppMGenericExecutor implements Execution {
             WebApp app = AppManagerUtil.getAPI(webAppArtifact, registry);            
             APIProvider apiProvider = APIManagerFactory.getInstance().getAPIProvider(AppManagerUtil.replaceEmailDomainBack(providerName));
             APIStatus status = AppManagerUtil.getApiStatus(toState);
-            apiProvider.changeAPIStatus(app, status, providerName, false);
+            apiProvider.changeAPIStatus(app, status, providerName, true);
             
             // (추가) 2019.06.11 - requestContext에 변경된 resource를 담지 않으면 저장되지 않는다. 따라서 로직을 추가하여 반영할 리소스를 context에 추가한다.
             APIIdentifier apiIdentifier = new APIIdentifier(providerName, appName, appVersion);

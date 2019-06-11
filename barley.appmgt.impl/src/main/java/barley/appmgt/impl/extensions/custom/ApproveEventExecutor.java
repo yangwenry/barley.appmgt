@@ -26,6 +26,7 @@ import org.wso2.jaggery.scxml.threading.JaggeryThreadLocalMediator;
 import org.wso2.jaggery.scxml.threading.contexts.JaggeryThreadContext;
 
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.impl.AppMConstants;
 import barley.appmgt.impl.dao.AppMDAO;
 import barley.appmgt.impl.dto.PublishApplicationWorkflowDTO;
@@ -45,6 +46,7 @@ import barley.governance.api.generic.dataobjects.GenericArtifact;
 import barley.governance.api.util.GovernanceUtils;
 import barley.governance.registry.extensions.interfaces.Execution;
 import barley.registry.core.Registry;
+import barley.registry.core.Resource;
 import barley.registry.core.exceptions.RegistryException;
 import barley.registry.core.internal.RegistryCoreServiceComponent;
 import barley.registry.core.jdbc.handlers.RequestContext;
@@ -155,49 +157,56 @@ public class ApproveEventExecutor implements Execution
                         log.error("Could not execute Application Publish Workflow", e);
                         return false;
                     }
-
-                }catch(AppManagementException e){
+                    
+                } catch(AppManagementException e){
                     log.error("Error while retrieving workflow details from database");
                     return false;
                 }
-            }catch (RegistryException e){
+                
+                // (추가) 2019.06.11 - requestContext에 변경된 resource를 담지 않으면 저장되지 않는다. 따라서 로직을 추가하여 반영할 리소스를 context에 추가한다.
+                APIIdentifier apiIdentifier = new APIIdentifier(appProvider, appName, appVersion);
+    	        String appPath = AppManagerUtil.getAPIPath(apiIdentifier);
+    	        Resource appResource = registry.get(appPath);
+    	        requestContext.setResource(appResource);
+    	        
+            } catch (RegistryException e){
                 log.error("Error while loading artifact details from registry");
                 return false;
             }
         }
 
-            JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();
+        JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();
 
-            //The path of the asset
-            String path=requestContext.getResource().getPath();
+        //The path of the asset
+        String path=requestContext.getResource().getPath();
 
-            //Used to inject asset specific information to a permission instruction
+        //Used to inject asset specific information to a permission instruction
 
-            DynamicValueInjector dynamicValueInjector=new DynamicValueInjector();
+        DynamicValueInjector dynamicValueInjector=new DynamicValueInjector();
 
-            boolean isEmailEnabled = Boolean.parseBoolean(BarleyUtils.getServerConfiguration().getFirstProperty("EnableEmailUserName"));
-            String provider = requestContext.getResource().getAuthorUserName();
-//        TODO: Check email enabled case and remove or uncomment the following
+        boolean isEmailEnabled = Boolean.parseBoolean(BarleyUtils.getServerConfiguration().getFirstProperty("EnableEmailUserName"));
+        String provider = requestContext.getResource().getAuthorUserName();
+//      TODO: Check email enabled case and remove or uncomment the following
 //            if (provider != null && !isEmailEnabled && provider.contains("-AT-")) {
 //                provider = provider.substring(0, provider.indexOf("-AT-"));
 //
 //            }
 
-            //Set the asset author key
-            dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY, provider);
+        //Set the asset author key
+        dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY, provider);
 
-            //Execute all permissions for the current state
-            //this.stateExecutor.executePermissions(this.userRealm,dynamicValueInjector,path,s2);
+        //Execute all permissions for the current state
+        //this.stateExecutor.executePermissions(this.userRealm,dynamicValueInjector,path,s2);
 
-            jaggeryThreadContext.setFromState(s);
-            jaggeryThreadContext.setToState(s2);
-            jaggeryThreadContext.setAssetPath(path);
-            jaggeryThreadContext.setDynamicValueInjector(dynamicValueInjector);
-            // (임시주석)
-            //jaggeryThreadContext.setUserRealm(userRealm);
-            jaggeryThreadContext.setStateExecutor(stateExecutor);
+        jaggeryThreadContext.setFromState(s);
+        jaggeryThreadContext.setToState(s2);
+        jaggeryThreadContext.setAssetPath(path);
+        jaggeryThreadContext.setDynamicValueInjector(dynamicValueInjector);
+        // (임시주석)
+        //jaggeryThreadContext.setUserRealm(userRealm);
+        jaggeryThreadContext.setStateExecutor(stateExecutor);
 
-            JaggeryThreadLocalMediator.set(jaggeryThreadContext);
+        JaggeryThreadLocalMediator.set(jaggeryThreadContext);
 
         return true;
     }
