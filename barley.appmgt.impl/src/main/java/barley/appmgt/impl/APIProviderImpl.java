@@ -1279,7 +1279,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 
         //Validate Transports
         validateAndSetTransports(api);
-
+        boolean transactionCommitted = false;
         try {
         	registry.beginTransaction();
             String apiArtifactId = registry.get(AppManagerUtil.getAPIPath(api.getId())).getUUID();
@@ -1337,6 +1337,8 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                 AppManagerUtil.setResourcePermissions(api.getId().getProviderName(), api.getVisibility(), visibleRoles, artifactPath);
             }
             registry.commitTransaction();
+            transactionCommitted = true;
+            
         } catch (Exception e) {
         	 try {
                  registry.rollbackTransaction();
@@ -1346,6 +1348,14 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
              }
              handleException("Error while performing registry transaction operation", e);
 
+        } finally {
+            try {
+                if (!transactionCommitted) {
+                    registry.rollbackTransaction();
+                }
+            } catch (RegistryException ex) {
+                handleException("Error occurred while rolling back the transaction.", ex);
+            }
         }
     }
 

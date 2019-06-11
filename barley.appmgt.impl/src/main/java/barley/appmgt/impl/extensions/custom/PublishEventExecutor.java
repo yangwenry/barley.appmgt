@@ -45,6 +45,7 @@ import barley.governance.api.generic.dataobjects.GenericArtifact;
 import barley.governance.api.util.GovernanceUtils;
 import barley.governance.registry.extensions.interfaces.Execution;
 import barley.registry.core.Registry;
+import barley.registry.core.Resource;
 import barley.registry.core.exceptions.RegistryException;
 import barley.registry.core.internal.RegistryCoreServiceComponent;
 import barley.registry.core.jdbc.handlers.RequestContext;
@@ -96,12 +97,12 @@ public class PublishEventExecutor implements Execution
 
         AppMDAO appMDAO;
         APIIdentifier apiIdentifier;
-
+        Registry registry = null;
         try{
             //Get the registry
         	// (수정) 2018.03.13 - APPServiceHolder로 변경 
 //            Registry registry = RegistryCoreServiceComponent.getRegistryService().getGovernanceUserRegistry(CurrentSession.getUser(), CurrentSession.getTenantId());
-        	Registry registry = ServiceReferenceHolder.getInstance().getRegistryService().getGovernanceUserRegistry(CurrentSession.getUser(), CurrentSession.getTenantId());
+        	registry = ServiceReferenceHolder.getInstance().getRegistryService().getGovernanceUserRegistry(CurrentSession.getUser(), CurrentSession.getTenantId());
             
             //Load Gov Artifacts
             GovernanceUtils.loadGovernanceArtifacts((UserRegistry) registry);
@@ -172,6 +173,17 @@ public class PublishEventExecutor implements Execution
                 log.error("Could not remove subscription when Unpublishing", e);
                 return false;
             }
+        }
+        
+        // (추가) 2019.06.11 - requestContext에 변경된 resource를 담지 않으면 저장되지 않는다. 따라서 로직을 추가하여 반영할 리소스를 context에 추가한다.
+        try {
+	        apiIdentifier = new APIIdentifier(appProvider, appName, appVersion);
+	        String appPath = AppManagerUtil.getAPIPath(apiIdentifier);
+	        Resource appResource = registry.get(appPath);
+	        requestContext.setResource(appResource);
+        } catch(RegistryException e) {
+        	log.error("Could not set requestContext for Publish Event Executor", e);
+        	return false;
         }
 
         JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();

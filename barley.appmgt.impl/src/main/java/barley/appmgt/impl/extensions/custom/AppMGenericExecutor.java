@@ -29,8 +29,16 @@ import org.wso2.jaggery.scxml.management.StateExecutor;
 import org.wso2.jaggery.scxml.threading.JaggeryThreadLocalMediator;
 import org.wso2.jaggery.scxml.threading.contexts.JaggeryThreadContext;
 
+import barley.appmgt.api.APIProvider;
+import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.model.APIIdentifier;
+import barley.appmgt.api.model.APIStatus;
+import barley.appmgt.api.model.WebApp;
+import barley.appmgt.impl.APIManagerFactory;
 import barley.appmgt.impl.AppMConstants;
 import barley.appmgt.impl.service.ServiceReferenceHolder;
+import barley.appmgt.impl.utils.AppManagerUtil;
+import barley.core.context.BarleyContext;
 import barley.core.context.PrivilegedBarleyContext;
 import barley.core.utils.BarleyUtils;
 import barley.governance.api.generic.GenericArtifactManager;
@@ -38,6 +46,7 @@ import barley.governance.api.generic.dataobjects.GenericArtifact;
 import barley.governance.api.util.GovernanceUtils;
 import barley.governance.registry.extensions.interfaces.Execution;
 import barley.registry.core.Registry;
+import barley.registry.core.Resource;
 import barley.registry.core.exceptions.RegistryException;
 import barley.registry.core.internal.RegistryCoreServiceComponent;
 import barley.registry.core.jdbc.handlers.RequestContext;
@@ -88,11 +97,28 @@ public class AppMGenericExecutor implements Execution {
             }
             GenericArtifactManager artifactManager = new GenericArtifactManager(registry, assetType);
 
+            // (추가) 2019.06.11
             GenericArtifact webAppArtifact = artifactManager.getGenericArtifact(resourceID);
             providerName = webAppArtifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER);
+            String appName = webAppArtifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
+            String appVersion = webAppArtifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
+            
+            WebApp app = AppManagerUtil.getAPI(webAppArtifact, registry);            
+            APIProvider apiProvider = APIManagerFactory.getInstance().getAPIProvider(AppManagerUtil.replaceEmailDomainBack(providerName));
+            APIStatus status = AppManagerUtil.getApiStatus(toState);
+            apiProvider.changeAPIStatus(app, status, providerName, false);
+            
+            // (추가) 2019.06.11 - requestContext에 변경된 resource를 담지 않으면 저장되지 않는다. 따라서 로직을 추가하여 반영할 리소스를 context에 추가한다.
+            APIIdentifier apiIdentifier = new APIIdentifier(providerName, appName, appVersion);
+	        String appPath = AppManagerUtil.getAPIPath(apiIdentifier);
+	        Resource appResource = registry.get(appPath);
+	        requestContext.setResource(appResource);
+	        
         } catch (RegistryException e) {
            log.error("Error occurred while obtaining provider details for webapp "+ resourceID);
-        }
+        } catch (AppManagementException e) {
+        	log.error("Error occurred while obtaining apiProvider");
+		}
         
         JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();
 

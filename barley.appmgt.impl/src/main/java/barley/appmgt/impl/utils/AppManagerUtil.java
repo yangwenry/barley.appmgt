@@ -1227,7 +1227,7 @@ public final class AppManagerUtil {
 	public static APIStatus getApiStatus(String status) throws AppManagementException {
 		APIStatus apiStatus = null;
 		for (APIStatus aStatus : APIStatus.values()) {
-			if (aStatus.getStatus().equals(status)) {
+			if (aStatus.getStatus().equals(status.toUpperCase())) {
 				apiStatus = aStatus;
 			}
 		}
