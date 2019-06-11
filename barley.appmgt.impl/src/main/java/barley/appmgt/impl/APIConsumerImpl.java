@@ -1388,8 +1388,9 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
             }
 
             int subscriptionId = -1;
-            boolean shouldUpdate = false;
 
+            /* (주석) 2019.06.11 - 구독이 있으면 예외를 발생시키도록 변경 
+            boolean shouldUpdate = false;
             Subscription subscription = appMDAO.getSubscription(identifier, applicationId, subscriptionType);
 
             if (subscription != null) {
@@ -1407,6 +1408,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                 subscriptionId = appMDAO.addSubscription(identifier, subscriptionType, api.getContext(),
                         applicationId, AppMConstants.SubscriptionStatus.ON_HOLD, trustedIdps);
             }
+            */
+            subscriptionId = appMDAO.addSubscription(identifier, subscriptionType, api.getContext(), applicationId, AppMConstants.SubscriptionStatus.ON_HOLD, trustedIdps);
 
             // Execute workflow.
             try {

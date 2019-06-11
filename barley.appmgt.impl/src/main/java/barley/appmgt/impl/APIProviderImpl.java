@@ -2287,6 +2287,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             String inSequence = appArtifact.getAttribute(AppMConstants.API_OVERVIEW_INSEQUENCE);
             String outSequence = appArtifact.getAttribute(AppMConstants.API_OVERVIEW_OUTSEQUENCE);
 
+            // 연관관계 찾아서 삭제 
             //Delete the dependencies associated  with the api artifact
             GovernanceArtifact[] dependenciesArray = appArtifact.getDependencies();
 

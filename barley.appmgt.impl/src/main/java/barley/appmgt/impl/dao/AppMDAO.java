@@ -66,6 +66,7 @@ import org.mozilla.javascript.NativeObject;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.EntitlementService;
+import barley.appmgt.api.SubscriptionAlreadyExistingException;
 import barley.appmgt.api.dto.UserApplicationAPIUsage;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIKey;
@@ -1471,6 +1472,39 @@ public class AppMDAO {
         try {
             conn = APIMgtDBUtil.getConnection();
             conn.setAutoCommit(false);
+            String checkDuplicateQuery = 
+            		"SELECT SUB_STATUS FROM APM_SUBSCRIPTION WHERE APP_ID = ? AND " +
+            				"APPLICATION_ID = ?";
+            ps = conn.prepareStatement(checkDuplicateQuery);
+            ps.setInt(1, apiId);
+            ps.setInt(2, applicationId);
+            resultSet = ps.executeQuery();
+
+            //If the subscription already exists
+            if (resultSet.next()) {
+                String subStatus = resultSet.getString("SUB_STATUS");
+                String applicationName = getApplicationNameFromId(applicationId);
+
+                if ((AppMConstants.SubscriptionStatus.UNBLOCKED.equals(subStatus) ||
+                		AppMConstants.SubscriptionStatus.ON_HOLD.equals(subStatus) ||
+                		AppMConstants.SubscriptionStatus.REJECTED.equals(subStatus))) {
+
+                    //Throw error saying subscription already exists.
+                    log.error("Subscription already exists for API " + identifier.getApiName() + " in Application " +
+                              applicationName);
+                    throw new SubscriptionAlreadyExistingException("Subscription already exists for API " +
+                                                                   identifier.getApiName() + " in Application " +
+                                                                   applicationName);
+                } else if (AppMConstants.SubscriptionStatus.BLOCKED.equals(subStatus) || AppMConstants
+                        .SubscriptionStatus.PROD_ONLY_BLOCKED.equals(subStatus)) {
+                    log.error("Subscription to API " + identifier.getApiName() + " through application " +
+                              applicationName + " was blocked");
+                    throw new AppManagementException("Subscription to API " + identifier.getApiName() + " through " +
+                                                     "application " + applicationName + " was blocked");
+                }
+            }
+            ps.close();
+            
             String getApiQuery =
                     "SELECT APP_ID FROM APM_APP API WHERE APP_PROVIDER = ? AND APP_NAME = ? AND " +
                             "APP_VERSION = ?";
