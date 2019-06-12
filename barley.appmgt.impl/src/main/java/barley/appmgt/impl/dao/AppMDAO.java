@@ -4513,18 +4513,22 @@ public class AppMDAO {
             recordAPILifeCycleEvent(app.getId(), null, APIStatus.CREATED.toString(),
                     AppManagerUtil.replaceEmailDomainBack(app.getId().getProviderName()),
                     connection);
+            
+            // APM_APP_XACML_PARTIAL_MAPPINGS 테이블 저장 
             if (app.getPolicyPartials() != null && !app.getPolicyPartials().isEmpty()) {
                 JSONArray policyPartialIdList = (JSONArray) JSONValue.parse(app.getPolicyPartials());
                 saveApplicationPolicyPartialsMappings(connection, webAppId, policyPartialIdList.toArray());
             }
 
             //save policy groups app wise
+            // APM_POLICY_GROUP_MAPPING 테이블 저장 
             if (app.getPolicyGroups() != null && !app.getPolicyGroups().isEmpty()) {
                 JSONArray policyGroupIdList = (JSONArray) JSONValue.parse(app.getPolicyGroups());
                 saveApplicationPolicyGroupsMappings(connection, webAppId, policyGroupIdList.toArray());
             }
 
             //save java policies app wise
+            // APM_APP_JAVA_POLICY_MAPPING 테이블 저장 
             if (app.getJavaPolicies() != null && !app.getJavaPolicies().isEmpty()) {
                 JSONArray javaPolicyIdList = (JSONArray) JSONValue.parse(app.getJavaPolicies());
                 saveJavaPolicyMappings(connection, webAppId, javaPolicyIdList.toArray());
