@@ -100,6 +100,12 @@
         <dependency>
           <groupId>org.wso2.carbon.store</groupId>
           <artifactId>jaggery-scxml-executors</artifactId>
+          <exclusions>
+          	<exclusion>
+          		<groupId>org.apache.httpcomponents.wso2</groupId>
+          		<artifactId>httpclient</artifactId>
+          	</exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           	<groupId>org.wso2.carbon</groupId>
@@ -108,14 +114,32 @@
       	<dependency>
 	        <groupId>org.wso2.carbon.identity</groupId>
 	        <artifactId>org.wso2.carbon.identity.entitlement</artifactId>
+	        <exclusions>
+	        	<exclusion>
+	        		<groupId>org.apache.httpcomponents</groupId>
+	        		<artifactId>httpcore</artifactId>
+	        	</exclusion>
+	        </exclusions>
 	    </dependency>
       	<dependency>
 	        <groupId>org.wso2.carbon.identity</groupId>
 	        <artifactId>org.wso2.carbon.identity.entitlement.stub</artifactId>
+	        <exclusions>
+	        	<exclusion>
+	        		<groupId>org.apache.httpcomponents.wso2</groupId>
+	        		<artifactId>httpcore</artifactId>
+	        	</exclusion>
+	        </exclusions>
 	    </dependency>
 	    <dependency>
 	        <groupId>org.wso2.carbon.identity</groupId>
 	        <artifactId>org.wso2.carbon.identity.entitlement.proxy</artifactId>
+	        <exclusions>
+	        	<exclusion>
+	        		<groupId>org.apache.httpcomponents.wso2</groupId>
+	        		<artifactId>httpcore</artifactId>
+	        	</exclusion>
+	        </exclusions>
 	    </dependency>
 	    <dependency>
           	<groupId>org.wso2.carbon.identity</groupId>
@@ -133,20 +157,16 @@
 			<groupId>org.wso2.carbon.appmgt</groupId>
 	        <artifactId>org.wso2.carbon.appmgt.gateway.stub</artifactId>
       	</dependency>
-      	<dependency>
-		    <groupId>org.wso2.carbon.store</groupId>
-		    <artifactId>jaggery-scxml-executors</artifactId>
-		</dependency>
-        
+      	
 		<!-- util -->	        
 	    <dependency>
 		    <groupId>commons-logging</groupId>
 		    <artifactId>commons-logging</artifactId>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 	        <groupId>org.apache.httpcomponents.wso2</groupId>
 	        <artifactId>httpcore</artifactId>
-	    </dependency>
+	    </dependency> -->
 	    <dependency>
 		    <groupId>rhino</groupId>
 		    <artifactId>js</artifactId>
