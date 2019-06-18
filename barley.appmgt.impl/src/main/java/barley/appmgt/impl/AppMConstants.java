@@ -601,9 +601,10 @@ public final class AppMConstants {
     public static final String SECONDERY_USER_STORE_DEFAULT_SEPERATOR = "/";
 
     //WebApp caching related constants
-    public static final String API_MANAGER_CACHE_MANAGER = "API_MANAGER_CACHE";
+//    public static final String API_MANAGER_CACHE_MANAGER = "API_MANAGER_CACHE";
+//    public static final String API_CONTEXT_CACHE_MANAGER = "API_CONTEXT_CACHE_MANAGER";
     public static final String APP_MANAGER_CACHE_MANAGER = "APP_MANAGER_CACHE";
-    public static final String API_CONTEXT_CACHE_MANAGER = "API_CONTEXT_CACHE_MANAGER";
+    public static final String APP_CONTEXT_CACHE_MANAGER = "APP_CONTEXT_CACHE_MANAGER";
     public static final String RESOURCE_CACHE_NAME = "resourceCache";
     public static final String KEY_CACHE_NAME = "keyCache";
     public static final String JWT_CACHE_NAME = "jwtCache";

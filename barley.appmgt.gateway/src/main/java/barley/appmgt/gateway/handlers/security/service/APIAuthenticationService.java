@@ -32,7 +32,7 @@ public class APIAuthenticationService {
 
     public void invalidateKeys(APIKeyMapping[] mappings) {
 
-        Cache cache = Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
+        Cache cache = Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
         for (APIKeyMapping mapping : mappings) {
             String cacheKey = mapping.getKey() + ":" + mapping.getContext() + ":" + mapping.getApiVersion();
             if(cache.containsKey(cacheKey)){
@@ -51,7 +51,7 @@ public class APIAuthenticationService {
     }
 
     public void invalidateOAuthKeys(String consumerKey, String authorizedUser) {
-        Cache cache = Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
+        Cache cache = Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
         String cacheKey = consumerKey + ":" + authorizedUser;
         cache.remove(cacheKey);
 
@@ -62,8 +62,8 @@ public class APIAuthenticationService {
         String resourceVerbCacheKey = apiContext + "/" + apiVersion +
                                       resourceURLContext + ":" + httpVerb;
         String resourceCacheKey = apiContext + ":" + apiVersion;
-        Cache cache = Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).getCache(AppMConstants.RESOURCE_CACHE_NAME);
-        Cache keyCache = Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
+        Cache cache = Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).getCache(AppMConstants.RESOURCE_CACHE_NAME);
+        Cache keyCache = Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
 
         if(keyCache.containsKey(apiContext + ":" + apiVersion))  {
             keyCache.remove(apiContext + ":" + apiVersion);
@@ -109,7 +109,7 @@ public class APIAuthenticationService {
      */
     public void invalidateKey(String accessToken) {
         //TODO Review and fix
-        Cache keyCache = Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
+        Cache keyCache = Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).getCache(AppMConstants.KEY_CACHE_NAME);
         keyCache.remove(accessToken);
         Iterator<Object> iterator = keyCache.iterator();
         while (iterator.hasNext()) {

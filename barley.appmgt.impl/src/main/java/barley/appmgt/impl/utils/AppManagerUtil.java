@@ -3110,19 +3110,19 @@ public final class AppManagerUtil {
 
 	public static Cache getAPIContextCache() {
 		CacheManager contextCacheManager =
-		                                   Caching.getCacheManager(AppMConstants.API_CONTEXT_CACHE_MANAGER)
+		                                   Caching.getCacheManager(AppMConstants.APP_CONTEXT_CACHE_MANAGER)
 		                                          .getCache(AppMConstants.API_CONTEXT_CACHE)
 		                                          .getCacheManager();
 		if (!isContextCacheInitialized) {
 			isContextCacheInitialized = true;
-			return contextCacheManager.<String, Boolean> createCacheBuilder(AppMConstants.API_CONTEXT_CACHE_MANAGER)
+			return contextCacheManager.<String, Boolean> createCacheBuilder(AppMConstants.APP_CONTEXT_CACHE_MANAGER)
 			                          .setExpiry(CacheConfiguration.ExpiryType.MODIFIED,
 			                                     new CacheConfiguration.Duration(
 			                                                                     TimeUnit.DAYS,
 			                                                                     AppMConstants.API_CONTEXT_CACHE_EXPIRY_TIME_IN_DAYS))
 			                          .setStoreByValue(false).build();
 		} else {
-			return Caching.getCacheManager(AppMConstants.API_CONTEXT_CACHE_MANAGER)
+			return Caching.getCacheManager(AppMConstants.APP_CONTEXT_CACHE_MANAGER)
 			              .getCache(AppMConstants.API_CONTEXT_CACHE);
 		}
 	}

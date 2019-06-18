@@ -74,7 +74,7 @@ public class APIKeyValidator {
     }
 
     protected Cache getResourceCache() {
-        return Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).getCache(AppMConstants.RESOURCE_CACHE_NAME);
+        return Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).getCache(AppMConstants.RESOURCE_CACHE_NAME);
         //return PrivilegedCarbonContext.getCurrentContext(axisConfig).getCache("resourceCache");
     }
 

@@ -291,12 +291,19 @@ public class APIProviderImplTest extends BaseTestCase {
     	APIStatus status = APIStatus.PUBLISHED;
     	String userId = userName;	// userId 파라미터는 사용되지 않는다.
     	
-    	boolean updateGatewayConfig = true;    	
-    	provider.changeAPIStatus(api, status, userId, updateGatewayConfig);
+//    	boolean updateGatewayConfig = true;    	
+//    	provider.changeAPIStatus(api, status, userId, updateGatewayConfig);
     	
 //    	String resourceId = provider.getAppUUIDbyName("MyFirstApp", "1.0.0", getTenantId());
-//    	String action = LifecycleActions.PUBLISH;
-//    	provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, resourceId, action);
+    	
+    	// 생성 => 게시 
+//    	provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, apiId, LifecycleActions.SUBMIT_FOR_REVIEW);
+//		provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, apiId, LifecycleActions.APPROVE);
+//    	provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, apiId, LifecycleActions.PUBLISH);
+    	
+    	// 게시 => 생성 
+    	provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, apiId, LifecycleActions.UNPUBLISH);
+    	provider.changeLifeCycleStatus(AppMConstants.WEBAPP_ASSET_TYPE, apiId, LifecycleActions.RECYCLE);
     }
     
     // (성공)

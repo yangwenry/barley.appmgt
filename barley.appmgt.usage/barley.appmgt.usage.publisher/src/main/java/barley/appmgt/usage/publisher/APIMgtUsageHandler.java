@@ -162,7 +162,7 @@ public class APIMgtUsageHandler extends AbstractHandler {
                     PrivilegedBarleyContext.startTenantFlow();
                     PrivilegedBarleyContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
                 }
-                loggedUser = (String) Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).
+                loggedUser = (String) Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).
             			getCache(AppMConstants.KEY_CACHE_NAME).get(saml2CookieValue);
             } finally {
             	if (isTenantFlowStarted) {

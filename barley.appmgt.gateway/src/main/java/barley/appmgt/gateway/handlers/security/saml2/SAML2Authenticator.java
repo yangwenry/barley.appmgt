@@ -59,7 +59,7 @@ public class SAML2Authenticator implements Authenticator{
     }
 
     protected Cache getKeyCache() {
-        return Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER).
+        return Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER).
                 getCache(AppMConstants.KEY_CACHE_NAME);
     }
 

@@ -61,7 +61,7 @@ public class APPResourceManager {
 	}
 
 	protected Cache getResourceCache() {
-		return Caching.getCacheManager(AppMConstants.API_MANAGER_CACHE_MANAGER)
+		return Caching.getCacheManager(AppMConstants.APP_MANAGER_CACHE_MANAGER)
 		              .getCache(AppMConstants.RESOURCE_CACHE_NAME);
 	}
 
