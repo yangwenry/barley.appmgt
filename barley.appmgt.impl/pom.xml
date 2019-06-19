@@ -78,23 +78,15 @@
             <artifactId>barley.core</artifactId>
         </dependency>
         
+        <!-- Utility -->
         <dependency>
         	<groupId>org.slf4j</groupId>
 		    <artifactId>log4j-over-slf4j</artifactId>
-		    <version>1.7.7</version>
-        </dependency>        
-        <!-- <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.6.6</version>
-            <scope>test</scope>
-        </dependency> -->
-        
+        </dependency>
         <dependency>
         	<groupId>org.apache.httpcomponents</groupId>
 	    	<artifactId>httpclient</artifactId>
-    		<version>4.5.3</version>
-		</dependency>
+    	</dependency>
         
         <!-- wso2 -->
         <dependency>

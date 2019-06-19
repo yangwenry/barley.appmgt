@@ -84,7 +84,7 @@
 	   	<synapse.version>3.0.0</synapse.version>
 	   	<synapse.wso2.version>2.1.7-wso2v3</synapse.wso2.version>
 	   	
-	   	<!-- ReST API Versions -->
+	   	<!-- REST API Versions -->
       	<cxf.version>3.1.4</cxf.version>
       	<jackson.version>1.8.6</jackson.version>
       	<spring-web.version>4.1.6.RELEASE</spring-web.version>
@@ -456,11 +456,21 @@
 		        <artifactId>httpcore</artifactId>
 		        <version>4.3.0.wso2v1</version>
 		    </dependency>		
+		    <dependency>
+	        	<groupId>org.apache.httpcomponents</groupId>
+		    	<artifactId>httpclient</artifactId>
+	    		<version>4.3.6</version>
+			</dependency>
 			<dependency>
 		        <groupId>rhino</groupId>
 		    	<artifactId>js</artifactId>
 		        <version>${rhino.js.version}</version>
 			</dependency>
+			<dependency>
+	        	<groupId>org.slf4j</groupId>
+			    <artifactId>log4j-over-slf4j</artifactId>
+			    <version>1.7.7</version>
+	        </dependency>
 			
 			<!-- synapse -->		
 	        <dependency>
