@@ -3729,6 +3729,7 @@ public class AppMDAO {
 			consumerSecret = AppManagerUtil.encryptToken(consumerSecret);
 
 			connection = APIMgtDBUtil.getConnection();
+			connection.setAutoCommit(false);
 			prepStmt = connection.prepareStatement(sqlStmt);
 			prepStmt.setString(1, consumerKey);
 			prepStmt.setString(2, consumerSecret);
