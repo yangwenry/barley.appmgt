@@ -111,6 +111,30 @@
             		<groupId>net.sf.ehcache</groupId>
             		<artifactId>ehcache</artifactId>
             	</exclusion>
+            	<exclusion>
+            		<groupId>net.sf.ehcache</groupId>
+            		<artifactId>ehcache</artifactId>
+            	</exclusion>
+            	<exclusion>
+		    		<groupId>org.hibernate</groupId>
+					<artifactId>hibernate</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-entitymanager</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>javax.persistence</groupId>
+		    		<artifactId>persistence-api</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.apache.openjpa</groupId>
+		    		<artifactId>openjpa</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.apache.geronimo.specs</groupId>
+		    		<artifactId>geronimo-jpa_2.0_spec</artifactId>
+		    	</exclusion>
         	</exclusions>
         </dependency>
         <dependency>
