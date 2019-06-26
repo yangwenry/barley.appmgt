@@ -2277,7 +2277,6 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             Resource appResource = registry.get(path);
             String artifactId = appResource.getUUID();
 
-
             String appArtifactResourceId = appArtifactResource.getUUID();
             if (artifactId == null) {
                 throw new AppManagementException("artifact id is null for : " + path);
@@ -2286,6 +2285,24 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             GenericArtifact appArtifact = artifactManager.getGenericArtifact(appArtifactResourceId);
             String inSequence = appArtifact.getAttribute(AppMConstants.API_OVERVIEW_INSEQUENCE);
             String outSequence = appArtifact.getAttribute(AppMConstants.API_OVERVIEW_OUTSEQUENCE);
+            
+            // app-gateway 삭제 
+            AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
+                    getAPIManagerConfigurationService().getAPIManagerConfiguration();
+            boolean gatewayExists = config.getApiGatewayEnvironments().size() > 0;
+            String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
+
+            WebApp webapp = new WebApp(identifier);
+            // gatewayType check is required when WebApp Management is deployed on other servers to avoid synapse
+            if (gatewayExists && "Synapse".equals(gatewayType)) {
+                webapp.setInSequence(inSequence); //need to remove the custom sequences
+                webapp.setOutSequence(outSequence);
+                removeFromGateway(webapp);
+            } else {
+                if(log.isDebugEnabled()) {
+                    log.debug("Gateway is not existed for the current applications Provider");
+                }
+            }
 
             // 연관관계 찾아서 삭제 
             //Delete the dependencies associated  with the api artifact
@@ -2305,22 +2322,6 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                 registry.delete(thumbPath);
             }
 
-            AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
-                    getAPIManagerConfigurationService().getAPIManagerConfiguration();
-            boolean gatewayExists = config.getApiGatewayEnvironments().size() > 0;
-            String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
-
-            WebApp webapp = new WebApp(identifier);
-            // gatewayType check is required when WebApp Management is deployed on other servers to avoid synapse
-            if (gatewayExists && "Synapse".equals(gatewayType)) {
-                webapp.setInSequence(inSequence); //need to remove the custom sequences
-                webapp.setOutSequence(outSequence);
-                removeFromGateway(webapp);
-            } else {
-                if(log.isDebugEnabled()) {
-                    log.debug("Gateway is not existed for the current applications Provider");
-                }
-            }
             appMDAO.deleteAPI(identifier, authorizedAdminCookie);
 
             /*remove empty directories*/
