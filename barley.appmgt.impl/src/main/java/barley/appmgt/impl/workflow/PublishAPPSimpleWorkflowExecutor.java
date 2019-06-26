@@ -111,8 +111,10 @@ public class PublishAPPSimpleWorkflowExecutor extends WorkflowExecutor {
                 provider.changeAPIStatus(app, newStatus, fullName, true);
             }
         } catch (AppManagementException e) {
-            //throw exception
-            log.error("Error while publishing API",e);
+            // (추가) throw exception
+        	String msg = "Error while publishing API";
+            log.error(msg, e);
+            throw new WorkflowException(msg, e);
         }
     }
 
