@@ -2249,7 +2249,10 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         String appArtifactPath = AppManagerUtil.getAPIPath(identifier);
         boolean isAppDeleted = false;
 
+        boolean transactionCommitted = false;
         try {
+        	registry.beginTransaction();
+        	
             long subsCount = appMDAO.getAPISubscriptionCountByAPI(identifier);
             Resource appArtifactResource = registry.get(appArtifactPath);
             String applicationStatus = appArtifactResource.getProperty(AppMConstants.WEB_APP_LIFECYCLE_STATUS);
@@ -2322,8 +2325,6 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                 registry.delete(thumbPath);
             }
 
-            appMDAO.deleteAPI(identifier, authorizedAdminCookie);
-
             /*remove empty directories*/
             // (수정) 경로수정 
             String appCollectionPath = AppMConstants.API_ROOT_LOCATION + RegistryConstants.PATH_SEPARATOR +
@@ -2359,9 +2360,29 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     registry.delete(appProviderPath);
                 }
             }
+            
+            // (수정) registry 모두 삭제 후  dao 삭제하도록 아래 배치 
+            appMDAO.deleteAPI(identifier, authorizedAdminCookie);
+            registry.commitTransaction();
+            
+            transactionCommitted = true;
             isAppDeleted = true;
-        } catch (RegistryException e) {
-            handleException("Failed to remove the WebApp from : " + path, e);
+        } catch (Exception e) {
+        	try {
+                registry.rollbackTransaction();
+            } catch (RegistryException re) {
+                // Throwing an error from this level will mask the original exception
+                log.error("Error while rolling back the transaction for API: " + identifier.getApiName(), re);
+            }
+        	handleException("Failed to remove the WebApp from : " + path, e);
+        } finally {
+            try {
+                if (!transactionCommitted) {
+                    registry.rollbackTransaction();
+                }
+            } catch (RegistryException ex) {
+                handleException("Error occurred while rolling back the transaction.", ex);
+            }
         }
 
         return isAppDeleted;
