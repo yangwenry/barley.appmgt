@@ -4019,6 +4019,55 @@ public class AppMDAO {
 			APIMgtDBUtil.closeAllConnections(ps, conn, resultSet);
 		}
 	}
+	
+	/**
+     * Deletes an Application along with subscriptions, keys and registration data
+     *
+     * @param application Application object to be deleted from the database which has the application Id
+     * @throws APIManagementException
+     */
+    public void deleteApplication(Application application) throws AppManagementException {
+        Connection connection = null;
+        PreparedStatement deleteMappingQuery = null;
+        PreparedStatement deleteSubscription = null;
+        PreparedStatement deleteApp = null;
+        
+        String deleteSubscriptionsQuery = SQLConstants.REMOVE_APPLICATION_FROM_SUBSCRIPTIONS_SQL;        
+        String deleteApplicationQuery = SQLConstants.REMOVE_APPLICATION_FROM_APPLICATIONS_SQL;
+        try {
+            connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
+            
+            // 구독 삭제 
+            deleteSubscription = connection.prepareStatement(deleteSubscriptionsQuery);
+            deleteSubscription.setInt(1, application.getId());
+            deleteSubscription.execute();
+
+            if (log.isDebugEnabled()) {
+                log.debug("Subscription details are deleted successfully for Application - " + application.getName());
+            }
+
+            // 어플리케이션 삭제 
+            deleteApp = connection.prepareStatement(deleteApplicationQuery);
+            deleteApp.setInt(1, application.getId());
+            deleteApp.execute();
+
+            if (log.isDebugEnabled()) {
+                log.debug("Application " + application.getName() + " is deleted successfully.");
+            }
+
+            connection.commit();
+            
+        } catch (SQLException e) {
+            handleException("Error while removing application details from the database", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(deleteApp, null, null);
+            APIMgtDBUtil.closeAllConnections(deleteMappingQuery, null, null);
+            APIMgtDBUtil.closeAllConnections(deleteSubscription, null, null);
+            APIMgtDBUtil.closeAllConnections(deleteApp, null, null);
+
+        }
+    }
 
 	/**
 	 * get the status of the Application creation process

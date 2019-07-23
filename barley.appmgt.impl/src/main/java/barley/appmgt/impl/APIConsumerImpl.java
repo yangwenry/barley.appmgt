@@ -1531,6 +1531,13 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     	if (subscriber == null) {
     		throw new AppManagementException("Subscriber for subscriberName:" + subscriberName +" does not exist.");
     	} 
+    	Application defaultApp = getApplicationsByName(subscriberName, AppMConstants.DEFAULT_APPLICATION_NAME);
+    	if (defaultApp == null) {
+    		throw new AppManagementException("Application for subscriberName:" + subscriberName +" does not exist.");
+    	} 
+    	
+    	// 기본 어플리케이션 삭제
+    	appMDAO.deleteApplication(defaultApp);
     	appMDAO.removeSubscriber(subscriber.getId());
     }
 

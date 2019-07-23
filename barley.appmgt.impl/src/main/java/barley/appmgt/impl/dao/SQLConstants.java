@@ -209,4 +209,10 @@ public class SQLConstants {
     		"SELECT USER_ID, TENANT_ID, EMAIL_ADDRESS, DATE_SUBSCRIBED " +
                     "FROM APM_SUBSCRIBER WHERE SUBSCRIBER_ID = ?";
     
+    // 어플리케이션 삭제시 구독삭제 
+    public static final String REMOVE_APPLICATION_FROM_SUBSCRIPTIONS_SQL =
+            "DELETE FROM APM_SUBSCRIPTION WHERE APPLICATION_ID = ?";
+    
+    public static final String REMOVE_APPLICATION_FROM_APPLICATIONS_SQL =
+            "DELETE FROM APM_APPLICATION WHERE APPLICATION_ID = ?";
 }
