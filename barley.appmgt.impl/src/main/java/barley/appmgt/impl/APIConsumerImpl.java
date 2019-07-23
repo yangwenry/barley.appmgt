@@ -1509,10 +1509,29 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
             invalidateCachedKeys(applicationId, identifier);
         }*/
     }
+    
+    public void addSubscriber(Subscriber subscriber) throws AppManagementException {
+        appMDAO.addSubscriber(subscriber);
+        
+        Application defaultApp = getApplicationsByName(username, AppMConstants.DEFAULT_APPLICATION_NAME);
+    	if (defaultApp == null) {
+    		addDefaultApplicationForSubscriber(subscriber);
+    	} 
+    }
+    
+    private void addDefaultApplicationForSubscriber(Subscriber subscriber) throws AppManagementException {
+        Application defaultApp = new Application(AppMConstants.DEFAULT_APPLICATION_NAME, subscriber);
+        defaultApp.setTier(AppMConstants.UNLIMITED_TIER);
+        appMDAO.addApplication(defaultApp, subscriber.getName());
+    }
 
-    public void removeSubscriber(APIIdentifier identifier, String userId)
-            throws AppManagementException {
-        throw new UnsupportedOperationException("Unsubscribe operation is not yet implemented");
+    public void removeSubscriber(String subscriberName) throws AppManagementException {
+        //throw new UnsupportedOperationException("Unsubscribe operation is not yet implemented");
+    	Subscriber subscriber = getSubscriber(subscriberName);
+    	if (subscriber == null) {
+    		throw new AppManagementException("Subscriber for subscriberName:" + subscriberName +" does not exist.");
+    	} 
+    	appMDAO.removeSubscriber(subscriber.getId());
     }
 
     public void updateSubscriptions(APIIdentifier identifier, String userId, int applicationId)
@@ -1804,8 +1823,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     }
     
     @Override
-    public Application getApplicationsByName(String userId, String ApplicationName, String groupingId) throws AppManagementException {
-        return appMDAO.getApplicationByName(ApplicationName, userId, groupingId);
+    public Application getApplicationsByName(String userId, String ApplicationName) throws AppManagementException {
+        return appMDAO.getApplicationByName(ApplicationName, userId);
     }
 
     @Override

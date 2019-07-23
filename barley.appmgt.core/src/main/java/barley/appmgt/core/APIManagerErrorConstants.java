@@ -52,10 +52,10 @@ public class APIManagerErrorConstants {
     public static final int API_THROTTLE_OUT = 900800;
     public static final String API_THROTTLE_OUT_MESSAGE = "Message Throttled Out";
     
-    public static final String API_SECURITY_NS = "http://wso2.org/apimanager/security";
+    public static final String API_SECURITY_NS = "http://codefarm.co.kr/apimanager/security";
     public static final String API_SECURITY_NS_PREFIX = "ams";
     
-    public static final String API_THROTTLE_NS = "http://wso2.org/apimanager/throttling";
+    public static final String API_THROTTLE_NS = "http://codefarm.co.kr/apimanager/throttling";
     public static final String API_THROTTLE_NS_PREFIX = "amt";
 
     /**

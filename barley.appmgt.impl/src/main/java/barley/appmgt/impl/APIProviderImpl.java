@@ -3658,6 +3658,11 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         }
 
     }
+
+	@Override
+	public void addSubscriber(Subscriber subscriber) throws AppManagementException {
+		throw new UnsupportedOperationException("Unsubscribe operation is not yet implemented");
+	}
     
     
 }

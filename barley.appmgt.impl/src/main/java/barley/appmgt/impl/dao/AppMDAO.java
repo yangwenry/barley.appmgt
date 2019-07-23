@@ -1232,8 +1232,7 @@ public class AppMDAO {
 		try {
 			conn = APIMgtDBUtil.getConnection();
 			conn.setAutoCommit(false);
-            String query = "INSERT INTO APM_SUBSCRIBER (USER_ID, TENANT_ID, EMAIL_ADDRESS, " +
-                    "DATE_SUBSCRIBED) VALUES (?,?,?,?)";
+			String query = SQLConstants.ADD_SUBSCRIBER_SQL;
 
 			ps = conn.prepareStatement(query, new String[] { "subscriber_id" });
 
@@ -1271,6 +1270,35 @@ public class AppMDAO {
 			APIMgtDBUtil.closeAllConnections(ps, conn, rs);
 		}
 	}
+	
+	// (추가) 2019.07.23 - 새롭게 구현 
+    public void removeSubscriber(int subscriberId) throws AppManagementException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            String query = SQLConstants.REMOVE_SUBSCRIBER_SQL;
+
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, subscriberId);
+            ps.executeUpdate();
+            
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e1) {
+                    log.error("Error while rolling back the failed operation", e1);
+                }
+            }
+            handleException("Error in deleting subscriber: " + e.getMessage(), e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, conn, null);
+        }
+    }
 
 	public void updateSubscriber(Subscriber subscriber) throws AppManagementException {
 		Connection conn = null;
@@ -1278,8 +1306,7 @@ public class AppMDAO {
 		PreparedStatement ps = null;
 		try {
 			conn = APIMgtDBUtil.getConnection();
-            String query = "UPDATE APM_SUBSCRIBER SET USER_ID = ?, TENANT_ID = ?, " +
-                    "EMAIL_ADDRESS = ?, DATE_SUBSCRIBED = ? WHERE SUBSCRIBER_ID = ?";
+			String query = SQLConstants.UPDATE_SUBSCRIBER_SQL;
 
             ps = conn.prepareStatement(query);
 			ps.setString(1, subscriber.getName());
@@ -1301,8 +1328,7 @@ public class AppMDAO {
 		PreparedStatement ps = null;
 		try {
 			conn = APIMgtDBUtil.getConnection();
-            String query = "SELECT USER_ID, TENANT_ID, EMAIL_ADDRESS, DATE_SUBSCRIBED " +
-                    "FROM APM_SUBSCRIBER WHERE SUBSCRIBER_ID = ?";
+			String query = SQLConstants.GET_SUBSCRIBER_SQL;
 
             ps = conn.prepareStatement(query);
 			ps.setInt(1, subscriberId);
@@ -4200,7 +4226,7 @@ public class AppMDAO {
         return applications;
     }
     
-    public Application getApplicationByName(String applicationName, String userId, String groupId)
+    public Application getApplicationByName(String applicationName, String userId)
             throws AppManagementException {
         //mysql> select APP.APPLICATION_ID, APP.NAME, APP.SUBSCRIBER_ID,APP.APPLICATION_TIER,APP.CALLBACK_URL,APP
         // .DESCRIPTION,

@@ -726,11 +726,6 @@ public abstract class AbstractAPIManager implements APIManager {
         return false;
     }
 
-    public void addSubscriber(Subscriber subscriber)
-            throws AppManagementException {
-        appMDAO.addSubscriber(subscriber);
-    }
-
     public void updateSubscriber(Subscriber subscriber)
             throws AppManagementException {
         appMDAO.updateSubscriber(subscriber);

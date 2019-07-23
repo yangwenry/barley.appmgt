@@ -19,12 +19,19 @@
 package barley.appmgt.impl.discovery;
 
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.model.Subscriber;
 import barley.appmgt.impl.AbstractAPIManager;
 
 public class MockApiProvider extends AbstractAPIManager {
 
     public MockApiProvider() throws AppManagementException {
     }
+
+	@Override
+	public void addSubscriber(Subscriber subscriber) throws AppManagementException {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

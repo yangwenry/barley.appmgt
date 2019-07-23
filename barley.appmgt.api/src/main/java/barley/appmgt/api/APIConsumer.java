@@ -249,8 +249,8 @@ public interface APIConsumer extends APIManager {
      * @param userId     id of the user
      * @throws AppManagementException if failed to add subscription details to database
      */
-    public void removeSubscriber(APIIdentifier identifier, String userId)
-            throws AppManagementException;
+    //public void removeSubscriber(APIIdentifier identifier, String userId) throws AppManagementException;
+    public void removeSubscriber(String subscriberName) throws AppManagementException;
 
     /**
      * This method is to update the subscriber.
@@ -361,7 +361,8 @@ public interface APIConsumer extends APIManager {
     public Application[] getApplications(Subscriber subscriber) throws AppManagementException;
     
     // (추가) 2019.06.05
-    public Application getApplicationsByName(String userId , String ApplicationName, String groupId) throws AppManagementException;
+    //public Application getApplicationsByName(String userId , String ApplicationName, String groupId) throws AppManagementException;
+    public Application getApplicationsByName(String userId , String ApplicationName) throws AppManagementException;
 
     /**
      * Add the given app as favourite app for given user.

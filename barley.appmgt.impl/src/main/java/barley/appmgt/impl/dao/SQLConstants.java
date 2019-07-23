@@ -192,4 +192,21 @@ public class SQLConstants {
             " FROM " +
             "   APM_SUBSCRIBER SUB," +
             "   APM_APPLICATION APP";
+    
+    
+    public static final String ADD_SUBSCRIBER_SQL =
+    		"INSERT INTO APM_SUBSCRIBER (USER_ID, TENANT_ID, EMAIL_ADDRESS, " +
+                    "DATE_SUBSCRIBED) VALUES (?,?,?,?)";
+
+    public static final String UPDATE_SUBSCRIBER_SQL =
+    		"UPDATE APM_SUBSCRIBER SET USER_ID = ?, TENANT_ID = ?, " +
+                    "EMAIL_ADDRESS = ?, DATE_SUBSCRIBED = ? WHERE SUBSCRIBER_ID = ?";
+    
+    public static final String REMOVE_SUBSCRIBER_SQL = 
+            " DELETE FROM APM_SUBSCRIBER WHERE SUBSCRIBER_ID = ?";
+    
+    public static final String GET_SUBSCRIBER_SQL = 
+    		"SELECT USER_ID, TENANT_ID, EMAIL_ADDRESS, DATE_SUBSCRIBED " +
+                    "FROM APM_SUBSCRIBER WHERE SUBSCRIBER_ID = ?";
+    
 }
