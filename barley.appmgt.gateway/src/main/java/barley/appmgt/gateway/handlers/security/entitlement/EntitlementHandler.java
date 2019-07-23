@@ -61,13 +61,13 @@ public class EntitlementHandler extends AbstractHandler implements ManagedLifecy
     	// If anonymous access is allowed to whole app or a particular URL pattern, skip this handler.
     	if (isHandlerApplicable(messageContext)) {
     		try {
-				if(!isResourcePermitted(messageContext)){
+				if(!isResourcePermitted(messageContext)) {
 					GatewayUtils.logWithRequestInfo(log, messageContext,
 									String.format("'%s' doesn't have rights to access the resource.",
 													GatewayUtils.getSession(messageContext).getAuthenticationContext().getSubject()));
 					GatewayUtils.send401(messageContext, null);
 					return false;
-				}else{
+				} else {
 					return true;
 				}
 			} catch (AppManagementException e) {

@@ -61,12 +61,13 @@ public class SubscriptionsHandler extends AbstractHandler implements ManagedLife
         String webAppContext = (String) messageContext.getProperty(RESTConstants.REST_API_CONTEXT);
         String webAppVersion = (String) messageContext.getProperty(RESTConstants.SYNAPSE_REST_API_VERSION);
 
-        Session session = GatewayUtils.getSession(messageContext);
-        AuthenticationContext authenticationContext = session.getAuthenticationContext();
+        // (임시주석) SSO 세션이 동작하지 않기 때문에 처리방식 변경 해야함. 
+        //Session session = GatewayUtils.getSession(messageContext);
+        //AuthenticationContext authenticationContext = session.getAuthenticationContext();
 
-        if(isEnterpriseSubscriptionEnabled()){
+        if(isEnterpriseSubscriptionEnabled()) {
 
-            if(enterpriseSubscription == null){
+            if(enterpriseSubscription == null) {
                 try {
                     enterpriseSubscription = new DefaultAppRepository(null).getEnterpriseSubscription(webAppContext, webAppVersion);
                 } catch (AppManagementException e) {
@@ -74,6 +75,8 @@ public class SubscriptionsHandler extends AbstractHandler implements ManagedLife
                 }
             }
 
+            // (임시주석)
+            /*
             if(hasValidEnterpriseSubscription(authenticationContext)){
                 if(log.isDebugEnabled()){
 
@@ -89,6 +92,8 @@ public class SubscriptionsHandler extends AbstractHandler implements ManagedLife
                 }
                 return true;
             }
+            */
+            return true;
         }
 
         if(isSelfSubscriptionEnabled()){
@@ -96,10 +101,13 @@ public class SubscriptionsHandler extends AbstractHandler implements ManagedLife
             return true;
         }
 
+        // (임시주석)
+        /*
         if(log.isDebugEnabled()){
             GatewayUtils.logWithRequestInfo(log, messageContext, String.format("User '%s' has no subscriptions for '%s':'%s'",
                     authenticationContext.getSubject(), webAppContext, webAppVersion));
         }
+        */
 
         GatewayUtils.send401(messageContext, "You have no subscriptions for this app.");
 

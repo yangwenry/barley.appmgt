@@ -102,7 +102,7 @@ public class DataPublisherUtil {
 
     static DataPublisher getDataPublisher() {
         String tenantDomain = BarleyContext.getThreadLocalCarbonContext().getTenantDomain();
-
+        
         //Get DataPublisher which has been registered for the tenant.
         DataPublisher dataPublisher = UsageComponent.getDataPublisher(tenantDomain);
 

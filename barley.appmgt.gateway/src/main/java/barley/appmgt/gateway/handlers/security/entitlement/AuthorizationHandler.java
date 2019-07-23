@@ -145,7 +145,7 @@ public class AuthorizationHandler extends AbstractHandler implements ManagedLife
                     }
 
                     return true;
-                }else {
+                } else {
 
                     if(log.isDebugEnabled()){
                         GatewayUtils.logWithRequestInfo(log, messageContext, String.format("'%s' doesn't have required roles to access '%s'",
@@ -155,7 +155,7 @@ public class AuthorizationHandler extends AbstractHandler implements ManagedLife
                     GatewayUtils.send401(messageContext, "You don't have required user role(s) to access this resource.");
                     return false;
                 }
-            }else{
+            } else {
 
                 // This requested is not role restricted.
                 return true;

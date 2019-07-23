@@ -32,7 +32,7 @@ import barley.appmgt.usage.publisher.dto.ResponsePublisherDTO;
 import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
 import barley.appmgt.usage.publisher.service.APIMGTConfigReaderService;
 
-public class APIMgtUsageDataBridgeDataPublisher implements APIMgtUsageDataPublisher{
+public class APIMgtUsageDataBridgeDataPublisher implements APIMgtUsageDataPublisher {
 
     private static final Log log   = LogFactory.getLog(APIMgtUsageDataBridgeDataPublisher.class);
 

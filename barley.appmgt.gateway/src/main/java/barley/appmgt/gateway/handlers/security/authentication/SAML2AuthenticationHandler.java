@@ -95,6 +95,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
     @Override
     public boolean handleRequest(MessageContext messageContext) {
 
+    	// header 쿠키에 APPMSESSIONID 값을 가져와 context에 setting 한다.  
         Session session = getSession(messageContext);
 
         // Get and set relevant message context properties.
@@ -115,7 +116,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
 
         // Fetch the web app for the requested context and version.
         try {
-            if(webApp == null){
+            if(webApp == null) {
                 int tenantId = BarleyContext.getThreadLocalCarbonContext().getTenantId();
                 webApp = new DefaultAppRepository(null).getWebAppByContextAndVersion(webAppContext, webAppVersion, tenantId);
             }
@@ -131,7 +132,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
         messageContext.setProperty(AppMConstants.MESSAGE_CONTEXT_PROPERTY_MATCHED_URI_TEMPLATE, matchedTemplate);
 
         // If the request comes to the ACS URL, then it should be a SAML response or a request from the IDP.
-        if(isACSURL(relativeResourceURL)){
+        if(isACSURL(relativeResourceURL)) {
             handleRequestToACSEndpoint(messageContext, session);
 
             // All requests to the ACS URL should be redirected to somewhere. e.g. IDP, app root URL
@@ -139,13 +140,13 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
         }
 
         // Handle logout requests. These requests don't need to  be authenticated.
-        if(GatewayUtils.isLogoutURL(webApp, relativeResourceURL)){
+        if(GatewayUtils.isLogoutURL(webApp, relativeResourceURL)) {
             doLogout(session);
             redirectToIDPWithLogoutRequest(messageContext, session);
             return false;
         }
 
-        if(GatewayUtils.isAnonymousAccessAllowed(webApp, matchedTemplate)){
+        if(GatewayUtils.isAnonymousAccessAllowed(webApp, matchedTemplate)) {
 
             if(log.isDebugEnabled()){
                 GatewayUtils.logWithRequestInfo(log, messageContext, String.format("Request to '%s' is allowed for anonymous access", fullResourceURL));
@@ -158,9 +159,9 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
 
         AuthenticationContext authenticationContext = session.getAuthenticationContext();
 
-        if(!authenticationContext.isAuthenticated()){
+        if(!authenticationContext.isAuthenticated()) {
 
-            if(log.isDebugEnabled()){
+            if(log.isDebugEnabled()) {
                 GatewayUtils.logWithRequestInfo(log, messageContext, String.format("Request to '%s' is not authenticated", fullResourceURL));
             }
 
@@ -169,9 +170,9 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
             setSessionCookie(messageContext, session.getUuid());
             requestAuthentication(messageContext);
             return false;
-        }else {
+        } else {
 
-            if(log.isDebugEnabled()){
+            if(log.isDebugEnabled()) {
                 GatewayUtils.logWithRequestInfo(log, messageContext, String.format("Request to '%s' is authenticated. Subject = '%s'", fullResourceURL, authenticationContext.getSubject()));
             }
 
@@ -189,23 +190,23 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
             // Set the session as a message context property.
             messageContext.setProperty(AppMConstants.APPM_SAML2_COOKIE, session.getUuid());
 
-            if(shouldSendSAMLResponseToBackend()){
+            if(shouldSendSAMLResponseToBackend()) {
 
                 Map<String , String> samlResponses = (Map<String, String>) session.getAttribute(SAMLUtils.SESSION_ATTRIBUTE_RAW_SAML_RESPONSES);
 
                 String samlResponseForApp = null;
 
-                if(samlResponses != null && (samlResponseForApp = samlResponses.get(webApp.getUUID())) != null){
+                if(samlResponses != null && (samlResponseForApp = samlResponses.get(webApp.getUUID())) != null) {
 
                     addTransportHeader(messageContext, HTTP_HEADER_SAML_RESPONSE, samlResponseForApp);
 
-                    if(log.isDebugEnabled()){
+                    if(log.isDebugEnabled()) {
                         GatewayUtils.logWithRequestInfo(log, messageContext, "SAML response has been set in the request to the backend.");
                     }
 
-                }else{
+                } else {
 
-                    if(log.isDebugEnabled()){
+                    if(log.isDebugEnabled()) {
                         GatewayUtils.logWithRequestInfo(log, messageContext, "Couldn't find the SAML response for the app in the session.");
                     }
                 }
@@ -217,13 +218,13 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
                 Map<String, String> generatedJWTs = (Map<String, String>) session.getAttribute(SESSION_ATTRIBUTE_JWTS);
 
                 String jwtForApp = null;
-                if(generatedJWTs != null && (jwtForApp = generatedJWTs.get(webApp.getUUID())) != null){
+                if(generatedJWTs != null && (jwtForApp = generatedJWTs.get(webApp.getUUID())) != null) {
                     addTransportHeader(messageContext, jwtHeaderName, jwtForApp);
-                    if(log.isDebugEnabled()){
+                    if(log.isDebugEnabled()) {
                         GatewayUtils.logWithRequestInfo(log, messageContext, "JWT has been set in the request to the backend.");
                     }
-                }else{
-                    if(log.isDebugEnabled()){
+                } else {
+                    if(log.isDebugEnabled()) {
                         GatewayUtils.logWithRequestInfo(log, messageContext, "Couldn't find the generated JWT for the app in the session.");
                     }
                 }
@@ -262,11 +263,11 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
 
         String sessionId = CacheManager.getInstance().getSessionIndexMappingCache().get(sessionIndex);
 
-        if(sessionId != null){
+        if(sessionId != null) {
             GatewayUtils.logWithRequestInfo(log, messageContext, String.format("Found a session id (md5 : '%s')for the given session index in the SLO request: '%s'. Clearing the session", GatewayUtils.getMD5Hash(sessionId), sessionIndex));
             SessionStore.getInstance().removeSession(sessionId);
             CacheManager.getInstance().getSessionIndexMappingCache().remove(sessionIndex);
-        }else{
+        } else {
             GatewayUtils.logWithRequestInfo(log, messageContext, String.format("Couldn't find a session id for the given session index : '%s'", sessionIndex));
         }
 
@@ -294,7 +295,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
         try {
             idpMessage = SAMLUtils.processIDPMessage(messageContext);
 
-            if(idpMessage.getSAMLResponse() == null && idpMessage.getSAMLRequest() == null){
+            if(idpMessage.getSAMLResponse() == null && idpMessage.getSAMLRequest() == null) {
                 String errorMessage = String.format("A SAML request or response was not there in the request to the ACS URL ('%s')", fullResourceURL);
                 GatewayUtils.logAndThrowException(log, errorMessage, null);
             }
@@ -332,12 +333,12 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
             GatewayUtils.logWithRequestInfo(log, messageContext, "SAMLResponse in an SLO response.");
             GatewayUtils.redirectToURL(messageContext, GatewayUtils.getAppRootURL(messageContext));
             return false;
-        }else if(idpMessage.isSLORequest()){
+        } else if(idpMessage.isSLORequest()) {
             GatewayUtils.logWithRequestInfo(log, messageContext, "SAMLRequest in an SLO request.");
             OMElement response = handleSLORequest(messageContext, (LogoutRequest) idpMessage.getSAMLRequest());
             GatewayUtils.send200(messageContext, response);
             return false;
-        } else{
+        } else {
 
             //Validate SAML response validity period
             if (!idpMessage.validateAssertionValidityPeriod()) {
@@ -353,7 +354,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
 
             AuthenticationContext authenticationContext = getAuthenticationContextFromIDPCallback(idpMessage);
 
-            if(authenticationContext.isAuthenticated()){;
+            if(authenticationContext.isAuthenticated()) {
 
                 if(log.isDebugEnabled()){
                     GatewayUtils.logWithRequestInfo(log, messageContext, String.format("SAML response is authenticated. Subject = '%s'", authenticationContext.getSubject()));
@@ -389,7 +390,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
 
                 String roleAttributeValue = (String) userAttributes.get("http://wso2.org/claims/role");
 
-                if(roleAttributeValue != null){
+                if(roleAttributeValue != null) {
                     String[] roles = roleAttributeValue.split(",");
                     for(String role : roles){
                         session.getAuthenticationContext().addRole(role);
@@ -397,7 +398,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
                 }
 
                 // Generate the JWT and store in the session.
-                if(isJWTEnabled()){
+                if(isJWTEnabled()) {
                     try {
 
                         //Generate and store the JWT against the app.
@@ -418,9 +419,9 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
                 }
 
                 SessionStore.getInstance().updateSession(session);
-                if(session.getRequestedURL() != null){
+                if(session.getRequestedURL() != null) {
                     GatewayUtils.redirectToURL(messageContext, session.getRequestedURL());
-                }else{
+                } else {
                     log.warn(String.format("Original requested URL in the session is null. Redirecting to the app root URL."));
                     GatewayUtils.redirectToURL(messageContext, GatewayUtils.getAppRootURL(messageContext));
 
@@ -429,7 +430,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
                 return false;
             }else{
 
-                if(log.isDebugEnabled()){
+                if(log.isDebugEnabled()) {
                     GatewayUtils.logWithRequestInfo(log, messageContext, "SAML response is not authenticated.");
                 }
 
@@ -461,13 +462,13 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
 
             Map<String, String> cookies = parseRequestCookieHeader(cookieHeaderValue);
 
-            if(cookies.get(AppMConstants.APPM_SAML2_COOKIE) != null){
-                if(log.isDebugEnabled()){
+            if(cookies.get(AppMConstants.APPM_SAML2_COOKIE) != null) {
+                if(log.isDebugEnabled()) {
                     GatewayUtils.logWithRequestInfo(log, messageContext, String.format("Cookie '%s' is available in the request.", AppMConstants.APPM_SAML2_COOKIE));
                 }
                 messageContext.setProperty(AppMConstants.APPM_SAML2_COOKIE, cookies.get(AppMConstants.APPM_SAML2_COOKIE));
-            }else{
-                if(log.isDebugEnabled()){
+            } else {
+                if(log.isDebugEnabled()) {
                     GatewayUtils.logWithRequestInfo(log, messageContext, String.format("Cookie '%s' is not available in the request.", AppMConstants.APPM_SAML2_COOKIE));
                 }
             }
@@ -484,7 +485,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
 
             String [] cookieTokens = cookieHeaderValue.split(";");
 
-            if(cookieTokens != null && cookieTokens.length > 0){
+            if(cookieTokens != null && cookieTokens.length > 0) {
                 for(String cookieToken : cookieTokens){
                     String[] cookieNameAndValue = cookieToken.split("=");
                     if(cookieNameAndValue != null && cookieNameAndValue.length == 2){
