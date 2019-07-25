@@ -205,6 +205,9 @@ public class SQLConstants {
     public static final String REMOVE_SUBSCRIBER_SQL = 
             " DELETE FROM APM_SUBSCRIBER WHERE SUBSCRIBER_ID = ?";
     
+    public static final String REMOVE_SUBSCRIBER_FROM_API_RATING_SQL = 
+    		" DELETE FROM APM_APP_RATINGS WHERE SUBSCRIBER_ID = ?";
+    
     public static final String GET_SUBSCRIBER_SQL = 
     		"SELECT USER_ID, TENANT_ID, EMAIL_ADDRESS, DATE_SUBSCRIBED " +
                     "FROM APM_SUBSCRIBER WHERE SUBSCRIBER_ID = ?";

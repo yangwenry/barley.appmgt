@@ -1274,13 +1274,18 @@ public class AppMDAO {
 	// (추가) 2019.07.23 - 새롭게 구현 
     public void removeSubscriber(int subscriberId) throws AppManagementException {
         Connection conn = null;
+        PreparedStatement deleteRatingPstm = null;
         PreparedStatement ps = null;
         try {
             conn = APIMgtDBUtil.getConnection();
             conn.setAutoCommit(false);
+            
+            String deleteRatingQuery = SQLConstants.REMOVE_SUBSCRIBER_FROM_API_RATING_SQL;
+            deleteRatingPstm = conn.prepareStatement(deleteRatingQuery);
+            deleteRatingPstm.setInt(1, subscriberId);
+            deleteRatingPstm.executeUpdate();
 
             String query = SQLConstants.REMOVE_SUBSCRIBER_SQL;
-
             ps = conn.prepareStatement(query);
             ps.setInt(1, subscriberId);
             ps.executeUpdate();
@@ -1296,6 +1301,7 @@ public class AppMDAO {
             }
             handleException("Error in deleting subscriber: " + e.getMessage(), e);
         } finally {
+        	APIMgtDBUtil.closeAllConnections(deleteRatingPstm, conn, null);
             APIMgtDBUtil.closeAllConnections(ps, conn, null);
         }
     }
