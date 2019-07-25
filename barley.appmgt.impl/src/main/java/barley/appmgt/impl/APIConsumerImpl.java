@@ -21,6 +21,7 @@ package barley.appmgt.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1510,13 +1511,27 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         }*/
     }
     
-    public void addSubscriber(Subscriber subscriber) throws AppManagementException {
-        appMDAO.addSubscriber(subscriber);
-        
-        Application defaultApp = getApplicationsByName(username, AppMConstants.DEFAULT_APPLICATION_NAME);
-    	if (defaultApp == null) {
-    		addDefaultApplicationForSubscriber(subscriber);
-    	} 
+    public void addSubscriber(String username) throws AppManagementException {
+    	Subscriber subscriber = new Subscriber(username);
+        subscriber.setSubscribedDate(new Date());
+        //TODO : need to set the proper email
+        subscriber.setEmail("");
+        try {
+            int tenantId = ServiceReferenceHolder.getInstance().getRealmService().getTenantManager()
+                    .getTenantId(MultitenantUtils.getTenantDomain(username));
+            subscriber.setTenantId(tenantId);
+    	
+	        appMDAO.addSubscriber(subscriber);
+	        
+	        Application defaultApp = getApplicationsByName(username, AppMConstants.DEFAULT_APPLICATION_NAME);
+	    	if (defaultApp == null) {
+	    		addDefaultApplicationForSubscriber(subscriber);
+	    	} 
+        } catch (AppManagementException e) {
+            handleException("Error while adding the subscriber " + subscriber.getName(), e);
+        } catch (barley.user.api.UserStoreException e) {
+            handleException("Error while adding the subscriber " + subscriber.getName(), e);
+        }
     }
     
     private void addDefaultApplicationForSubscriber(Subscriber subscriber) throws AppManagementException {
@@ -1532,12 +1547,10 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     		throw new AppManagementException("Subscriber for subscriberName:" + subscriberName +" does not exist.");
     	} 
     	Application defaultApp = getApplicationsByName(subscriberName, AppMConstants.DEFAULT_APPLICATION_NAME);
-    	if (defaultApp == null) {
-    		throw new AppManagementException("Application for subscriberName:" + subscriberName +" does not exist.");
+    	if (defaultApp != null) {
+    		// 기본 어플리케이션 삭제
+        	appMDAO.deleteApplication(defaultApp);
     	} 
-    	
-    	// 기본 어플리케이션 삭제
-    	appMDAO.deleteApplication(defaultApp);
     	appMDAO.removeSubscriber(subscriber.getId());
     }
 

@@ -159,12 +159,13 @@ public class APICommonImplTest extends BaseTestCase {
     // subscriber를 추가하면 자동으로 application을 생성한다.
     public void testSubscriber() throws AppManagementException {
     	String userId = "yangwenry@codefarm.co.kr";
+    	provider.addSubscriber(userId);
+    	
     	Subscriber subscriber = new Subscriber(userId);
     	subscriber.setEmail("yangwenry@gmail.com");
     	subscriber.setDescription("이제 구독의 시작입니다. 코드팜에서");
     	subscriber.setSubscribedDate(new Date());
     	subscriber.setTenantId(getTenantId());
-    	provider.addSubscriber(subscriber);
     	
     	int subscriberId = 6;
     	subscriber.setId(subscriberId);

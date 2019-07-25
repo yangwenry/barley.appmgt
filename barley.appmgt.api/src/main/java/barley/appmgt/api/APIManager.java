@@ -160,7 +160,9 @@ public interface APIManager {
      * @param subscriber The subscriber to be added
      * @throws AppManagementException if failed add subscriber
      */
-    public void addSubscriber(Subscriber subscriber) throws AppManagementException;
+    // (수정) apimgt와 같은 스펙으로 변경 
+    //public void addSubscriber(Subscriber subscriber) throws AppManagementException;
+    public void addSubscriber(String username) throws AppManagementException;
 
     /**
      * Updates the details of the given subscriber.

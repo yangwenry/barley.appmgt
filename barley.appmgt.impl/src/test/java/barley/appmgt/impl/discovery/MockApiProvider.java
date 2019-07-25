@@ -28,10 +28,11 @@ public class MockApiProvider extends AbstractAPIManager {
     }
 
 	@Override
-	public void addSubscriber(Subscriber subscriber) throws AppManagementException {
+	public void addSubscriber(String username) throws AppManagementException {
 		// TODO Auto-generated method stub
 		
 	}
 
+	
 
 }
