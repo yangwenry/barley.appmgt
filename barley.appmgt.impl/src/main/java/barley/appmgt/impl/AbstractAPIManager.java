@@ -39,6 +39,7 @@ import barley.appmgt.api.AppMgtResourceNotFoundException;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIKey;
 import barley.appmgt.api.model.Documentation;
+import barley.appmgt.api.model.Documentation.DocumentSourceType;
 import barley.appmgt.api.model.DocumentationType;
 import barley.appmgt.api.model.Icon;
 import barley.appmgt.api.model.SubscribedAPI;
@@ -694,6 +695,23 @@ public abstract class AbstractAPIManager implements APIManager {
         				 + documentationName + " of WebApp: "+identifier.getApiName(), e);
 		}
         return null;
+    }
+    
+    // (추가) 
+    public byte[] getDocumentationFile(APIIdentifier apiId, DocumentSourceType docSourceType, String filename) throws AppManagementException {
+    	byte[] content = null;
+    	if (Documentation.DocumentSourceType.FILE.equals(docSourceType)) {
+	    	String docFilePath = AppManagerUtil.getDocumentationFilePath(apiId, filename);
+	    	try {
+		    	if(registry.resourceExists(docFilePath)) {
+	                Resource docFile = registry.get(docFilePath);
+	                content = (byte[]) docFile.getContent();
+	            }
+	        } catch (RegistryException e) {
+	            handleException("Failed to get documentation file contents", e);
+	        }
+    	}
+        return content;
     }
 
     public boolean isContextExist(String context) throws AppManagementException {

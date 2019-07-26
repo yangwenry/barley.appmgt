@@ -30,6 +30,7 @@ import barley.appmgt.api.model.Icon;
 import barley.appmgt.api.model.Subscriber;
 import barley.appmgt.api.model.Tier;
 import barley.appmgt.api.model.WebApp;
+import barley.appmgt.api.model.Documentation.DocumentSourceType;
 
 /**
  * Core WebApp management interface which provides functionality related to APIs, WebApp metadata
@@ -153,6 +154,9 @@ public interface APIManager {
      */
     public String getDocumentationContent(APIIdentifier identifier, String documentationName)
             throws AppManagementException;
+    
+    // (추가)
+    public byte[] getDocumentationFile(APIIdentifier apiId, DocumentSourceType docSourceType, String filename) throws AppManagementException;
 
     /**
      * Creates a new subscriber. The newly created subscriber id will be set in the given object.

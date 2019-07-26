@@ -249,7 +249,7 @@ public class APICommonImplTest extends BaseTestCase {
     	String userName = "wso2.anonymous.user";
     	String[] deletedRoles = null;
     	String[] newRoles = {"everyone"};
-//    	realmService.getTenantUserRealm(tenantId).getUserStoreManager().updateRoleListOfUser(userName, deletedRoles, newRoles);
+    	realmService.getTenantUserRealm(tenantId).getUserStoreManager().updateRoleListOfUser(userName, deletedRoles, newRoles);
     	
     	// um_user_permission => um_permission
     	// 디프리케이트된 이유를 알겠음. 사용자는 롤별로 움직이기 때문에 굳이 사용자에게 퍼미션을 추가해 줄 필요가 없다. (굳이 사용하지 말자)
