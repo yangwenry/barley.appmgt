@@ -1972,5 +1972,28 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     public Comment[] getComments(APIIdentifier identifier) throws AppManagementException {
         return appMDAO.getComments(identifier);
     }
+    
+    
+    @Override
+    public List<WebApp> getSortedRatingAppList(int page, int count) throws AppManagementException {
+    	
+    	List<WebApp> result = new ArrayList<WebApp>();    	
+    	List<APIIdentifier> appList = appMDAO.getSortedRatingApp(page, count);
+	
+    	for(int i=0; i<appList.size(); i++) {
+
+    	    try {
+    	    	WebApp app = getAPI(appList.get(i));
+				
+				result.add(app);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}   
+    	}
+    	
+    	return result;
+    }
 
 }

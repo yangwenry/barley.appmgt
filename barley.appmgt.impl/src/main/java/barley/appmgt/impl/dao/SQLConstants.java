@@ -218,4 +218,35 @@ public class SQLConstants {
     
     public static final String REMOVE_APPLICATION_FROM_APPLICATIONS_SQL =
             "DELETE FROM APM_APPLICATION WHERE APPLICATION_ID = ?";
+    
+    public static final String GET_SORTED_RATING_APP_SQL =
+    		"SELECT " + 
+					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
+				"FROM( " +
+					"SELECT " +
+						"T.APP_ID, AVG(T.RATING) AS RATING " +
+						"FROM APM_APP_RATINGS T " +
+						"GROUP BY T.APP_ID " +
+						"HAVING AVG(T.RATING) " +
+						"ORDER BY AVG(T.RATING) DESC " +
+					 ") TA " +
+				"LEFT JOIN APM_APP TB " +
+					"ON TA.APP_ID = TB.APP_ID " +
+				"LEFT JOIN ( " +
+							"SELECT " + 
+								"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
+							"FROM ( " +
+								"SELECT " + 
+									  "APP_ID " +
+									", MAX(EVENT_ID) AS EVENT_ID " + 
+								"FROM APM_APP_LC_EVENT " + 
+								"GROUP BY APP_ID " +
+								 ") SA " +
+							"LEFT JOIN APM_APP_LC_EVENT SB " +
+								"ON (SA.APP_ID = sb.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
+							"WHERE SB.NEW_STATE = 'PUBLISHED' " +
+							") TC " +
+				"ON TA.APP_ID = TC.APP_ID " +
+				"ORDER BY TA.RATING DESC, TB.APP_ID DESC " +
+				"LIMIT ?, ?";
 }

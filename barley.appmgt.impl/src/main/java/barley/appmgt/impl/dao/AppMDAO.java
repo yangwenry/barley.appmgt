@@ -10024,4 +10024,44 @@ public class AppMDAO {
         BigDecimal decimal = new BigDecimal(avrRating);
         return Float.parseFloat(decimal.setScale(1, BigDecimal.ROUND_UP).toString());
     }
+    
+    
+    public List<APIIdentifier> getSortedRatingApp(int page, int count) throws AppManagementException {
+        Connection connection = null;
+        PreparedStatement selectPreparedStatement = null;
+        ResultSet resultSet = null;
+        
+        int startNo = (page-1) * count;
+        List<APIIdentifier> appList = new ArrayList<APIIdentifier>();
+        
+        try {
+           
+        	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
+        	
+            connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(true);
+            selectPreparedStatement = connection.prepareStatement(query);
+            selectPreparedStatement.setInt(1, startNo);
+            selectPreparedStatement.setInt(2, count);
+            resultSet = selectPreparedStatement.executeQuery();
+            while (resultSet.next()) {
+         	
+            	appList.add(new APIIdentifier(resultSet.getString("APP_ID")));
+            	
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    handleException("Failed to rollback getting Block conditions ", ex);
+                }
+            }
+            handleException("Failed to get Block conditions", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(selectPreparedStatement, connection, resultSet);
+        }
+        
+        return appList;
+    }
 }
