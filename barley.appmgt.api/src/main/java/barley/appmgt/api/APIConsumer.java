@@ -537,6 +537,8 @@ public interface APIConsumer extends APIManager {
 
     int getUserRating(APIIdentifier apiId, String user) throws AppManagementException;
 
-	List<WebApp> getSortedRatingAppList(int page, int count) throws AppManagementException;
+	List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count) throws AppManagementException;
+
+	List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count) throws AppManagementException;
     
 }

@@ -223,30 +223,63 @@ public class SQLConstants {
     		"SELECT " + 
 					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
 				"FROM( " +
-					"SELECT " +
-						"T.APP_ID, AVG(T.RATING) AS RATING " +
-						"FROM APM_APP_RATINGS T " +
-						"GROUP BY T.APP_ID " +
-						"HAVING AVG(T.RATING) " +
-						"ORDER BY AVG(T.RATING) DESC " +
+					"SELECT " + 
+						"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
+					"FROM ( " +
+						"SELECT " + 
+							  "APP_ID " +
+							", MAX(EVENT_ID) AS EVENT_ID " + 
+						"FROM APM_APP_LC_EVENT " + 
+						"GROUP BY APP_ID " +
+						 ") SA " +
+					"LEFT JOIN APM_APP_LC_EVENT SB " +
+						"ON (SA.APP_ID = SB.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
+					"WHERE SB.NEW_STATE = 'PUBLISHED' " +
 					 ") TA " +
-				"LEFT JOIN APM_APP TB " +
-					"ON TA.APP_ID = TB.APP_ID " +
+				"INNER JOIN APM_APP TB " +
+					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) " +
 				"LEFT JOIN ( " +
-							"SELECT " + 
-								"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
-							"FROM ( " +
-								"SELECT " + 
-									  "APP_ID " +
-									", MAX(EVENT_ID) AS EVENT_ID " + 
-								"FROM APM_APP_LC_EVENT " + 
-								"GROUP BY APP_ID " +
-								 ") SA " +
-							"LEFT JOIN APM_APP_LC_EVENT SB " +
-								"ON (SA.APP_ID = sb.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
-							"WHERE SB.NEW_STATE = 'PUBLISHED' " +
+							"SELECT " +
+								"T.APP_ID, AVG(T.RATING) AS RATING " +
+							"FROM APM_APP_RATINGS T " +
+							"GROUP BY T.APP_ID " +
+							"HAVING AVG(T.RATING) " +
+							"ORDER BY AVG(T.RATING) DESC " +
+							
 							") TC " +
 				"ON TA.APP_ID = TC.APP_ID " +
-				"ORDER BY TA.RATING DESC, TB.APP_ID DESC " +
+				"ORDER BY TC.RATING DESC, TA.APP_ID DESC " +
+				"LIMIT ?, ?";
+    
+    public static final String GET_SORTED_SUBS_CNT_APP_SQL =
+    		"SELECT " + 
+					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
+				"FROM( " +
+					"SELECT " + 
+						"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
+					"FROM ( " +
+						"SELECT " + 
+							  "APP_ID " +
+							", MAX(EVENT_ID) AS EVENT_ID " + 
+						"FROM APM_APP_LC_EVENT " + 
+						"GROUP BY APP_ID " +
+						 ") SA " +
+					"LEFT JOIN APM_APP_LC_EVENT SB " +
+						"ON (SA.APP_ID = SB.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
+					"WHERE SB.NEW_STATE = 'PUBLISHED' " +
+					 ") TA " +
+				"INNER JOIN APM_APP TB " +
+					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) " +
+				"LEFT JOIN ( " +
+							"SELECT " +
+								"T.APP_ID, COUNT(T.APP_ID) AS SUBS_CNT " +
+							"FROM APM_SUBSCRIPTION T " +
+							"GROUP BY T.APP_ID " +
+							//"HAVING COUNT(T.APP_ID) " +
+							"ORDER BY COUNT(T.APP_ID) DESC " +
+							
+							") TC " +
+				"ON TA.APP_ID = TC.APP_ID " +
+				"ORDER BY TC.SUBS_CNT DESC, TA.APP_ID DESC " +
 				"LIMIT ?, ?";
 }
