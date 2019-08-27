@@ -1975,10 +1975,32 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     
     
     @Override
-    public List<WebApp> getSortedRatingAppList(int page, int count) throws AppManagementException {
+    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count) throws AppManagementException {
     	
     	List<WebApp> result = new ArrayList<WebApp>();    	
-    	List<APIIdentifier> appList = appMDAO.getSortedRatingApp(page, count);
+    	List<APIIdentifier> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count);
+	
+    	for(int i=0; i<appList.size(); i++) {
+
+    	    try {
+    	    	WebApp app = getAPI(appList.get(i));
+				
+				result.add(app);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}   
+    	}
+    	
+    	return result;
+    }
+    
+    @Override
+    public List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count) throws AppManagementException {
+    	
+    	List<WebApp> result = new ArrayList<WebApp>();    	
+    	List<APIIdentifier> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count);
 	
     	for(int i=0; i<appList.size(); i++) {
 
