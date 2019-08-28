@@ -97,6 +97,8 @@ import barley.user.api.UserStoreException;
 class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
 
     private static final Log log = LogFactory.getLog(APIConsumerImpl.class);
+    public static final char COLON_CHAR = ':';
+    public static final String EMPTY_STRING = "";
 
     /* Map to Store APIs against Tag */
     private Map<String, Set<WebApp>> taggedAPIs;
@@ -357,7 +359,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                         String key;
                         //Check the configuration to allow showing multiple versions of an WebApp true/false
                         if (!displayMultipleVersions) { //If allow only showing the latest version of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                        	/*
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName();
                             WebApp existingAPI = latestPublishedAPIs.get(key);
                             if (existingAPI != null) {
                                 // If we have already seen an WebApp with the same name, make sure
@@ -369,8 +372,12 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                                 // We haven't seen this WebApp before
                                 latestPublishedAPIs.put(key, api);
                             }
+                            */
+               
+                        	key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId().getVersion();
+                        	latestPublishedAPIs.put(key, api);
                         } else { //If allow showing multiple versions of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId()
                                     .getVersion();
                             multiVersionedAPIs.add(api);
                         }
@@ -480,7 +487,7 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                         //Check the configuration to allow showing multiple versions of an WebApp true/false
                         if (!displayMultipleVersions) { //If allow only showing the latest version of an WebApp
                         	/*
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName();
                             WebApp existingAPI = latestPublishedAPIs.get(key);
                             if (existingAPI != null) {
                                 // If we have already seen an WebApp with the same name, make sure
@@ -493,10 +500,10 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                                 latestPublishedAPIs.put(key, api);
                             }
                             */
-                        	key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                        	key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId().getVersion();
                         	latestPublishedAPIs.put(key, api);
                         } else { //If allow showing multiple versions of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId()
                                     .getVersion();
                             multiVersionedAPIs.add(api);
                         }
@@ -596,7 +603,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                         String key;
                         //Check the configuration to allow showing multiple versions of an WebApp true/false
                         if (!displayMultipleVersions) { //If allow only showing the latest version of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                        	/*
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName();
                             WebApp existingAPI = latestPublishedAPIs.get(key);
                             if (existingAPI != null) {
                                 // If we have already seen an WebApp with the same name, make sure
@@ -608,8 +616,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                                 // We haven't seen this WebApp before
                                 latestPublishedAPIs.put(key, api);
                             }
+                            */
+                        	key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId().getVersion();
+                        	latestPublishedAPIs.put(key, api);
                         } else { //If allow showing multiple versions of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId()
                                     .getVersion();
                             multiVersionedAPIs.add(api);
                         }
@@ -654,7 +665,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
 	                        String key;
 	                        //Check the configuration to allow showing multiple versions of an WebApp true/false
 	                        if (!displayMultipleVersions) { //If allow only showing the latest version of an WebApp
-	                            key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+	                        	/*
+	                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName();
 	                            WebApp existingAPI = latestPublishedAPIs.get(key);
 	                            if (existingAPI != null) {
 	                                // If we have already seen an WebApp with the same name, make sure
@@ -666,8 +678,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
 	                                // We haven't seen this WebApp before
 	                                latestPublishedAPIs.put(key, api);
 	                            }
+	                            */
+	                        	key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId().getVersion();
+	                        	latestPublishedAPIs.put(key, api);
 	                        } else { //If allow showing multiple versions of an WebApp
-	                            key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
+	                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId()
 	                                    .getVersion();
 	                            multiVersionedAPIs.add(api);
 	                        }
@@ -909,7 +924,7 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
             Collection collection = userRegistry.executeQuery(tagsQueryPath, params);
             for (String fullTag : collection.getChildren()) {
                 //remove hardcoded path value
-                String tagName = fullTag.substring(fullTag.indexOf(";") + 1, fullTag.indexOf(":"));
+                String tagName = fullTag.substring(fullTag.indexOf(";") + 1, fullTag.indexOf(COLON_CHAR));
 
                 Set<WebApp> apisWithTag = getAppsWithTag(userRegistry, tagName, assetType, attributeMap);
                     /* Add the APIs against the tag name */
@@ -1006,7 +1021,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                         String key;
                         //Check the configuration to allow showing multiple versions of an WebApp true/false
                         if (!displayMultipleVersions) { //If allow only showing the latest version of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                        	/*
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName();
                             WebApp existingAPI = latestPublishedAPIs.get(key);
                             if (existingAPI != null) {
                                 // If we have already seen an WebApp with the same name, make sure
@@ -1018,8 +1034,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                                 // We haven't seen this WebApp before
                                 latestPublishedAPIs.put(key, api);
                             }
+                            */
+                        	key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId().getVersion();
+                        	latestPublishedAPIs.put(key, api);
                         } else { //If allow showing multiple versions of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId()
                                     .getVersion();
                             multiVersionedAPIs.add(api);
                         }
@@ -1141,7 +1160,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                         String key;
                         //Check the configuration to allow showing multiple versions of an WebApp true/false
                         if (!allowMultipleVersions) { //If allow only showing the latest version of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                        	/*
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName();
                             WebApp existingAPI = latestPublishedAPIs.get(key);
                             if (existingAPI != null) {
                                 // If we have already seen an WebApp with the same name, make sure
@@ -1153,8 +1173,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                                 // We haven't seen this WebApp before
                                 latestPublishedAPIs.put(key, api);
                             }
+                            */
+                        	key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId().getVersion();
+                        	latestPublishedAPIs.put(key, api);
                         } else { //If allow showing multiple versions of an WebApp
-                            key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
+                            key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId()
                                     .getVersion();
                             multiVersionedAPIs.add(api);
                         }
@@ -1795,7 +1818,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                     String key;
                     //Check the configuration to allow showing multiple versions of an WebApp true/false
                     if (!allowMultipleVersions) { //If allow only showing the latest version of an WebApp
-                        key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                    	/*
+                        key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName();
                         WebApp existingAPI = latestPublishedAPIs.get(key);
                         if (existingAPI != null) {
                             // If we have already seen an WebApp with the same name, make sure
@@ -1807,8 +1831,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                             // We haven't seen this WebApp before
                             latestPublishedAPIs.put(key, api);
                         }
+                        */
+                    	key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId().getVersion();
+                    	latestPublishedAPIs.put(key, api);
                     } else { //If allow showing multiple versions of an WebApp
-                        key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
+                        key = api.getId().getProviderName() + COLON_CHAR + api.getId().getApiName() + COLON_CHAR + api.getId()
                                 .getVersion();
                         multiVersionedAPIs.add(api);
                     }
