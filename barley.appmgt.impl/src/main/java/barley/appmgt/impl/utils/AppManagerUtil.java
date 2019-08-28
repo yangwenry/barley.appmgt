@@ -210,6 +210,7 @@ public final class AppManagerUtil {
 			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
 			// set last access time
 			api.setLastUpdated(registry.get(artifactPath).getLastModified());
+			api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 			// set url
 			api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
             api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
@@ -363,6 +364,7 @@ public final class AppManagerUtil {
 			}
 			api.addTags(tags);
 			//api.setLastUpdated(registry.get(artifactPath).getLastModified());
+			//api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 
             String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
                                                               AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
@@ -532,6 +534,7 @@ public final class AppManagerUtil {
             api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
             // set last access time
             api.setLastUpdated(registry.get(artifactPath).getLastModified());
+            api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
             // set url
             api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
             api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
@@ -679,6 +682,7 @@ public final class AppManagerUtil {
             }
             api.addTags(tags);
             //api.setLastUpdated(registry.get(artifactPath).getLastModified());
+            //api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 
             String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
                                                               AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
@@ -821,6 +825,7 @@ public final class AppManagerUtil {
 			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
 			// set last access time
 			api.setLastUpdated(registry.get(artifactPath).getLastModified());
+			api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 			// set url
 			api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
             api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
@@ -911,6 +916,7 @@ public final class AppManagerUtil {
 			}
 			api.addTags(tags);
 			//api.setLastUpdated(registry.get(artifactPath).getLastModified());
+			//api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 
             //Set Lifecycle status
             if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {

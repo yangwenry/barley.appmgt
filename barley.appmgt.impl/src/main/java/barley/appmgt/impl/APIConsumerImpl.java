@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -422,8 +423,12 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         */
         
         Map<String,Object> result=new HashMap<String, Object>();
-        SortedSet<WebApp> apiSortedSet = new TreeSet<WebApp>(new APINameComparator());
-        SortedSet<WebApp> apiVersionsSortedSet = new TreeSet<WebApp>(new APIVersionComparator());
+        //SortedSet<WebApp> apiSortedSet = new TreeSet<WebApp>(new APINameComparator());
+        //SortedSet<WebApp> apiVersionsSortedSet = new TreeSet<WebApp>(new APIVersionComparator());
+        // (수정) 이미 일자별 정렬해서 넘어오므로 정렬 컬렉션을 사용하지 않는다.
+        List<WebApp> apiSortedSet = new ArrayList<WebApp>();
+        List<WebApp> apiVersionsSortedSet = new ArrayList<WebApp>();
+        
         int totalLength=0;
         try {
             Registry userRegistry;
@@ -440,7 +445,9 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
             this.requestedTenant = tenantDomain;
             PrivilegedBarleyContext.getThreadLocalCarbonContext().setUsername(this.username);
 
-            Map<String, WebApp> latestPublishedAPIs = new HashMap<String, WebApp>();
+            //(수정) 순서를 보장하기 위해 컬렉션 변경
+            //Map<String, WebApp> latestPublishedAPIs = new HashMap<String, WebApp>();
+            Map<String, WebApp> latestPublishedAPIs = new LinkedHashMap<String, WebApp>();
             List<WebApp> multiVersionedAPIs = new ArrayList<WebApp>();
             Comparator<WebApp> versionComparator = new APIVersionComparator();
             Boolean displayMultipleVersions = isAllowDisplayMultipleVersions();
@@ -472,6 +479,7 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                         String key;
                         //Check the configuration to allow showing multiple versions of an WebApp true/false
                         if (!displayMultipleVersions) { //If allow only showing the latest version of an WebApp
+                        	/*
                             key = api.getId().getProviderName() + ":" + api.getId().getApiName();
                             WebApp existingAPI = latestPublishedAPIs.get(key);
                             if (existingAPI != null) {
@@ -484,6 +492,9 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
                                 // We haven't seen this WebApp before
                                 latestPublishedAPIs.put(key, api);
                             }
+                            */
+                        	key = api.getId().getProviderName() + ":" + api.getId().getApiName();
+                        	latestPublishedAPIs.put(key, api);
                         } else { //If allow showing multiple versions of an WebApp
                             key = api.getId().getProviderName() + ":" + api.getId().getApiName() + ":" + api.getId()
                                     .getVersion();
