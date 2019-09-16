@@ -3906,8 +3906,11 @@ public final class AppManagerUtil {
      */
     @Deprecated
     public static void createTenantSpecificConfigurationFilesInRegistry(int tenantID) throws AppManagementException {
+    	// (임시주석) 2019.09.16 - deprecated 되어 있어서 사용하지 않는걸로 보임
+    	/*
         loadOAuthScopeRoleMapping(tenantID);
         loadCustomAppPropertyDefinitions(tenantID);
+        */
     }
 
     /**
@@ -3918,7 +3921,8 @@ public final class AppManagerUtil {
      * @throws AppManagementException
      */
     public static void createTenantConfInRegistry(int tenantID) throws AppManagementException{
-
+    	// (임시주석) 2019.09.16 - 원래 소스에 app-tenant-conf.xml 자체가 없다. 용도가 확실하지 않아 주석
+    	/*
         RegistryService registryService = ServiceReferenceHolder.getInstance().getRegistryService();
         try {
 
@@ -3959,6 +3963,7 @@ public final class AppManagerUtil {
         } catch (IOException e) {
             throw new AppManagementException("Error while reading tenant conf file content", e);
         }
+        */
 
     }
 
