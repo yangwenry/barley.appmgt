@@ -38,9 +38,14 @@ public class RemoteUserManagerClient {
 		
 		try {
 
-			String clientRepo = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+			// (수정)
+//			String clientRepo = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+//                    File.separator + "deployment" + File.separator + "client";
+//			String clientAxisConf = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+//                    File.separator + "conf" + File.separator + "axis2"+ File.separator +"axis2_client.xml";
+			String clientRepo = AppManagerUtil.getAppManagerHome() + File.separator + "repository" +
                     File.separator + "deployment" + File.separator + "client";
-			String clientAxisConf = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+			String clientAxisConf = AppManagerUtil.getAppManagerHome() + File.separator + "repository" +
                     File.separator + "conf" + File.separator + "axis2"+ File.separator +"axis2_client.xml";
 			
 			ConfigurationContext configContext =   ConfigurationContextFactory. createConfigurationContextFromFileSystem(clientRepo,clientAxisConf);

@@ -29,6 +29,7 @@ import org.osgi.service.component.ComponentContext;
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.impl.discovery.ApplicationDiscoveryHandler;
 import barley.appmgt.impl.discovery.ApplicationDiscoveryServiceFactory;
+import barley.appmgt.impl.utils.AppManagerUtil;
 import barley.core.utils.BarleyUtils;
 
 /**
@@ -67,8 +68,10 @@ public class AppDiscoveryComponent {
      * @return
      */
     private AppDiscoveryConfiguration loadConfig() {
-        String filePath = BarleyUtils.getCarbonHome() + File.separator + "repository" +
-                File.separator + "conf" + File.separator + "app-manager.xml";
+    	// (수정) 2019.09.18 - 시스템 변수를 프로젝트 별 변수로 변경 
+//        String filePath = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+//                File.separator + "conf" + File.separator + "app-manager.xml";
+        String filePath = AppManagerUtil.getAppManagerConfigDirPath() + File.separator + "app-manager.xml";
         AppDiscoveryConfiguration discoveryConfiguration = new AppDiscoveryConfiguration();
         try {
             discoveryConfiguration.load(filePath);

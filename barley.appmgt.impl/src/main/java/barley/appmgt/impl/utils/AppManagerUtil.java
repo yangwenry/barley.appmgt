@@ -2848,9 +2848,12 @@ public final class AppManagerUtil {
 			throw new AppManagementException("Error when create registry instance ", e);
 		}
 
-		String rxtDir =
-		                BarleyUtils.getCarbonHome() + File.separator + "repository" +
-		                        File.separator + "resources" + File.separator + "rxts";
+		// (수정)
+//		String rxtDir = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+//		                        File.separator + "resources" + File.separator + "rxts";
+		String rxtDir = AppManagerUtil.getAppManagerHome() + File.separator + "repository" +
+                File.separator + "resources" + File.separator + "rxts";
+		
 		File file = new File(rxtDir);
 		FilenameFilter filenameFilter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
@@ -3986,7 +3989,9 @@ public final class AppManagerUtil {
 
         if(!registry.resourceExists(getCustomPropertyDefinitionsResourcePath(appType))){
 
-            String customPropertyDefinitions = BarleyUtils.getCarbonHome() + File.separator +
+        	// (수정)
+//            String customPropertyDefinitions = BarleyUtils.getCarbonHome() + File.separator +
+        	String customPropertyDefinitions = AppManagerUtil.getAppManagerHome() + File.separator +
                                                 AppMConstants.RESOURCE_FOLDER_LOCATION + File.separator +
                                                 AppMConstants.CUSTOM_PROPERTY_DEFINITIONS_PATH + File.separator +
                                                 appType + ".json";
@@ -4031,7 +4036,9 @@ public final class AppManagerUtil {
                 return;
             }
 
-            String oauthScopeRoleMappingFilePath = BarleyUtils.getCarbonHome() + File.separator +
+            // (수정)
+//            String oauthScopeRoleMappingFilePath = BarleyUtils.getCarbonHome() + File.separator +
+            String oauthScopeRoleMappingFilePath = AppManagerUtil.getAppManagerHome() + File.separator +
                                             AppMConstants.RESOURCE_FOLDER_LOCATION + File.separator +
                                             AppMConstants.OAUTH_SCOPE_ROLE_MAPPING_FILE;
 
@@ -4278,5 +4285,25 @@ public final class AppManagerUtil {
             handleException("Failed to get API artifact from : " + apiPath, e);
             return null;
         }
+    }
+    
+    // (추가) 2019.09.18 - 환경변수를 프로젝트 별로 분할 
+    public static String getAppManagerHome() {
+        String homeDirPath = System.getProperty(AppMConstants.APP_MANAGER_HOME);
+        if (homeDirPath == null) {
+            homeDirPath = BarleyUtils.getCarbonHome();
+            System.setProperty(AppMConstants.APP_MANAGER_HOME, homeDirPath);
+        }
+        return homeDirPath;
+    }
+
+    public static String getAppManagerConfigDirPath() {
+        String configDirPath = System.getProperty(AppMConstants.APP_MANAGER_CONFIG_DIR_PATH);
+        if (configDirPath == null) {
+            if (configDirPath == null) {
+                return getAppManagerHome() + File.separator + "repository" + File.separator + "conf";
+            }
+        }
+        return configDirPath;
     }
 }

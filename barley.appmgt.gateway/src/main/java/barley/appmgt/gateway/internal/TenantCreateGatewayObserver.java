@@ -44,6 +44,7 @@ import org.apache.synapse.mediators.base.SequenceMediator;
 //import org.wso2.carbon.mediation.registry.WSO2Registry;
 
 import barley.appmgt.impl.AppMConstants;
+import barley.appmgt.impl.utils.AppManagerUtil;
 import barley.core.utils.AbstractAxis2ConfigurationContextObserver;
 import barley.core.utils.BarleyUtils;
 
@@ -63,7 +64,11 @@ public class TenantCreateGatewayObserver extends AbstractAxis2ConfigurationConte
     private String faultSequenceName = "fault";
     private String mainSequenceName = "main";
     private String saml2SequenceName = "saml2_sequence";
-    private String synapseConfigRootPath = BarleyUtils.getCarbonHome() + AppMConstants.SYNAPSE_CONFIG_RESOURCES_PATH;
+    
+    // (수정) 2019.09.18 - 시스템 변수를 프로젝트 별 변수로 변경 
+    //private String synapseConfigRootPath = BarleyUtils.getCarbonHome() + AppMConstants.SYNAPSE_CONFIG_RESOURCES_PATH;
+    private String synapseConfigRootPath = AppManagerUtil.getAppManagerHome() + AppMConstants.SYNAPSE_CONFIG_RESOURCES_PATH;
+    
     private SequenceMediator authFailureHandlerSequence = null;
     private SequenceMediator resourceMisMatchSequence = null;
     private SequenceMediator throttleOutSequence = null;

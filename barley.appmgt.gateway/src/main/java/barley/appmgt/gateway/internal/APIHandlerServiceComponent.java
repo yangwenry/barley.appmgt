@@ -27,6 +27,7 @@ import barley.appmgt.gateway.service.AppManagerOAuth2Service;
 import barley.appmgt.impl.AppManagerConfiguration;
 import barley.appmgt.impl.AppManagerConfigurationService;
 import barley.appmgt.impl.AppManagerConfigurationServiceImpl;
+import barley.appmgt.impl.utils.AppManagerUtil;
 import barley.core.utils.BarleyUtils;
 import barley.core.utils.ConfigurationContextService;
 
@@ -53,9 +54,11 @@ public class APIHandlerServiceComponent {
         String filePath = null;
         try {
             //Initializing ApiManager Configuration
+        	// (수정) 2019.09.18 - 시스템 변수를 프로젝트 별 변수로 변경 
             AppManagerConfiguration configuration = new AppManagerConfiguration();
-            filePath = BarleyUtils.getCarbonHome() + File.separator + "repository" +
-                    File.separator + "conf" + File.separator + "app-manager.xml";
+//            filePath = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+//                    File.separator + "conf" + File.separator + "app-manager.xml";
+            filePath = AppManagerUtil.getAppManagerConfigDirPath() + File.separator + "app-manager.xml";
             configuration.load(filePath);
             amConfigService = new AppManagerConfigurationServiceImpl(configuration);
             ServiceReferenceHolder.getInstance().setAPIManagerConfigurationService(amConfigService);
