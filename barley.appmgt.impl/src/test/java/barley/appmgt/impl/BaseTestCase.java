@@ -84,6 +84,8 @@ public class BaseTestCase extends TestCase {
         */
     	System.setProperty(ServerConstants.CARBON_HOME, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APIM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\");
         System.setProperty(ServerConstants.CARBON_CONFIG_DIR_PATH, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APIM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\repository\\conf\\");
+        System.setProperty(AppMConstants.APP_MANAGER_HOME, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APIM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\");
+        System.setProperty(AppMConstants.APP_MANAGER_CONFIG_DIR_PATH, "D:\\Workspace_STS_SaaSPlatform\\Workspace_STS_APIM\\barley.appmgt\\barley.appmgt.impl\\src\\test\\resources\\repository\\conf\\");
         System.setProperty("registry.config", "registry.xml");
         // BLOB 값을 쓰고 읽을 때 사용 
         System.setProperty("carbon.registry.character.encoding", "UTF-8");
