@@ -45,7 +45,6 @@ public class APPManagerConfigurationServiceComponent {
     private static final Log log = LogFactory.getLog(APPManagerConfigurationServiceComponent.class);
     private static AppManagerConfigurationService amConfigService;
 
-    /* (주석) 사용하는 곳이 없다. 
     protected void activate(ComponentContext componentContext) throws Exception {
 
         if (log.isDebugEnabled()) {
@@ -96,5 +95,4 @@ public class APPManagerConfigurationServiceComponent {
     protected void unsetConfigurationContextService(ConfigurationContextService contextService) {
         ServiceReferenceHolder.setContextService(null);
     }
-    */
 }

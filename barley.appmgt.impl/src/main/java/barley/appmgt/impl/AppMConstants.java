@@ -804,10 +804,6 @@ public final class AppMConstants {
 
     public static final String IDP_AUTHENTICATED_COOKIE = "idp-authenticated-cookie";
 
-    // (추가) 2019.09.18 - 시스템 변수를 프로젝트 별 변수로 변경 
-	public static final String APP_MANAGER_HOME = "app.manager.home";;
-	public static final String APP_MANAGER_CONFIG_DIR_PATH = "app.manager.config.dir.path";
-
     public  static class MediaType {
         public static final String WEB_APP = "application/vnd.wso2-webapp+xml";
         public static final String MOBILE_APP = "application/vnd.wso2-mobileapp+xml";

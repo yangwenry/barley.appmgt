@@ -148,10 +148,8 @@ public class AppManagerComponent {
             addDefinedSequencesToRegistry();
 
             AppManagerConfiguration configuration = new AppManagerConfiguration();
-            // (수정) 2019.09.18 - 시스템 변수를 프로젝트 별 변수로 변경 
-//            String filePath = BarleyUtils.getCarbonHome() + File.separator + "repository" +
-//                    File.separator + "conf" + File.separator + "app-manager.xml";
-            String filePath = AppManagerUtil.getAppManagerConfigDirPath() + File.separator + "app-manager.xml";
+            String filePath = BarleyUtils.getCarbonHome() + File.separator + "repository" +
+                    File.separator + "conf" + File.separator + "app-manager.xml";
             configuration.load(filePath);
 
             int tenantId = PrivilegedBarleyContext.getThreadLocalCarbonContext().getTenantId();
@@ -365,10 +363,7 @@ public class AppManagerComponent {
     }
 
     public void addRxtConfigs() throws AppManagementException {
-    	// (수정) 2019.09.18 
-//        String rxtDir = BarleyUtils.getCarbonHome() + File.separator + "repository" + File.separator +
-//                "resources" + File.separator + "rxts";
-    	String rxtDir = AppManagerUtil.getAppManagerHome() + File.separator + "repository" + File.separator +
+        String rxtDir = BarleyUtils.getCarbonHome() + File.separator + "repository" + File.separator +
                 "resources" + File.separator + "rxts";
         File file = new File(rxtDir);
         //create a FilenameFilter
