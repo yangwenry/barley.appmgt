@@ -158,9 +158,7 @@ public final class AppMConstants {
     public static final int ASSET_CREATED_DATE_LENGTH = 20;
 
     // Those constance are used in WebApp artifact.
-    public static final String API_OVERVIEW_NAME = "overview_name";
-    // (추가) 2019.05.29 - 신규로 추가 
-    public static final String API_OVERVIEW_TITLE = "overview_title";
+    public static final String API_OVERVIEW_NAME = "overview_name";    
     public static final String API_OVERVIEW_DISPLAY_NAME = "overview_displayName";
     public static final String API_OVERVIEW_VERSION = "overview_version";
     public static final String API_OVERVIEW_CONTEXT = "overview_context";
@@ -247,6 +245,11 @@ public final class AppMConstants {
     public static final String MOBILE_APP_IMAGES_SCREENSHOTS = "images_screenshots";
     public static final String MOBILE_APP_IMAGES_THUMBNAIL= "images_thumbnail";
     public static final String MOBILE_APP_TYPE_PUBLIC= "public";
+    
+    // (추가) 2019.05.29 - 신규로 추가 
+    public static final String API_OVERVIEW_TITLE = "overview_title";
+    // (추가) 2019.09.26 - 카테고리 항목 추가
+    public static final String API_OVERVIEW_CATEGORY = "overview_category";
 
     //Those constance are used in Provider artifact.
     public static final String PROVIDER_OVERVIEW_NAME= "overview_name";

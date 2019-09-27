@@ -205,6 +205,8 @@ public final class AppManagerUtil {
             
             // (추가) 2019.05.29 - 타이틀 추가
             api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
+            // (추가) 2019.09.26 - API에 카테고리 속성 추가
+            api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
 
             // set description
 			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
@@ -529,6 +531,8 @@ public final class AppManagerUtil {
             
             // (추가) 2019.05.29 - 타이틀 추가
             api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
+            // (추가) 2019.09.26 - API에 카테고리 속성 추가
+            api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
 
             // set description
             api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
@@ -745,6 +749,8 @@ public final class AppManagerUtil {
             
             // (추가) 2019.05.29 - 타이틀 추가
             api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
+            // (추가) 2019.09.26 - API에 카테고리 속성 추가
+            api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
             
             api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
 
@@ -984,7 +990,9 @@ public final class AppManagerUtil {
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_NAME, api.getId().getApiName());
 			// (추가) 2019.05.29 - 타이틀 추가
             artifact.setAttribute(AppMConstants.API_OVERVIEW_TITLE, api.getTitle());
-			artifact.setAttribute(AppMConstants.API_OVERVIEW_VERSION, api.getId().getVersion());
+            // (추가) 2019.09.26 - API에 카테고리 속성 추가
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_CATEGORY, api.getCategory());
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_VERSION, api.getId().getVersion());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_CONTEXT, api.getContext());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_PROVIDER, api.getId().getProviderName());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION, api.getDescription());
@@ -1108,6 +1116,7 @@ public final class AppManagerUtil {
 	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to create WebApp
 	 */
+	@Deprecated
 	public static GenericArtifact createMobileAppArtifactContent(GenericArtifact artifact, MobileApp mobileApp)
 			throws
 			AppManagementException {
@@ -1116,6 +1125,8 @@ public final class AppManagerUtil {
             artifact.setAttribute(AppMConstants.API_OVERVIEW_NAME, mobileApp.getAppName());
             // (추가) 2019.05.29 - 타이틀 추가
             artifact.setAttribute(AppMConstants.API_OVERVIEW_TITLE, mobileApp.getTitle());
+            // (추가) 2019.09.26 - API에 카테고리 속성 추가
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_CATEGORY, mobileApp.getCategory());
             artifact.setAttribute(AppMConstants.MOBILE_APP_OVERVIEW_URL, mobileApp.getAppUrl());
             //artifact.setAttribute(AppMConstants.API_OVERVIEW_VISIBILITY, mobileApp.getVisibility());
             artifact.setAttribute(AppMConstants.MOBILE_APP_OVERVIEW_BUNDLE_VERSION, mobileApp.getBundleVersion());
@@ -1161,6 +1172,8 @@ public final class AppManagerUtil {
             artifact.setAttribute(AppMConstants.API_OVERVIEW_NAME, webApp.getId().getApiName());
             // (추가) 2019.05.29 - 타이틀 추가
             artifact.setAttribute(AppMConstants.API_OVERVIEW_TITLE, webApp.getTitle());
+            // (추가) 2019.09.26 - API에 카테고리 속성 추가
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_CATEGORY, webApp.getCategory());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_VERSION, webApp.getId().getVersion());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_CONTEXT, webApp.getContext());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME, webApp.getDisplayName());

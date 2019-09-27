@@ -4538,10 +4538,16 @@ public class AppMDAO {
         Connection connection = null;
         PreparedStatement prepStmt = null;
         ResultSet rs = null;
-        String businessOwnerName = app.getBusinessOwner();
+        //String businessOwnerName = app.getBusinessOwner();
+        
+        // (수정) CREATED_BY,CREATED_TIME, CATEGORY, THUMBNAIL_URL, DESCRIPTION 항목 추가
+//        String query = "INSERT INTO APM_APP(APP_PROVIDER, TENANT_ID, APP_NAME, APP_VERSION, CONTEXT, TRACKING_CODE, " +
+//                        "VISIBLE_ROLES, UUID, SAML2_SSO_ISSUER, LOG_OUT_URL,APP_ALLOW_ANONYMOUS, APP_ENDPOINT, TREAT_AS_SITE) " +
+//                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         String query = "INSERT INTO APM_APP(APP_PROVIDER, TENANT_ID, APP_NAME, APP_VERSION, CONTEXT, TRACKING_CODE, " +
-                        "VISIBLE_ROLES, UUID, SAML2_SSO_ISSUER, LOG_OUT_URL,APP_ALLOW_ANONYMOUS, APP_ENDPOINT, TREAT_AS_SITE) " +
-                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "VISIBLE_ROLES, UUID, SAML2_SSO_ISSUER, LOG_OUT_URL,APP_ALLOW_ANONYMOUS, APP_ENDPOINT, TREAT_AS_SITE, " + 
+        		"CREATED_BY, CREATED_TIME, CATEGORY, THUMBNAIL_URL, DESCRIPTION) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             String gatewayURLs = ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().
@@ -4578,6 +4584,15 @@ public class AppMDAO {
             prepStmt.setBoolean(11, app.getAllowAnonymous());
             prepStmt.setString(12, app.getUrl());
             prepStmt.setBoolean(13, Boolean.parseBoolean(app.getTreatAsASite()));
+            
+            // (추가) 일자 추가 
+            prepStmt.setString(14, AppManagerUtil.replaceEmailDomainBack(app.getId().getProviderName()));
+            prepStmt.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
+            
+            // (추가) 2019.09.26 - 카테고리, 썸네일, 설명 컬럼 추가 
+            prepStmt.setString(16, app.getCategory());
+            prepStmt.setString(17, app.getThumbnailUrl());
+            prepStmt.setString(18, app.getDescription());
 
             prepStmt.execute();
 
@@ -5181,13 +5196,23 @@ public class AppMDAO {
 		return contexts;
 	}
 
-	public void updateAPI(WebApp api, String authorizedAdminCookie) throws AppManagementException {
+	public void updateWebApp(WebApp api, String authorizedAdminCookie) throws AppManagementException {
 		Connection connection = null;
 		PreparedStatement prepStmt = null;
         ResultSet rs = null;
+        
+        // (수정) CATEGORY, THUMBNAIL_URL, DESCRIPTION 항목 추가 
+//        String query = "UPDATE APM_APP " +
+//                    " SET CONTEXT = ?, LOG_OUT_URL  = ?, APP_ALLOW_ANONYMOUS = ?, APP_ENDPOINT = ? ,TREAT_AS_SITE = ? ," +
+//                    " VISIBLE_ROLES = ? WHERE APP_PROVIDER = ? AND APP_NAME = ? AND APP_VERSION = ? ";
         String query = "UPDATE APM_APP " +
-                    " SET CONTEXT = ?, LOG_OUT_URL  = ?, APP_ALLOW_ANONYMOUS = ?, APP_ENDPOINT = ? ,TREAT_AS_SITE = ? ," +
-                    " VISIBLE_ROLES = ? WHERE APP_PROVIDER = ? AND APP_NAME = ? AND APP_VERSION = ? ";
+                " SET CONTEXT = ?, LOG_OUT_URL  = ?, APP_ALLOW_ANONYMOUS = ?, APP_ENDPOINT = ? ,TREAT_AS_SITE = ? , VISIBLE_ROLES = ?, " +
+                "     UPDATED_BY = ?," +
+                "     UPDATED_TIME = ?, " +
+                "     CATEGORY = ?, " +
+                "     THUMBNAIL_URL = ?, " +
+                "     DESCRIPTION = ? " +
+                "WHERE APP_PROVIDER = ? AND APP_NAME = ? AND APP_VERSION = ? ";
 
 		String gatewayURLs = ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().
 				getAPIManagerConfiguration().getFirstProperty(GATEWAY_URL);
@@ -5213,9 +5238,19 @@ public class AppMDAO {
             prepStmt.setString(4, api.getUrl());
             prepStmt.setBoolean(5, Boolean.parseBoolean(api.getTreatAsASite()));
             prepStmt.setString(6, api.getVisibleRoles());
+            
+            // (추가) 수정일자, 수정자 추가 
             prepStmt.setString(7, AppManagerUtil.replaceEmailDomainBack(api.getId().getProviderName()));
-            prepStmt.setString(8, api.getId().getApiName());
-            prepStmt.setString(9, api.getId().getVersion());
+            prepStmt.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+            
+            // (추가) 2019.09.26 - 카테고리, 썸네일, 설명 컬럼 추가 
+            prepStmt.setString(9, api.getCategory());
+            prepStmt.setString(10, api.getThumbnailUrl());
+            prepStmt.setString(11, api.getDescription());
+            
+            prepStmt.setString(12, AppManagerUtil.replaceEmailDomainBack(api.getId().getProviderName()));
+            prepStmt.setString(13, api.getId().getApiName());
+            prepStmt.setString(14, api.getId().getVersion());
             prepStmt.execute();
 
 			int webAppId = getWebAppIdFromUUID(api.getUUID(), connection);

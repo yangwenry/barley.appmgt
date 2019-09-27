@@ -30,6 +30,10 @@ public class WebApp extends App {
     
     // 2019.05.29 - 검색을 title 추가 
     private String title;
+    // (추가) 2019.09.26 - API에 카테고리 속성 추가
+    private String category;
+	// (추가) 2019.09.26 - 리스트 조회시 필요한 구독자수를 추가 
+    private int subscriptionCount;
 
     private String description;
     private String url;
@@ -315,6 +319,7 @@ public class WebApp extends App {
     }
 
     public Date getLastUpdated() {
+    	if(lastUpdated == null) return null;
         return new Date(lastUpdated.getTime());
     }
 
@@ -323,6 +328,7 @@ public class WebApp extends App {
     }
     
     public Date getCreatedDate() {
+    	if(createdDate == null) return null;
         return new Date(createdDate.getTime());
     }
 
@@ -828,5 +834,21 @@ public class WebApp extends App {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public int getSubscriptionCount() {
+		return subscriptionCount;
+	}
+
+	public void setSubscriptionCount(int subscriptionCount) {
+		this.subscriptionCount = subscriptionCount;
 	}
 }

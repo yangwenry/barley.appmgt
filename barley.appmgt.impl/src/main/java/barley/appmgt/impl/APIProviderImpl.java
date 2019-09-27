@@ -1157,7 +1157,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     api.setApiHeaderChanged(true);
                 }
 
-                appMDAO.updateAPI(api, authorizedAdminCookie);
+                appMDAO.updateWebApp(api, authorizedAdminCookie);
 
                 AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
                         getAPIManagerConfigurationService().getAPIManagerConfiguration();
