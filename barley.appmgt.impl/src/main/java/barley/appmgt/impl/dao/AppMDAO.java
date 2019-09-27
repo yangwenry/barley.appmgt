@@ -10061,60 +10061,33 @@ public class AppMDAO {
     }
     
     
-    public List<APIIdentifier> getSortedRatingApp(String tenantDomain, int page, int count) throws AppManagementException {
-        Connection connection = null;
-        PreparedStatement selectPreparedStatement = null;
-        ResultSet resultSet = null;
-        
-        int startNo = (page-1) * count;
-        List<APIIdentifier> appList = new ArrayList<APIIdentifier>();
-        
-        try {
-           
-        	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
-        	
-            connection = APIMgtDBUtil.getConnection();
-            connection.setAutoCommit(true);
-            selectPreparedStatement = connection.prepareStatement(query);
-            selectPreparedStatement.setNString(1, tenantDomain);
-            selectPreparedStatement.setInt(2, startNo);
-            selectPreparedStatement.setInt(3, count);
-            resultSet = selectPreparedStatement.executeQuery();
-            while (resultSet.next()) {
-         	
-            	appList.add(new APIIdentifier(resultSet.getString("APP_ID")));
-            	
-            }
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    handleException("Failed to rollback getting Block conditions ", ex);
-                }
-            }
-            handleException("Failed to get Block conditions", e);
-        } finally {
-            APIMgtDBUtil.closeAllConnections(selectPreparedStatement, connection, resultSet);
-        }
-        
-        return appList;
+    public List<WebApp> getSortedRatingApp(String tenantDomain, int page, int count) throws AppManagementException {
+    	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
+        return getSortedAppList(query, tenantDomain, page, count);
     }
     
     
-    public List<APIIdentifier> getSortedSubscribersCountApp(String tenantDomain, int page, int count) throws AppManagementException {
-        Connection connection = null;
+    public List<WebApp> getSortedSubscribersCountApp(String tenantDomain, int page, int count) throws AppManagementException {
+    	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
+    	return getSortedAppList(query, tenantDomain, page, count);
+    }
+    
+    public List<WebApp> getSortedCreatedTimeApp(String tenantDomain, int page, int count) throws AppManagementException {
+        String query = SQLConstants.GET_SORTED_CREATED_TIME_APP_SQL;
+    	return getSortedAppList(query, tenantDomain, page, count);
+    }
+    
+    private List<WebApp> getSortedAppList(String query, String tenantDomain, int page, int count) throws AppManagementException {
+    	Connection connection = null;
         PreparedStatement selectPreparedStatement = null;
         ResultSet resultSet = null;
         
         int startNo = (page-1) * count;
-        List<APIIdentifier> appList = new ArrayList<APIIdentifier>();
+        List<WebApp> appList = new ArrayList<WebApp>();
         
         try {
            
-        	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
-        	
-            connection = APIMgtDBUtil.getConnection();
+        	connection = APIMgtDBUtil.getConnection();
             connection.setAutoCommit(true);
             selectPreparedStatement = connection.prepareStatement(query);
             selectPreparedStatement.setNString(1, tenantDomain);
@@ -10123,8 +10096,19 @@ public class AppMDAO {
             resultSet = selectPreparedStatement.executeQuery();
             while (resultSet.next()) {
          	
-            	appList.add(new APIIdentifier(resultSet.getString("APP_ID")));
+            	WebApp app = new WebApp(new APIIdentifier(resultSet.getString("APP_ID")));
+            	app.setRating(resultSet.getFloat("RATING"));
+            	Date createdDate = resultSet.getDate("CREATED_TIME");
+            	if(createdDate != null) app.setCreatedDate(createdDate);
+            	Date updatedDate = resultSet.getDate("UPDATED_TIME");
+            	if(updatedDate != null) app.setLastUpdated(updatedDate);
+            	app.setStatus(AppManagerUtil.getApiStatus(resultSet.getString("STATE")));
+            	app.setSubscriptionCount(resultSet.getInt("SUBS_CNT"));
+            	app.setCategory(resultSet.getString("CATEGORY"));
+            	app.setThumbnailUrl(resultSet.getString("THUMBNAIL_URL"));
+            	app.setDescription(resultSet.getString("DESCRIPTION"));
             	
+            	appList.add(app);
             }
         } catch (SQLException e) {
             if (connection != null) {

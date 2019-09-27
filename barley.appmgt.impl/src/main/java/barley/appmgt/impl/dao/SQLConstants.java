@@ -219,9 +219,11 @@ public class SQLConstants {
     public static final String REMOVE_APPLICATION_FROM_APPLICATIONS_SQL =
             "DELETE FROM APM_APPLICATION WHERE APPLICATION_ID = ?";
     
-    public static final String GET_SORTED_RATING_APP_SQL =
+    public static final String GET_SORTED_APP_SQL_PREFIX =
     		"SELECT " + 
 					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
+					", TC.RATING, TB.CREATED_TIME, TB.UPDATED_TIME, TA.NEW_STATE AS STATE, TS.SUBS_CNT " +
+					", TB.CATEGORY, TB.THUMBNAIL_URL, TB.DESCRIPTION " +
 				"FROM( " +
 					"SELECT " + 
 						"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
@@ -248,38 +250,27 @@ public class SQLConstants {
 							
 							") TC " +
 				"ON TA.APP_ID = TC.APP_ID " +
-				"ORDER BY TC.RATING DESC, TA.APP_ID DESC " +
-				"LIMIT ?, ?";
-    
-    public static final String GET_SORTED_SUBS_CNT_APP_SQL =
-    		"SELECT " + 
-					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
-				"FROM( " +
-					"SELECT " + 
-						"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
-					"FROM ( " +
-						"SELECT " + 
-							  "APP_ID " +
-							", MAX(EVENT_ID) AS EVENT_ID " + 
-						"FROM APM_APP_LC_EVENT " + 
-						"GROUP BY APP_ID " +
-						 ") SA " +
-					"LEFT JOIN APM_APP_LC_EVENT SB " +
-						"ON (SA.APP_ID = SB.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
-					"WHERE SB.NEW_STATE = 'PUBLISHED' " +
-					 ") TA " +
-				"INNER JOIN APM_APP TB " +
-					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) " +
 				"LEFT JOIN ( " +
 							"SELECT " +
 								"T.APP_ID, COUNT(T.APP_ID) AS SUBS_CNT " +
 							"FROM APM_SUBSCRIPTION T " +
 							"GROUP BY T.APP_ID " +
-							//"HAVING COUNT(T.APP_ID) " +
 							"ORDER BY COUNT(T.APP_ID) DESC " +
-							
-							") TC " +
-				"ON TA.APP_ID = TC.APP_ID " +
-				"ORDER BY TC.SUBS_CNT DESC, TA.APP_ID DESC " +
+							") TS " +
+				"ON TA.APP_ID = TS.APP_ID ";
+    
+    public static final String GET_SORTED_RATING_APP_SQL =
+    		GET_SORTED_APP_SQL_PREFIX +
+				"ORDER BY TC.RATING DESC, TA.APP_ID DESC " +
+				"LIMIT ?, ?";
+    
+    public static final String GET_SORTED_SUBS_CNT_APP_SQL =
+    		GET_SORTED_APP_SQL_PREFIX +
+				"ORDER BY TS.SUBS_CNT DESC, TA.APP_ID DESC " +
+				"LIMIT ?, ?";
+    
+    public static final String GET_SORTED_CREATED_TIME_APP_SQL =
+    		GET_SORTED_APP_SQL_PREFIX +  
+				"ORDER BY TB.CREATED_TIME DESC, TA.APP_ID DESC " +
 				"LIMIT ?, ?";
 }

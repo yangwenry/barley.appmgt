@@ -2013,47 +2013,47 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     
     
     @Override
-    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count) throws AppManagementException {
-    	
-    	List<WebApp> result = new ArrayList<WebApp>();    	
-    	List<APIIdentifier> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count);
-	
-    	for(int i=0; i<appList.size(); i++) {
-
-    	    try {
-    	    	WebApp app = getAPI(appList.get(i));
-				
-				result.add(app);
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}   
-    	}
-    	
-    	return result;
+    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count) throws AppManagementException {    	
+    	List<WebApp> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count);
+    	return addAppAttributeFromRegistry(appList);
     }
     
     @Override
     public List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count) throws AppManagementException {
-    	
-    	List<WebApp> result = new ArrayList<WebApp>();    	
-    	List<APIIdentifier> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count);
-	
-    	for(int i=0; i<appList.size(); i++) {
-
-    	    try {
-    	    	WebApp app = getAPI(appList.get(i));
-				
-				result.add(app);
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}   
+    	List<WebApp> appList = appMDAO.getSortedSubscribersCountApp(tenantDomain, page, count);
+    	return addAppAttributeFromRegistry(appList);
+    }
+    
+    @Override
+    public List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count) throws AppManagementException {
+    	List<WebApp> appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count);
+    	return addAppAttributeFromRegistry(appList);
+    }
+    
+    private List<WebApp> addAppAttributeFromRegistry(List<WebApp> appList) throws AppManagementException {
+    	List<WebApp> result = new ArrayList<WebApp>();
+    	for(int i=0; i < appList.size(); i++) {
+    		
+    		WebApp app = appList.get(i);
+    		addAppTagsFromRegistry(app);
+    		
+    		result.add(app);
     	}
-    	
     	return result;
+    }
+    
+    private void addAppTagsFromRegistry(WebApp api) throws AppManagementException {
+    	Set<String> tags = new HashSet<String>();
+    	String apiPath = AppManagerUtil.getAPIPath(api.getId());
+		try {
+			barley.registry.core.Tag[] tag = registry.getTags(apiPath);
+			for (barley.registry.core.Tag tag1 : tag) {
+	            tags.add(tag1.getTagName());
+	        }
+	        api.addTags(tags);
+		} catch (RegistryException e) {
+			handleException("RegistryException thrown when gstting API tags from registry", e);
+		}
     }
 
 }
