@@ -52,6 +52,7 @@ import org.json.simple.JSONObject;
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.EntitlementService;
+import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.dto.UserApplicationAPIUsage;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
@@ -1151,43 +1152,16 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     updatePermissions = true;
                 }
                 */
+
+                // 1. registry 수정 
                 updateApiArtifact(api, true, updatePermissions);
             	
                 if (!oldApi.getContext().equals(api.getContext())) {
                     api.setApiHeaderChanged(true);
                 }
 
+                // 2. dao 수정 
                 appMDAO.updateWebApp(api, authorizedAdminCookie);
-
-                AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
-                        getAPIManagerConfigurationService().getAPIManagerConfiguration();
-                boolean gatewayExists = config.getApiGatewayEnvironments().size() > 0;
-                String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
-                boolean isAPIPublished = false;
-
-                isAPIPublished = isAPIPublished(api);
-                if (gatewayExists) {
-                    if (isAPIPublished) {
-                        WebApp apiPublished = getAPI(api.getId());
-                        apiPublished.setOldInSequence(oldApi.getInSequence());
-                        apiPublished.setOldOutSequence(oldApi.getOutSequence());
-
-                        //update version
-                        if (api.isDefaultVersion() || oldApi.isDefaultVersion()) {
-                            //remove both versioned/non versioned apis
-                            WebApp webApp = new WebApp(api.getId());
-                            webApp.setDefaultVersion(true);
-                            removeFromGateway(webApp);
-                        }
-
-                        //publish to gateway if skipGateway is disabled only
-                        if (!api.getSkipGateway()) {
-                            publishToGateway(apiPublished);
-                        }
-                    }
-                } else {
-                    log.debug("Gateway is not existed for the current WebApp Provider");
-                }
 
                
                 /*Boolean gatewayKeyCacheEnabled=false;
@@ -1231,6 +1205,43 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     Cache contextCache = AppManagerUtil.getAPIContextCache();
                     contextCache.remove(oldApi.getContext());
                     contextCache.put(api.getContext(), true);
+                }
+                
+                // 3. gateway 반영  
+                AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
+                        getAPIManagerConfigurationService().getAPIManagerConfiguration();
+                boolean gatewayExists = config.getApiGatewayEnvironments().size() > 0;
+                String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
+                boolean isAPIPublished = false;
+
+                if (AppMConstants.API_GATEWAY_TYPE_SYNAPSE.equalsIgnoreCase(gatewayType)) {
+                	if(gatewayExists) {
+                		isAPIPublished = isAPIPublished(api);
+	                    if (isAPIPublished) {
+	                        WebApp apiPublished = getAPI(api.getId());
+	                        apiPublished.setOldInSequence(oldApi.getInSequence());
+	                        apiPublished.setOldOutSequence(oldApi.getOutSequence());
+	
+	                        try {
+		                        //update version
+		                        if (api.isDefaultVersion() || oldApi.isDefaultVersion()) {
+		                            //remove both versioned/non versioned apis
+		                            WebApp webApp = new WebApp(api.getId());
+		                            webApp.setDefaultVersion(true);
+		                            removeFromGateway(webApp);
+		                        }
+		
+		                        //publish to gateway if skipGateway is disabled only
+		                        if (!api.getSkipGateway()) {
+		                            publishToGateway(apiPublished);
+		                        }
+	                        } catch (FaultGatewaysException e) {
+	                        	handleException("Error while Updating Api to Gateway ", e);
+							}
+	                    }
+	                } else {
+	                    log.debug("Gateway is not existed for the current WebApp Provider");
+	                }
                 }
 
             } catch (AppManagementException e) {
@@ -1445,8 +1456,16 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         if (!currentStatus.equals(status)) {
             api.setStatus(status);
             try {
+            	// 1. registry 수정 
+            	// (주석해제) 2018.03.13 - 왜 주석이 되어있는지 이유를 알 수 없다. 굳이 주석할 이유가 없다.
+            	updateApiArtifact(api, false, false);
+            	// 2. dao 수정 
+            	appMDAO.recordAPILifeCycleEvent(api.getId(), currentStatus, status, userId);
+            	
             	APIStatusObserverList observerList = APIStatusObserverList.getInstance();
                 observerList.notifyObservers(currentStatus, status, api);
+                
+                // 3. gateway 반영  
                 AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
                         getAPIManagerConfigurationService().getAPIManagerConfiguration();
                 String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
@@ -1466,30 +1485,30 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                             }
                         }
 
-                        if (status.equals(APIStatus.PUBLISHED) || status.equals(APIStatus.DEPRECATED) ||
-                                status.equals(APIStatus.BLOCKED)) {
-
-                            //update version
-                            if (status.equals(APIStatus.PUBLISHED)) {
-                                if (api.isDefaultVersion()) {
-                                    appMDAO.updateDefaultVersionDetails(api);
-                                }
-                            }
-
-                            //publish to gateway if skipGateway is disabled only
-                            if (!api.getSkipGateway()) {
-                                publishToGateway(api);
-                            }
-                        } else if(status.equals(APIStatus.UNPUBLISHED) || status.equals(APIStatus.RETIRED)) {
-                            removeFromGateway(api);
-                        }
+                        try {
+	                        if (status.equals(APIStatus.PUBLISHED) || status.equals(APIStatus.DEPRECATED) ||
+	                                status.equals(APIStatus.BLOCKED)) {
+	
+	                            //update version
+	                            if (status.equals(APIStatus.PUBLISHED)) {
+	                                if (api.isDefaultVersion()) {
+	                                    appMDAO.updateDefaultVersionDetails(api);
+	                                }
+	                            }
+	
+	                            //publish to gateway if skipGateway is disabled only
+	                            if (!api.getSkipGateway()) {
+	                                publishToGateway(api);
+	                            }
+	                        } else if(status.equals(APIStatus.UNPUBLISHED) || status.equals(APIStatus.RETIRED)) {
+	                            removeFromGateway(api);
+	                        }
+                        } catch (FaultGatewaysException e) {
+                        	handleException("Error while Updating Api to Gateway ", e);
+						}
                     }
                 }
                 
-                // (주석해제) 2018.03.13 - 왜 주석이 되어있는지 이유를 알 수 없다. 굳이 주석할 이유가 없다.
-            	updateApiArtifact(api, false, false);
-            	appMDAO.recordAPILifeCycleEvent(api.getId(), currentStatus, status, userId);
-
             } catch (AppManagementException e) {
             	handleException("Error occured in the status change : " + api.getId().getApiName() , e);
             }
@@ -1497,10 +1516,14 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
     }
 
     public void updateWebAppSynapse(WebApp api) throws AppManagementException {
-       removeFromGateway(api);
+       try {
+    	   removeFromGateway(api);
+		} catch (FaultGatewaysException e) {
+			handleException("Error while Updating Synapse to Gateway ", e);
+		}
     }
 
-    private void publishToGateway(WebApp api) throws AppManagementException {
+    private void publishToGateway(WebApp api) throws FaultGatewaysException, AppManagementException {
         APITemplateBuilder builder = null;
         String tenantDomain = null;
 //        if (api.getId().getProviderName().contains("AT")) {
@@ -1511,6 +1534,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         try{
             builder = getAPITemplateBuilder(api);
         }catch(Exception e){
+        	// (수정) 2019.09.27 - 게이트웨이 예외는 다르게 처리하자. 
             handleException("Error while publishing to Gateway ", e);
         }
 
@@ -1518,8 +1542,10 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         APIGatewayManager gatewayManager = APIGatewayManager.getInstance();
         try {
             gatewayManager.publishToGateway(api, builder, tenantDomain);
-        } catch (Exception e) {
-            handleException("Error while publishing to Gateway ", e);
+        } catch (AppManagementException e) {
+            // (수정) 2019.09.27 - 게이트웨이 예외는 다르게 처리하자. 
+        	// handleException("Error while publishing to Gateway ", e);
+            throw new FaultGatewaysException("Error while publishing to Gateway ", e);
         }
     }
 
@@ -1546,7 +1572,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         }
     }
 
-    private void removeFromGateway(WebApp api) throws AppManagementException {
+    private void removeFromGateway(WebApp api) throws FaultGatewaysException {
         String tenantDomain = null;
         if (api.getId().getProviderName().contains("@")) {
             tenantDomain = MultitenantUtils.getTenantDomain( api.getId().getProviderName());
@@ -1555,24 +1581,21 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         APIGatewayManager gatewayManager = APIGatewayManager.getInstance();
         try {
             gatewayManager.removeFromGateway(api, tenantDomain);
-        } catch (Exception e) {
-            handleException("Error while removing WebApp from Gateway ", e);
+        } catch (AppManagementException e) {
+        	// (수정) 2019.09.27 - 게이트웨이 예외는 다르게 처리하자. 
+            // handleException("Error while removing WebApp from Gateway ", e);
+            throw new FaultGatewaysException("Error while removing WebApp from Gateway ", e);
         }
     }
 
     private boolean isAPIPublished(WebApp api) throws AppManagementException {
-        try {
-            String tenantDomain = null;
-			if (api.getId().getProviderName().contains("AT")) {
-				String provider = api.getId().getProviderName().replace("-AT-", "@");
-				tenantDomain = MultitenantUtils.getTenantDomain( provider);
-			}
-            APIGatewayManager gatewayManager = APIGatewayManager.getInstance();
-            return gatewayManager.isAPIPublished(api, tenantDomain);
-        } catch (Exception e) {
-            handleException("Error while checking WebApp status", e);
-        }
-		return false;
+    	String tenantDomain = null;
+		if (api.getId().getProviderName().contains("AT")) {
+			String provider = api.getId().getProviderName().replace("-AT-", "@");
+			tenantDomain = MultitenantUtils.getTenantDomain( provider);
+		}
+        APIGatewayManager gatewayManager = APIGatewayManager.getInstance();
+        return gatewayManager.isAPIPublished(api, tenantDomain);
     }
 
     /**
@@ -2253,14 +2276,9 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         try {
         	registry.beginTransaction();
         	
-            long subsCount = appMDAO.getAPISubscriptionCountByAPI(identifier);
             Resource appArtifactResource = registry.get(appArtifactPath);
             String applicationStatus = appArtifactResource.getProperty(AppMConstants.WEB_APP_LIFECYCLE_STATUS);
-            if (subsCount > 0 && !applicationStatus.equals("Retired")) {
-                //remove subscriptions per app
-                appMDAO.removeAPISubscription(identifier);
-            }
-
+            
             //If SSOProvider exists, remove it
             if (ssoProvider != null) {
                 if (log.isDebugEnabled()) {
@@ -2297,17 +2315,24 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 
             WebApp webapp = new WebApp(identifier);
             // gatewayType check is required when WebApp Management is deployed on other servers to avoid synapse
-            if (gatewayExists && "Synapse".equals(gatewayType)) {
+            if (gatewayExists && AppMConstants.API_GATEWAY_TYPE_SYNAPSE.equalsIgnoreCase(gatewayType)) {
                 webapp.setInSequence(inSequence); //need to remove the custom sequences
                 webapp.setOutSequence(outSequence);
-                removeFromGateway(webapp);
+                try {
+                	removeFromGateway(webapp);
+                } catch (FaultGatewaysException e) {
+                	// 삭제의 경우 예외를 발생시키지 않는다. 예외 ignore... api-manager쪽 처리 또한 ignore로 되어 있어 참고하였음.
+                	//handleException("Error while Deleting WebApp to Gateway ", e);
+                	String msg = "Error while Deleting WebApp to Gateway ";
+                	log.error(msg, e);
+				}
             } else {
                 if(log.isDebugEnabled()) {
                     log.debug("Gateway is not existed for the current applications Provider");
                 }
             }
 
-            // 연관관계 찾아서 삭제 
+            // 1. 연관관계 찾아서 삭제 
             //Delete the dependencies associated  with the api artifact
             GovernanceArtifact[] dependenciesArray = appArtifact.getDependencies();
 
@@ -2317,6 +2342,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                 }
             }
 
+            // 2. App 삭제 
             artifactManager.removeGenericArtifact(appArtifact);
             artifactManager.removeGenericArtifact(artifactId);
 
@@ -2361,13 +2387,27 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                 }
             }
             
-            // (수정) registry 모두 삭제 후  dao 삭제하도록 아래 배치 
+            // (수정) registry 모두 삭제 후  dao 삭제하도록 아래 배치
+            long subsCount = appMDAO.getAPISubscriptionCountByAPI(identifier);
+            if (subsCount > 0 && !applicationStatus.equals("Retired")) {
+                //remove subscriptions per app
+                appMDAO.removeAPISubscription(identifier);
+            }            
             appMDAO.deleteAPI(identifier, authorizedAdminCookie);
+            
             registry.commitTransaction();
             
             transactionCommitted = true;
             isAppDeleted = true;
-        } catch (Exception e) {
+        } catch (RegistryException e) {
+        	try {
+                registry.rollbackTransaction();
+            } catch (RegistryException re) {
+                // Throwing an error from this level will mask the original exception
+                log.error("Error while rolling back the transaction for API: " + identifier.getApiName(), re);
+            }
+        	handleException("Failed to remove the WebApp from : " + path, e);
+        } catch (AppManagementException e) {
         	try {
                 registry.rollbackTransaction();
             } catch (RegistryException re) {

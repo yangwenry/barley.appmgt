@@ -10,6 +10,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -52,10 +53,12 @@ public class HttpUtils {
 	                log.debug("Successfully submitted request. HTTP status : 200");
 	            }
 	        }
-		} catch (IOException e) {
-            handleException("Error while " + endpoint + " - " + e.getMessage(), e);
+		} catch (Throwable e) {
+			String message = endpoint + " APP 게이트웨이 통신 중 에러가 발생하였습니다. ";
+        	log.error(message, e);
+            handleException(message, e);
         } finally {
-        	httpPost.reset();
+        	if(httpPost != null) httpPost.reset();
         }
     }
 	
@@ -80,28 +83,31 @@ public class HttpUtils {
 	        int statusCode;
 	        HttpResponse httpResponse = endpointClient.execute(httpPost);
             HttpEntity resEntity = httpResponse.getEntity();
-            
-            responseStr = EntityUtils.toString(resEntity);
-            log.info("http response 결과:" + responseStr);
-            
             statusCode = httpResponse.getStatusLine().getStatusCode();
             
-            if(statusCode == HttpStatus.SC_NOT_FOUND) {
-            	return null;
-            } else if (statusCode != HttpStatus.SC_OK) {
+            log.info("http response statusCode:" + statusCode);
+            if (statusCode != HttpStatus.SC_OK) {
                 throw new IOException("Error occurred while calling endpoint: HTTP error code : " + statusCode);
             } else {
+            	responseStr = EntityUtils.toString(resEntity);
+                log.info("http response 결과:" + responseStr);
             	return responseStr;
             }
-    	} catch (IOException e) {
-            handleException("Error while " + endpoint + " - " + e.getMessage(), e);
+    	} catch (ParseException e) {
+    		String message = endpoint + " APP 게이트웨이 결과 데이터를 파싱하는 중 에러가 발생하였습니다. ";
+    		log.error(message, e);
+            handleException(message, e);
+        } catch (Throwable e) {
+        	String message = endpoint + " APP 게이트웨이 통신 중 에러가 발생하였습니다. ";
+        	log.error(message, e);
+            handleException(message, e);
         } finally {
-        	httpPost.reset();
+        	if(httpPost != null) httpPost.reset();
         }	
     	return responseStr;
     }
 	
-	private static void handleException(String msg, Exception e) throws AppManagementException {
+	private static void handleException(String msg, Throwable e) throws AppManagementException {
         throw new AppManagementException(msg, e);
     }
 	

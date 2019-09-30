@@ -77,7 +77,7 @@ public class APIGatewayManager {
 	 *             subsequent attempts to publish to other Gateways.
 	 */
 	public void publishToGateway(WebApp api, APITemplateBuilder builder, String tenantDomain)
-	                                                                                      throws Exception {
+	                                                                                      throws AppManagementException {
 		APIIdentifier webAppId = api.getId();
 		for (Environment environment : environments) {
 			// (수정) 2018.03.21 - rest client로 변경
@@ -161,7 +161,7 @@ public class APIGatewayManager {
 	 *             Gateway. A single failure will
 	 *             stop all subsequent attempts to remove from other Gateways.
 	 */
-	public void removeFromGateway(WebApp api, String tenantDomain) throws Exception {
+	public void removeFromGateway(WebApp api, String tenantDomain) throws AppManagementException {
 		APIIdentifier appId = api.getId();
 		for (Environment environment : environments) {
 			// (수정)
@@ -197,7 +197,7 @@ public class APIGatewayManager {
 	 * @throws Exception
 	 *             - Thrown if a check to at least one Gateway fails.
 	 */
-	public boolean isAPIPublished(WebApp api, String tenantDomain) throws AppManagementException {
+	public boolean isAPIPublished(WebApp api, String tenantDomain) {
 		APIIdentifier appId = api.getId();
 		for (Environment environment : environments) {
 			try {
@@ -229,8 +229,7 @@ public class APIGatewayManager {
 	 * @throws AxisFault
 	 */
     private void deployCustomSequences(WebApp api, String tenantDomain, Environment environment)
-            throws AppManagementException,
-                   AxisFault {
+            throws AppManagementException {
 
         if (isSequenceDefined(api.getInSequence()) || isSequenceDefined(api.getOutSequence())) {
             try {
@@ -265,7 +264,7 @@ public class APIGatewayManager {
     }
 
     private void deployInSequence(WebApp api, int tenantId, String tenantDomain, Environment environment)
-            throws AppManagementException, AxisFault {
+            throws AppManagementException {
 
         String inSeqExt = AppManagerUtil.getSequenceExtensionName(api) + "--In";
         String inSequenceName = api.getInSequence();
@@ -280,7 +279,7 @@ public class APIGatewayManager {
     }
 
     private void deployOutSequence(WebApp api, int tenantId, String tenantDomain, Environment environment)
-            throws AppManagementException, AxisFault {
+            throws AppManagementException {
 
         String outSeqExt  = AppManagerUtil.getSequenceExtensionName(api) + "--Out";
         String outSequenceName = api.getOutSequence();
@@ -325,7 +324,7 @@ public class APIGatewayManager {
                     String outSequence = AppManagerUtil.getSequenceExtensionName(api) + "--Out";
                     appGatewayAdminClient.deleteSequence(outSequence, tenantDomain);
                 }
-            } catch (Exception e) {
+            } catch (AppManagementException e) {
                 String msg = "Error in deleting the sequence from gateway";
                 log.error(msg, e);
             } finally {
@@ -392,7 +391,7 @@ public class APIGatewayManager {
                         deployOutSequence(api, tenantId, tenantDomain, environment);
                     }
                 }
-            } catch (Exception e) {
+            } catch (AppManagementException e) {
                 String msg = "Error in updating the sequence at the Gateway";
                 log.error(msg, e);
                 throw new AppManagementException(msg, e);
