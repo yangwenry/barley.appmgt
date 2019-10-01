@@ -25,12 +25,12 @@ import java.util.Set;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIKey;
 import barley.appmgt.api.model.Documentation;
+import barley.appmgt.api.model.Documentation.DocumentSourceType;
 import barley.appmgt.api.model.DocumentationType;
 import barley.appmgt.api.model.Icon;
 import barley.appmgt.api.model.Subscriber;
 import barley.appmgt.api.model.Tier;
 import barley.appmgt.api.model.WebApp;
-import barley.appmgt.api.model.Documentation.DocumentSourceType;
 
 /**
  * Core WebApp management interface which provides functionality related to APIs, WebApp metadata
@@ -157,6 +157,9 @@ public interface APIManager {
     
     // (추가)
     public byte[] getDocumentationFile(APIIdentifier apiId, DocumentSourceType docSourceType, String filename) throws AppManagementException;
+    
+    // (추가) 2019.10.01 
+    public List<String> getDocumentationFileNames(APIIdentifier apiId) throws AppManagementException;
 
     /**
      * Creates a new subscriber. The newly created subscriber id will be set in the given object.
