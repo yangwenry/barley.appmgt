@@ -668,7 +668,9 @@ public abstract class AbstractAPIManager implements APIManager {
                 Resource docContent = registry.get(contentPath);
                 Object content = docContent.getContent();
                 if (content != null) {
-                    return new String((byte[]) docContent.getContent());
+                	// (수정) 2019.10.01 - 인코딩 수정 
+                    // return new String((byte[]) docContent.getContent(), Charset.defaultCharset());
+                	return RegistryUtils.decodeBytes((byte[]) docContent.getContent());
                 }
             }
             /* Loading WebApp definition Content - Swagger*/
