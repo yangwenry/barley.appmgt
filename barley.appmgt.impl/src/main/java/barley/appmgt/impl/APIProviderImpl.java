@@ -48,6 +48,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
+import org.wso2.carbon.registry.app.APPConstants;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
@@ -1740,20 +1741,34 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         String docPath = AppManagerUtil.getAPIDocPath(apiId) + docName;
 
         try {
+        	// (수정) 2019.10.17 - filePath를 더이상 쓰지않기 때문에 파일경로를 계산하여 처리함. 
+            /*
             String apiArtifactId = registry.get(docPath).getUUID();
             GenericArtifactManager artifactManager = AppManagerUtil.getArtifactManager(registry,
                                                                                 AppMConstants.DOCUMENTATION_KEY);
             GenericArtifact artifact = artifactManager.getGenericArtifact(apiArtifactId);
             String docFilePath =  artifact.getAttribute(AppMConstants.DOC_FILE_PATH);
-
+			*/
+        	String docFilePath =  AppManagerUtil.getAPIDocPath(apiId) + AppMConstants.DOCUMENT_FILE_DIR;
+        	// 파일 삭제 
             if(docFilePath!=null)
             {
+            	/*
                 File tempFile = new File(docFilePath);
                 String fileName = tempFile.getName();
                 docFilePath = AppManagerUtil.getDocumentationFilePath(apiId,fileName);
+                */
                 if(registry.resourceExists(docFilePath))
                 {
                     registry.delete(docFilePath);
+                }
+            }
+            
+            // (추가) contents 삭제
+            String contentPath = AppManagerUtil.getAPIDocPath(apiId) + AppMConstants.INLINE_DOCUMENT_CONTENT_DIR;
+            if(contentPath != null)   {
+                if(registry.resourceExists(contentPath))    {
+                    registry.delete(contentPath);
                 }
             }
 
@@ -1762,12 +1777,12 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             for (Association association : associations) {
                 registry.delete(association.getDestinationPath());
             }
-            String docContentPath = AppManagerUtil.getAPIDocContentPath(apiId, docName);
+            //String docContentPath = AppManagerUtil.getAPIDocContentPath(apiId, docName);
 
             //Remove Inline-documentation contents
-            if (registry.resourceExists(docContentPath)) {
-                registry.delete(docContentPath);
-            }
+            //if (registry.resourceExists(docContentPath)) {
+            //    registry.delete(docContentPath);
+            //}
 
         } catch (RegistryException e) {
             handleException("Failed to delete documentation", e);
