@@ -542,5 +542,7 @@ public interface APIConsumer extends APIManager {
 	List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count) throws AppManagementException;
 	
 	List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count) throws AppManagementException;
+
+	int getPublicAppCount(String tenantDomain) throws AppManagementException;
     
 }

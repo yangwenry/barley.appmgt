@@ -2030,6 +2030,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     	return addAppAttributeFromRegistry(appList);
     }
     
+    @Override
+    public int getPublicAppCount(String tenantDomain) throws AppManagementException {
+    	return appMDAO.getPublicAppCount(tenantDomain);
+    }
+    
     private List<WebApp> addAppAttributeFromRegistry(List<WebApp> appList) throws AppManagementException {
     	List<WebApp> result = new ArrayList<WebApp>();
     	for(int i=0; i < appList.size(); i++) {

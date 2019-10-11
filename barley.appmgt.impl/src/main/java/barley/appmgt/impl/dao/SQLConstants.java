@@ -273,4 +273,24 @@ public class SQLConstants {
     		GET_SORTED_APP_SQL_PREFIX +  
 				"ORDER BY TB.CREATED_TIME DESC, TA.APP_ID DESC " +
 				"LIMIT ?, ?";
+    
+    public static final String GET_PUBLIC_APP_CNT_SQL = 
+    		"SELECT " + 
+    				"COUNT(TA.APP_ID) AS PUB_APP_CNT " + 
+				"FROM( " +
+					"SELECT " + 
+						"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
+					"FROM ( " +
+						"SELECT " + 
+							  "APP_ID " +
+							", MAX(EVENT_ID) AS EVENT_ID " + 
+						"FROM APM_APP_LC_EVENT " + 
+						"GROUP BY APP_ID " +
+						 ") SA " +
+					"LEFT JOIN APM_APP_LC_EVENT SB " +
+						"ON (SA.APP_ID = SB.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
+					"WHERE SB.NEW_STATE = 'PUBLISHED' " +
+					 ") TA " +
+				"INNER JOIN APM_APP TB " +
+					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) ";
 }

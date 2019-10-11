@@ -10125,4 +10125,41 @@ public class AppMDAO {
         
         return appList;
     }
+    
+    
+    public int getPublicAppCount(String tenantDomain) throws AppManagementException {
+    	Connection connection = null;
+        PreparedStatement selectPreparedStatement = null;
+        ResultSet resultSet = null;
+        
+        int pubAppCnt = 0;
+        
+        try {
+           
+        	connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
+            selectPreparedStatement = connection.prepareStatement(SQLConstants.GET_PUBLIC_APP_CNT_SQL);
+            selectPreparedStatement.setNString(1, tenantDomain);
+
+            resultSet = selectPreparedStatement.executeQuery();
+            
+            while (resultSet.next()) {      	
+            	pubAppCnt = resultSet.getInt("PUB_APP_CNT");
+ 
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    handleException("Failed to rollback getting Block conditions ", ex);
+                }
+            }
+            handleException("Failed to get Block conditions", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(selectPreparedStatement, connection, resultSet);
+        }
+        
+        return pubAppCnt;
+    }
 }
