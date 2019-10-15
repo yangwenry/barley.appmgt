@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +49,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
-import org.wso2.carbon.registry.app.APPConstants;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
@@ -538,6 +538,9 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         	// 웹화면에서 dao를 통해 미리 데이터를 저장한다. artifact에 저장된 id를 가져와 uuid로 세팅하는 부분이 없다. 
             createAPI(app);
             appMDAO.addWebApp(app);
+            //태그 추가
+            addTags(app.getId(), app.getTags());
+            
             if (AppManagerUtil.isAPIManagementEnabled()) {
             	Cache contextCache = AppManagerUtil.getAPIContextCache();
             	Boolean apiContext = null;
@@ -1163,6 +1166,9 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 
                 // 2. dao 수정 
                 appMDAO.updateWebApp(api, authorizedAdminCookie);
+                
+                //태그 수정
+                addTags(api.getId(), api.getTags());
 
                
                 /*Boolean gatewayKeyCacheEnabled=false;
@@ -2407,22 +2413,17 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             if (subsCount > 0 && !applicationStatus.equals("Retired")) {
                 //remove subscriptions per app
                 appMDAO.removeAPISubscription(identifier);
-            }            
+            }
+            
+            //태그 삭제
+            appMDAO.removeTag(identifier);
             appMDAO.deleteAPI(identifier, authorizedAdminCookie);
             
             registry.commitTransaction();
             
             transactionCommitted = true;
             isAppDeleted = true;
-        } catch (RegistryException e) {
-        	try {
-                registry.rollbackTransaction();
-            } catch (RegistryException re) {
-                // Throwing an error from this level will mask the original exception
-                log.error("Error while rolling back the transaction for API: " + identifier.getApiName(), re);
-            }
-        	handleException("Failed to remove the WebApp from : " + path, e);
-        } catch (AppManagementException e) {
+        } catch (Exception e) {
         	try {
                 registry.rollbackTransaction();
             } catch (RegistryException re) {
@@ -3719,5 +3720,23 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 		throw new UnsupportedOperationException("Unsubscribe operation is not yet implemented");
 	}
     
+	
+	private void addTags(APIIdentifier api, Set<String> tags) throws AppManagementException {
+		
+		if(tags==null || tags.isEmpty()) {
+			//Tag 내용이 없을 경우 처리를 하지 않고 리턴
+			return;
+		}
+		
+		try {
+			appMDAO.removeTag(api);
+			
+			for(String tag : tags) {
+				appMDAO.addTag(api, tag);
+			}
+		} catch (SQLException e) {
+			throw new AppManagementException("Error in adding Tags", e);
+		}		
+	}
     
 }

@@ -2013,21 +2013,30 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     
     
     @Override
-    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count) throws AppManagementException {    	
-    	List<WebApp> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count);
-    	return addAppAttributeFromRegistry(appList);
+    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException {    	
+    	List<WebApp> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count, keyword);
+    	
+    	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다.
+    	//return addAppAttributeFromRegistry(appList);
+    	return appList;
     }
     
     @Override
-    public List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count) throws AppManagementException {
-    	List<WebApp> appList = appMDAO.getSortedSubscribersCountApp(tenantDomain, page, count);
-    	return addAppAttributeFromRegistry(appList);
+    public List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
+    	List<WebApp> appList = appMDAO.getSortedSubscribersCountApp(tenantDomain, page, count, keyword);
+    	
+    	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다.
+    	//return addAppAttributeFromRegistry(appList);
+    	return appList;
     }
     
     @Override
-    public List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count) throws AppManagementException {
-    	List<WebApp> appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count);
-    	return addAppAttributeFromRegistry(appList);
+    public List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
+    	List<WebApp> appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count, keyword);
+    	
+    	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다. 
+    	//return addAppAttributeFromRegistry(appList);
+    	return appList;
     }
     
     @Override

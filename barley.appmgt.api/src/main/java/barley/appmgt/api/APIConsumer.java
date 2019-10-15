@@ -537,12 +537,12 @@ public interface APIConsumer extends APIManager {
 
     int getUserRating(APIIdentifier apiId, String user) throws AppManagementException;
 
-	List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count) throws AppManagementException;
+	List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException;
 
-	List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count) throws AppManagementException;
+	List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException;
 	
-	List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count) throws AppManagementException;
+	List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException;
 
 	int getPublicAppCount(String tenantDomain) throws AppManagementException;
-    
+
 }

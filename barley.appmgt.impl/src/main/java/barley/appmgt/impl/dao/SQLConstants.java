@@ -224,9 +224,11 @@ public class SQLConstants {
 					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
 					", TC.RATING, TB.CREATED_TIME, TB.UPDATED_TIME, TA.NEW_STATE AS STATE, TS.SUBS_CNT " +
 					", TB.CATEGORY, TB.THUMBNAIL_URL, TB.DESCRIPTION " +
+					", TA.TAG " +
 				"FROM( " +
 					"SELECT " + 
 						"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
+						", (SELECT COALESCE(GROUP_CONCAT(TAG_NAME SEPARATOR ','), '') FROM APM_APP_TAG IT WHERE IT.APP_ID = SA.APP_ID) AS TAG " +
 					"FROM ( " +
 						"SELECT " + 
 							  "APP_ID " +
@@ -257,7 +259,12 @@ public class SQLConstants {
 							"GROUP BY T.APP_ID " +
 							"ORDER BY COUNT(T.APP_ID) DESC " +
 							") TS " +
-				"ON TA.APP_ID = TS.APP_ID ";
+				"ON TA.APP_ID = TS.APP_ID " +
+				"WHERE UPPER(TB.APP_PROVIDER) LIKE UPPER(CONCAT('%',?,'%')) " +
+					"OR UPPER(TB.APP_NAME) LIKE UPPER(CONCAT('%',?,'%')) " +
+					"OR UPPER(TB.CATEGORY) LIKE UPPER(CONCAT('%',?,'%')) " +
+					"OR UPPER(TB.DESCRIPTION) LIKE UPPER(CONCAT('%',?,'%')) " +
+					"OR UPPER(TA.TAG) LIKE UPPER(CONCAT('%',?,'%')) ";
     
     public static final String GET_SORTED_RATING_APP_SQL =
     		GET_SORTED_APP_SQL_PREFIX +
@@ -273,7 +280,7 @@ public class SQLConstants {
     		GET_SORTED_APP_SQL_PREFIX +  
 				"ORDER BY TB.CREATED_TIME DESC, TA.APP_ID DESC " +
 				"LIMIT ?, ?";
-    
+        
     public static final String GET_PUBLIC_APP_CNT_SQL = 
     		"SELECT " + 
     				"COUNT(TA.APP_ID) AS PUB_APP_CNT " + 
@@ -293,4 +300,16 @@ public class SQLConstants {
 					 ") TA " +
 				"INNER JOIN APM_APP TB " +
 					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) ";
+    
+    /* Tag 테이블 */
+    public static final String APP_TAG_SQL =
+            "INSERT INTO APM_APP_TAG(APP_ID, TAG_NAME, DATE_TAGGED) VALUES (?,?,?)";
+    
+    public static final String REMOVE_TAG_SQL =
+            "DELETE FROM APM_APP_TAG WHERE APP_ID = ? ";
+    
+    public static final String GET_TAG_SQL =
+            "SELECT TAG_NAME FROM APM_APP_TAG WHERE APP_ID = ? ORDER BY DATE_TAGGED ASC ";
+    
+
 }

@@ -10061,23 +10061,23 @@ public class AppMDAO {
     }
     
     
-    public List<WebApp> getSortedRatingApp(String tenantDomain, int page, int count) throws AppManagementException {
+    public List<WebApp> getSortedRatingApp(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
     	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
-        return getSortedAppList(query, tenantDomain, page, count);
+        return getSortedAppList(query, tenantDomain, page, count, keyword);
     }
     
     
-    public List<WebApp> getSortedSubscribersCountApp(String tenantDomain, int page, int count) throws AppManagementException {
+    public List<WebApp> getSortedSubscribersCountApp(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
     	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
-    	return getSortedAppList(query, tenantDomain, page, count);
+    	return getSortedAppList(query, tenantDomain, page, count, keyword);
     }
     
-    public List<WebApp> getSortedCreatedTimeApp(String tenantDomain, int page, int count) throws AppManagementException {
+    public List<WebApp> getSortedCreatedTimeApp(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
         String query = SQLConstants.GET_SORTED_CREATED_TIME_APP_SQL;
-    	return getSortedAppList(query, tenantDomain, page, count);
+    	return getSortedAppList(query, tenantDomain, page, count, keyword);
     }
     
-    private List<WebApp> getSortedAppList(String query, String tenantDomain, int page, int count) throws AppManagementException {
+    private List<WebApp> getSortedAppList(String query, String tenantDomain, int page, int count, String keyword) throws AppManagementException {
     	Connection connection = null;
         PreparedStatement selectPreparedStatement = null;
         ResultSet resultSet = null;
@@ -10091,8 +10091,13 @@ public class AppMDAO {
             connection.setAutoCommit(false);
             selectPreparedStatement = connection.prepareStatement(query);
             selectPreparedStatement.setNString(1, tenantDomain);
-            selectPreparedStatement.setInt(2, startNo);
-            selectPreparedStatement.setInt(3, count);
+            selectPreparedStatement.setNString(2, keyword);
+            selectPreparedStatement.setNString(3, keyword);
+            selectPreparedStatement.setNString(4, keyword);
+            selectPreparedStatement.setNString(5, keyword);
+            selectPreparedStatement.setNString(6, keyword);
+            selectPreparedStatement.setInt(7, startNo);
+            selectPreparedStatement.setInt(8, count);
             resultSet = selectPreparedStatement.executeQuery();
             while (resultSet.next()) {
          	
@@ -10161,5 +10166,98 @@ public class AppMDAO {
         }
         
         return pubAppCnt;
+    }
+    
+    
+    public void addTag(APIIdentifier apiIdentifier, String tag)
+            throws AppManagementException, SQLException {
+        PreparedStatement ps = null;
+        Connection connection = null;
+        
+        try {
+        	connection = APIMgtDBUtil.getConnection();
+            int apiId;
+            apiId = getAPIID(apiIdentifier, connection);
+            if (apiId == -1) {
+                String msg = "Could not load API record for: " + apiIdentifier.getApiName();
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            
+            String sqlAddQuery = SQLConstants.APP_TAG_SQL;
+            // Adding data to the APM_APP_TAG  table
+            ps = connection.prepareStatement(sqlAddQuery);
+            ps.setInt(1, apiId);
+            ps.setString(2, tag);
+            ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()), Calendar.getInstance());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            handleException("Failed to add APP Tag of the api Name:" + apiIdentifier.getApiName(), e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, connection, null);
+        }
+    }
+    
+    public void removeTag(APIIdentifier apiIdentifier)
+            throws AppManagementException, SQLException {
+        PreparedStatement ps = null;
+        Connection connection = null;
+
+        try {
+        	connection = APIMgtDBUtil.getConnection();
+        	int apiId;
+            apiId = getAPIID(apiIdentifier, connection);
+            if (apiId == -1) {
+                String msg = "Could not load APP record for: " + apiIdentifier.getApiName();
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            
+        	//This query to check the ratings already exists for the user in the AM_API_RATINGS table
+            String sqlQuery = SQLConstants.REMOVE_TAG_SQL;
+
+            // Adding data to the AM_API_RATINGS  table
+            ps = connection.prepareStatement(sqlQuery);
+            ps.setInt(1, apiId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            handleException("Failed to delete API Tag", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, connection, null);
+        }
+    }
+    
+    public List<String> getTags(APIIdentifier apiIdentifier) throws AppManagementException {
+        Connection connection = null;
+        PreparedStatement prepStmt = null;
+        ResultSet rs = null;
+        String sqlQuery = SQLConstants.GET_TAG_SQL;
+
+        List<String> tags = new ArrayList<String>();
+        try {
+            connection = APIMgtDBUtil.getConnection();
+            int apiId;
+            apiId = getAPIID(apiIdentifier, connection);
+            if (apiId == -1) {
+                String msg = "Could not load APP record for: " + apiIdentifier.getApiName();
+                log.error(msg);
+                throw new AppManagementException(msg);
+            }
+            
+            prepStmt = connection.prepareStatement(sqlQuery);
+            prepStmt.setInt(1, apiId);
+            rs = prepStmt.executeQuery();
+
+            while (rs.next()) {
+            	String tagName = rs.getString("TAG_NAME");
+                tags.add(tagName);
+            }            
+        } catch (SQLException e) {
+            handleException("Error when executing the SQL : " + sqlQuery, e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(prepStmt, connection, rs);
+        }	
+        return tags;
     }
 }
