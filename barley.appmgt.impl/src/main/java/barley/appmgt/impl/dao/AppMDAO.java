@@ -10199,8 +10199,7 @@ public class AppMDAO {
         }
     }
     
-    public void removeTag(APIIdentifier apiIdentifier)
-            throws AppManagementException, SQLException {
+    public void removeTag(APIIdentifier apiIdentifier) throws AppManagementException {
         PreparedStatement ps = null;
         Connection connection = null;
 
