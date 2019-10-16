@@ -2,8 +2,10 @@ package barley.appmgt.impl.utils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -19,10 +21,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
 
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.impl.dto.Environment;
 
-public class HttpUtils {
+public class HttpGatewayUtils {
 	
-	private static final Log log = LogFactory.getLog(HttpUtils.class);
+	private static final Log log = LogFactory.getLog(HttpGatewayUtils.class);
 
 	public static void doPost(String endpoint, List<NameValuePair> urlParams) throws AppManagementException {
 		HttpPost httpPost = null;
@@ -40,6 +43,11 @@ public class HttpUtils {
 	        builder.setSocketTimeout(4000);
 	        RequestConfig config = builder.build();
 	        httpPost.setConfig(config);
+	        
+	        // Basic Auth 설정
+	        Environment environment = AppManagerUtil.getEnvironmentFromAppConfiguration();
+	        String credentials = getEncodedBasicAuthorization(environment);
+    		httpPost.setHeader("Authorization", "Basic " + credentials);
 	
 	        int statusCode;
 	        HttpResponse httpResponse = endpointClient.execute(httpPost);
@@ -79,6 +87,11 @@ public class HttpUtils {
 	        builder.setSocketTimeout(4000);
 	        RequestConfig config = builder.build();
 	        httpPost.setConfig(config);
+	        
+	        // Basic Auth 설정
+	        Environment environment = AppManagerUtil.getEnvironmentFromAppConfiguration();
+	        String credentials = getEncodedBasicAuthorization(environment);
+    		httpPost.setHeader("Authorization", "Basic " + credentials);
 	
 	        int statusCode;
 	        HttpResponse httpResponse = endpointClient.execute(httpPost);
@@ -86,7 +99,10 @@ public class HttpUtils {
             statusCode = httpResponse.getStatusLine().getStatusCode();
             
             log.info("http response statusCode:" + statusCode);
-            if (statusCode != HttpStatus.SC_OK) {
+            if (statusCode == HttpStatus.SC_NOT_FOUND) {
+            	// 게이트웨이 api 검색시 없다면 null을 리턴한다. 
+            	return null;
+            } else if (statusCode != HttpStatus.SC_OK) {
                 throw new IOException("Error occurred while calling endpoint: HTTP error code : " + statusCode);
             } else {
             	responseStr = EntityUtils.toString(resEntity);
@@ -111,5 +127,14 @@ public class HttpUtils {
         throw new AppManagementException(msg, e);
     }
 	
+	public static String getEncodedBasicAuthorization(Environment environment) {
+		String userName = environment.getUserName();
+        String password = environment.getPassword();
+        
+        byte[] encodedCredentials = Base64.encodeBase64((userName + ":" + password).getBytes(StandardCharsets.UTF_8));
+        String credentials = new String(encodedCredentials, StandardCharsets.UTF_8);
+        
+        return credentials;
+	}
 	
 }

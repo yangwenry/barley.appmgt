@@ -70,9 +70,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
 	        
 	        if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	HttpUtils.doPost(this.baseUrl + "/addApiForTenant", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/addApiForTenant", urlParams);
             } else {
-            	HttpUtils.doPost(this.baseUrl + "/addApiFromString", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/addApiFromString", urlParams);
             }
         } catch (APITemplateException e) {
             String errorMsg = "Error while adding new WebApp. App Name : " + appName + " App Version: " + appVersion;
@@ -103,9 +103,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
 	        
 	        if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	HttpUtils.doPost(this.baseUrl + "/addApiForTenant", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/addApiForTenant", urlParams);
             } else {
-            	HttpUtils.doPost(this.baseUrl + "/addApiFromString", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/addApiFromString", urlParams);
             }
         } catch (APITemplateException e) {
             String errorMsg = "Error while adding new WebApp. App Name : " + appName + " App Version: " + appVersion;
@@ -136,9 +136,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
 	        
 	        if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	HttpUtils.doPost(this.baseUrl + "/updateApiForTenant", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/updateApiForTenant", urlParams);
             } else {
-            	HttpUtils.doPost(this.baseUrl + "/updateApiFromString", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/updateApiFromString", urlParams);
             }
         } catch (APITemplateException e) {
             String errorMsg = "Error while adding new WebApp. App Name : " + appName + " App Version: " + appVersion;
@@ -169,9 +169,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
 	        
 	        if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	HttpUtils.doPost(this.baseUrl + "/updateApiForTenant", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/updateApiForTenant", urlParams);
             } else {
-            	HttpUtils.doPost(this.baseUrl + "/updateApiFromString", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/updateApiFromString", urlParams);
             }
         } catch (APITemplateException e) {
             String errorMsg = "Error while adding new WebApp. App Name : " + appName + " App Version: " + appVersion;
@@ -199,9 +199,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
 	        
 	        if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	HttpUtils.doPost(this.baseUrl + "/deleteApiForTenant", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/deleteApiForTenant", urlParams);
             } else {
-            	HttpUtils.doPost(this.baseUrl + "/deleteApi", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/deleteApi", urlParams);
             }
         } catch (AppManagementException e) {
             String errorMsg = "Error while obtaining WebApp information from gateway. App Name : " + appName + " App " +
@@ -226,9 +226,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
 	        
 	        if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	HttpUtils.doPost(this.baseUrl + "/deleteApiForTenant", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/deleteApiForTenant", urlParams);
             } else {
-            	HttpUtils.doPost(this.baseUrl + "/deleteApi", urlParams);
+            	HttpGatewayUtils.doPost(this.baseUrl + "/deleteApi", urlParams);
             }
         } catch (AppManagementException e) {
             String errorMsg = "Error while obtaining WebApp information from gateway. App Name : " + appName + " App " +
@@ -256,9 +256,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
         	
         	if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	entityStr = HttpUtils.receive(this.baseUrl + "/getApiForTenant", urlParams);
+            	entityStr = HttpGatewayUtils.receive(this.baseUrl + "/getApiForTenant", urlParams);
             } else {
-            	entityStr = HttpUtils.receive(this.baseUrl + "/getApiByName", urlParams);
+            	entityStr = HttpGatewayUtils.receive(this.baseUrl + "/getApiByName", urlParams);
             }
             if(entityStr != null) {
             	appData = new Gson().fromJson(entityStr, WebAppData.class);
@@ -290,9 +290,9 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
         	
         	if (!StringUtils.isEmpty(tenantDomain) && !tenantDomain.equals(MultitenantConstants
                                                                                   .SUPER_TENANT_DOMAIN_NAME)) {
-            	entityStr = HttpUtils.receive(this.baseUrl + "/getApiForTenant", urlParams);
+            	entityStr = HttpGatewayUtils.receive(this.baseUrl + "/getApiForTenant", urlParams);
             } else {
-            	entityStr = HttpUtils.receive(this.baseUrl + "/getApiByName", urlParams);
+            	entityStr = HttpGatewayUtils.receive(this.baseUrl + "/getApiByName", urlParams);
             }
             if(entityStr != null) {
             	appData = new Gson().fromJson(entityStr, WebAppData.class);

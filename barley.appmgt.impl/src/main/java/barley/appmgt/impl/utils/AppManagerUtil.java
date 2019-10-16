@@ -4292,4 +4292,15 @@ public final class AppManagerUtil {
             return null;
         }
     }
+    
+    public static Environment getEnvironmentFromAppConfiguration() {
+		AppManagerConfiguration appmConfig 
+						= ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().getAPIManagerConfiguration();
+        List<Environment> environments = appmConfig.getApiGatewayEnvironments();
+    	Environment lastEnvironment = null;
+    	for(Environment environment : environments) {
+    		lastEnvironment = environment;
+    	}
+    	return lastEnvironment;
+	}
 }

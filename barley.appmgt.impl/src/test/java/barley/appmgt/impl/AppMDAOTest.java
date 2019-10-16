@@ -42,7 +42,7 @@ import barley.appmgt.impl.internal.AppManagerComponent;
 import barley.appmgt.impl.service.ServiceReferenceHolder;
 import barley.appmgt.impl.utils.APIMgtDBUtil;
 import barley.appmgt.impl.utils.AppManagerUtil;
-import barley.appmgt.impl.utils.HttpUtils;
+import barley.appmgt.impl.utils.HttpGatewayUtils;
 import barley.core.BarleyConstants;
 import barley.core.utils.BarleyUtils;
 import barley.identity.core.util.IdentityConfigParser;
@@ -94,7 +94,7 @@ public class AppMDAOTest extends BaseTestCase {
     	List urlParams = new ArrayList();
     	BasicNameValuePair nv = new BasicNameValuePair("apiName", "n3");
     	urlParams.add(nv);
-    	String response = HttpUtils.receive(endpoint, urlParams);
+    	String response = HttpGatewayUtils.receive(endpoint, urlParams);
     	Assert.isNotNull(response);
     }
     
