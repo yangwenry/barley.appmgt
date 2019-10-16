@@ -19,6 +19,7 @@ package barley.appmgt.impl;
 import java.util.List;
 
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.App;
@@ -71,7 +72,7 @@ public class UserAwareAPIProvider extends APIProviderImpl {
     }
 
     @Override
-    public void updateAPI(WebApp api, String authorizedAdminCookie) throws AppManagementException {
+    public void updateAPI(WebApp api, String authorizedAdminCookie) throws AppManagementException, FaultGatewaysException {
         checkWebappUpdatePermission();
         super.updateAPI(api, authorizedAdminCookie);
     }
@@ -84,7 +85,7 @@ public class UserAwareAPIProvider extends APIProviderImpl {
 
     @Override
     public void changeAPIStatus(WebApp api, APIStatus status, String userId,
-                                boolean updateGatewayConfig) throws AppManagementException {
+                                boolean updateGatewayConfig) throws AppManagementException, FaultGatewaysException {
         if (APIStatus.PUBLISHED.equals(status)) {
             checkPublishPermission();
         }

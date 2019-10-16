@@ -31,6 +31,7 @@ import org.wso2.jaggery.scxml.threading.contexts.JaggeryThreadContext;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.WebApp;
@@ -118,6 +119,8 @@ public class AppMGenericExecutor implements Execution {
            log.error("Error occurred while obtaining provider details for webapp "+ resourceID);
         } catch (AppManagementException e) {
         	log.error("Error occurred while obtaining apiProvider");
+		} catch (FaultGatewaysException e) {
+			log.error("Error occurred while changing api status");
 		}
         
         JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();

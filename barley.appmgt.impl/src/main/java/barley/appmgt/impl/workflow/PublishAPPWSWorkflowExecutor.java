@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.WebApp;
@@ -102,7 +103,10 @@ public class PublishAPPWSWorkflowExecutor extends WorkflowExecutor {
         } catch (UserStoreException e) {
             log.error("Error while retrieving user name of administrative user.", e);
             throw new WorkflowException("Could not update APP lifecycle state to IN-REVIEW", e);
-        }
+        } catch (FaultGatewaysException e) {
+        	log.error("Error while retrieving user name of administrative user.", e);
+            throw new WorkflowException("Could not update APP lifecycle state to IN-REVIEW", e);
+		}
 
         try {
             if (publishAPPDTO.getLcState().equalsIgnoreCase(AppMConstants.ApplicationStatus.APPLICATION_CREATED)) {
@@ -247,7 +251,9 @@ public class PublishAPPWSWorkflowExecutor extends WorkflowExecutor {
                 log.error("Error while retrieving relevant workflow reference", e);
             } catch (UserStoreException e) {
                 log.error("Error while trying to reject workflow. Retrieving admin user, username failed.", e);
-            }
+            } catch (FaultGatewaysException e) {
+            	log.error("Error while trying to reject workflow. change api status.", e);
+			}
 
         } else if (WorkflowStatus.PUBLISHED.equals(workflowDTO.getStatus())) {
             try {
@@ -270,7 +276,9 @@ public class PublishAPPWSWorkflowExecutor extends WorkflowExecutor {
                 log.error("Error while retrieving relevant workflow reference", e);
             } catch (UserStoreException e) {
                 log.error("Error while trying to publish workflow. Retrieving admin user, username failed.", e);
-            }
+            } catch (FaultGatewaysException e) {
+            	log.error("Error while trying to reject workflow. change api status.", e);
+			}
         }
     }
 

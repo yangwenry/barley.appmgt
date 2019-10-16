@@ -390,8 +390,9 @@ public interface APIProvider extends APIManager {
      * @param api             WebApp
      * @param authorizedAdminCookie Authorized cookie to access IDP admin services
      * @throws AppManagementException if failed to update WebApp
+     * @throws FaultGatewaysException 
      */
-    public void updateAPI(WebApp api, String authorizedAdminCookie) throws AppManagementException;
+    public void updateAPI(WebApp api, String authorizedAdminCookie) throws AppManagementException, FaultGatewaysException;
 
     /**
      * Updates an existing Mobile Application. This method must not be used to change Mobile App status. Implementations
@@ -431,7 +432,7 @@ public interface APIProvider extends APIManager {
     public MobileApp getMobileApp(String uuid) throws AppManagementException;
 
     public void changeAPIStatus(WebApp api, APIStatus status, String userId,
-                                boolean updateGatewayConfig) throws AppManagementException;
+                                boolean updateGatewayConfig) throws AppManagementException, FaultGatewaysException;
 
     /**
      * redeploy the synapse when webapp is being edited
@@ -635,9 +636,10 @@ public interface APIProvider extends APIManager {
      * @param ssoProvider     SSOProvider
      * @param authorizedAdminCookie Authorized cookie to access IDP admin services
      * @throws AppManagementException if failed to remove the WebApp
+     * @throws FaultGatewaysException 
      */
     public boolean deleteApp(APIIdentifier identifier, SSOProvider ssoProvider, String authorizedAdminCookie) throws
-                                                                                                        AppManagementException;
+                                                                                                        AppManagementException, FaultGatewaysException;
 
     /**
      * Get the list of Custom InSequences.

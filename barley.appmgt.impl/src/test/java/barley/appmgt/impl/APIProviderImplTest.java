@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.dto.UserApplicationAPIUsage;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
@@ -194,7 +195,7 @@ public class APIProviderImplTest extends BaseTestCase {
     }
     */
     
-    public void testUpdateWebApp() throws AppManagementException {
+    public void testUpdateWebApp() throws AppManagementException, FaultGatewaysException {
     	String authorizedAdminCookie = null;
     	APIIdentifier apiId = new APIIdentifier(userName, "NCS", "1.0.0");
     	WebApp app = provider.getAPI(apiId);
@@ -278,7 +279,7 @@ public class APIProviderImplTest extends BaseTestCase {
     	    	
     }
     
-    public void testDeleteApi() throws AppManagementException {
+    public void testDeleteApi() throws AppManagementException, FaultGatewaysException {
     	APIIdentifier apiId = new APIIdentifier(userName, "MapDemo", "1.0.0");
     	SSOProvider ssoProvider = null;
     	String authorizedAdminCookie = null;
@@ -599,7 +600,7 @@ public class APIProviderImplTest extends BaseTestCase {
     }
     
 
-    public void testUpdateMap() throws AppManagementException {
+    public void testUpdateMap() throws AppManagementException, FaultGatewaysException {
     	String authorizedAdminCookie = null;
     	APIIdentifier apiId = new APIIdentifier(userName, "Map", "1.0.0");
     	WebApp app = provider.getAPI(apiId);
@@ -624,7 +625,7 @@ public class APIProviderImplTest extends BaseTestCase {
 
     }
     
-    public void testUpdateWeather() throws AppManagementException {
+    public void testUpdateWeather() throws AppManagementException, FaultGatewaysException {
     	String authorizedAdminCookie = null;
     	APIIdentifier apiId = new APIIdentifier(userName, "Weather", "1.0.0");
     	WebApp app = provider.getAPI(apiId);
@@ -649,7 +650,7 @@ public class APIProviderImplTest extends BaseTestCase {
 
     }
     
-    public void testUpdateCal() throws AppManagementException {
+    public void testUpdateCal() throws AppManagementException, FaultGatewaysException {
     	String authorizedAdminCookie = null;
     	APIIdentifier apiId = new APIIdentifier(userName, "Calendar", "1.0.0");
     	WebApp app = provider.getAPI(apiId);

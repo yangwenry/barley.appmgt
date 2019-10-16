@@ -20,6 +20,7 @@ package barley.appmgt.impl.lifecycle;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.WebApp;
@@ -47,6 +48,8 @@ public class LifecycleHandler {
 			}
 
 		} catch (AppManagementException e) {
+			e.printStackTrace();
+		} catch (FaultGatewaysException e) {
 			e.printStackTrace();
 		}
 	}

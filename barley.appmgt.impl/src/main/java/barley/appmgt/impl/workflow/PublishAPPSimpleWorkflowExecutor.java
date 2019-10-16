@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.model.APIIdentifier;
 import barley.appmgt.api.model.APIStatus;
 import barley.appmgt.api.model.WebApp;
@@ -76,7 +77,10 @@ public class PublishAPPSimpleWorkflowExecutor extends WorkflowExecutor {
         }catch (AppManagementException e){
             log.error("Could not update APP lifecycle state to IN-REVIEW", e);
             throw new WorkflowException("Could not update APP lifecycle state to IN-REVIEW", e);
-        }
+        } catch (FaultGatewaysException e) {
+        	log.error("Could not update APP lifecycle state to IN-REVIEW", e);
+            throw new WorkflowException("Could not update APP lifecycle state to IN-REVIEW", e);
+		}
     }
 
     @Override
@@ -115,7 +119,11 @@ public class PublishAPPSimpleWorkflowExecutor extends WorkflowExecutor {
         	String msg = "Error while publishing API";
             log.error(msg, e);
             throw new WorkflowException(msg, e);
-        }
+        } catch (FaultGatewaysException e) {
+        	String msg = "Error while publishing API to gateway";
+            log.error(msg, e);
+            throw new WorkflowException(msg, e);
+		}
     }
 
     private static APIStatus getApiStatus(String status) {

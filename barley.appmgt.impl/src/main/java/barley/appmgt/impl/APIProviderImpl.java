@@ -1143,8 +1143,9 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
      * @param api             WebApp
      * @param authorizedAdminCookie Authorized cookie to access IDP admin services
      * @throws AppManagementException if failed to update WebApp
+     * @throws FaultGatewaysException 
      */
-    public void updateAPI(WebApp api, String authorizedAdminCookie) throws AppManagementException {
+    public void updateAPI(WebApp api, String authorizedAdminCookie) throws AppManagementException, FaultGatewaysException {
         WebApp oldApi = getAPI(api.getId());
         if (oldApi.getStatus().equals(api.getStatus())) {
             try {
@@ -1156,18 +1157,51 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     updatePermissions = true;
                 }
                 */
+                
+                // 1. gateway 반영  
+                AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
+                        getAPIManagerConfigurationService().getAPIManagerConfiguration();
+                boolean gatewayExists = config.getApiGatewayEnvironments().size() > 0;
+                String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
+                boolean isAPIPublished = false;
 
-                // 1. registry 수정 
+                if (AppMConstants.API_GATEWAY_TYPE_SYNAPSE.equalsIgnoreCase(gatewayType)) {
+                	if(gatewayExists) {
+                		isAPIPublished = isAPIPublished(api);
+	                    if (isAPIPublished) {
+	                        WebApp apiPublished = getAPI(api.getId());
+	                        apiPublished.setOldInSequence(oldApi.getInSequence());
+	                        apiPublished.setOldOutSequence(oldApi.getOutSequence());
+	
+	                        //update version
+	                        if (api.isDefaultVersion() || oldApi.isDefaultVersion()) {
+	                            //remove both versioned/non versioned apis
+	                            WebApp webApp = new WebApp(api.getId());
+	                            webApp.setDefaultVersion(true);
+	                            removeFromGateway(webApp);
+	                        }
+	
+	                        //publish to gateway if skipGateway is disabled only
+	                        if (!api.getSkipGateway()) {
+	                            publishToGateway(apiPublished);
+	                        }
+	                    }
+	                } else {
+	                    log.debug("Gateway is not existed for the current WebApp Provider");
+	                }
+                }
+
+                // 2. registry 수정 
                 updateApiArtifact(api, true, updatePermissions);
             	
                 if (!oldApi.getContext().equals(api.getContext())) {
                     api.setApiHeaderChanged(true);
                 }
 
-                // 2. dao 수정 
+                // 3-1. dao 수정 
                 appMDAO.updateWebApp(api, authorizedAdminCookie);
                 
-                //태그 수정
+                // 3-2. 태그 수정
                 addTags(api.getId(), api.getTags());
 
                
@@ -1214,43 +1248,6 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                     contextCache.put(api.getContext(), true);
                 }
                 
-                // 3. gateway 반영  
-                AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
-                        getAPIManagerConfigurationService().getAPIManagerConfiguration();
-                boolean gatewayExists = config.getApiGatewayEnvironments().size() > 0;
-                String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
-                boolean isAPIPublished = false;
-
-                if (AppMConstants.API_GATEWAY_TYPE_SYNAPSE.equalsIgnoreCase(gatewayType)) {
-                	if(gatewayExists) {
-                		isAPIPublished = isAPIPublished(api);
-	                    if (isAPIPublished) {
-	                        WebApp apiPublished = getAPI(api.getId());
-	                        apiPublished.setOldInSequence(oldApi.getInSequence());
-	                        apiPublished.setOldOutSequence(oldApi.getOutSequence());
-	
-	                        try {
-		                        //update version
-		                        if (api.isDefaultVersion() || oldApi.isDefaultVersion()) {
-		                            //remove both versioned/non versioned apis
-		                            WebApp webApp = new WebApp(api.getId());
-		                            webApp.setDefaultVersion(true);
-		                            removeFromGateway(webApp);
-		                        }
-		
-		                        //publish to gateway if skipGateway is disabled only
-		                        if (!api.getSkipGateway()) {
-		                            publishToGateway(apiPublished);
-		                        }
-	                        } catch (FaultGatewaysException e) {
-	                        	handleException("Error while Updating Api to Gateway ", e);
-							}
-	                    }
-	                } else {
-	                    log.debug("Gateway is not existed for the current WebApp Provider");
-	                }
-                }
-
             } catch (AppManagementException e) {
             	handleException("Error while updating the WebApp :" +api.getId().getApiName(),e);
             }
@@ -1458,21 +1455,12 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 
     @Override
     public void changeAPIStatus(WebApp api, APIStatus status, String userId,
-                                boolean updateGatewayConfig) throws AppManagementException {
+                                boolean updateGatewayConfig) throws AppManagementException, FaultGatewaysException {
         APIStatus currentStatus = api.getStatus();
         if (!currentStatus.equals(status)) {
             api.setStatus(status);
             try {
-            	// 1. registry 수정 
-            	// (주석해제) 2018.03.13 - 왜 주석이 되어있는지 이유를 알 수 없다. 굳이 주석할 이유가 없다.
-            	updateApiArtifact(api, false, false);
-            	// 2. dao 수정 
-            	appMDAO.recordAPILifeCycleEvent(api.getId(), currentStatus, status, userId);
-            	
-            	APIStatusObserverList observerList = APIStatusObserverList.getInstance();
-                observerList.notifyObservers(currentStatus, status, api);
-                
-                // 3. gateway 반영  
+            	// 1. gateway 반영  
                 AppManagerConfiguration config = ServiceReferenceHolder.getInstance().
                         getAPIManagerConfigurationService().getAPIManagerConfiguration();
                 String gatewayType = config.getFirstProperty(AppMConstants.API_GATEWAY_TYPE);
@@ -1492,29 +1480,34 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
                             }
                         }
 
-                        try {
-	                        if (status.equals(APIStatus.PUBLISHED) || status.equals(APIStatus.DEPRECATED) ||
-	                                status.equals(APIStatus.BLOCKED)) {
-	
-	                            //update version
-	                            if (status.equals(APIStatus.PUBLISHED)) {
-	                                if (api.isDefaultVersion()) {
-	                                    appMDAO.updateDefaultVersionDetails(api);
-	                                }
-	                            }
-	
-	                            //publish to gateway if skipGateway is disabled only
-	                            if (!api.getSkipGateway()) {
-	                                publishToGateway(api);
-	                            }
-	                        } else if(status.equals(APIStatus.UNPUBLISHED) || status.equals(APIStatus.RETIRED)) {
-	                            removeFromGateway(api);
-	                        }
-                        } catch (FaultGatewaysException e) {
-                        	handleException("Error while Updating Api to Gateway ", e);
-						}
+                        if (status.equals(APIStatus.PUBLISHED) || status.equals(APIStatus.DEPRECATED) ||
+                                status.equals(APIStatus.BLOCKED)) {
+
+                            //update version
+                            if (status.equals(APIStatus.PUBLISHED)) {
+                                if (api.isDefaultVersion()) {
+                                    appMDAO.updateDefaultVersionDetails(api);
+                                }
+                            }
+
+                            //publish to gateway if skipGateway is disabled only
+                            if (!api.getSkipGateway()) {
+                                publishToGateway(api);
+                            }
+                        } else if(status.equals(APIStatus.UNPUBLISHED) || status.equals(APIStatus.RETIRED)) {
+                            removeFromGateway(api);
+                        }
                     }
                 }
+            	
+            	// 2. registry 수정 
+            	// (주석해제) 2018.03.13 - 왜 주석이 되어있는지 이유를 알 수 없다. 굳이 주석할 이유가 없다.
+            	updateApiArtifact(api, false, false);
+            	// 3. dao 수정 
+            	appMDAO.recordAPILifeCycleEvent(api.getId(), currentStatus, status, userId);
+            	
+            	APIStatusObserverList observerList = APIStatusObserverList.getInstance();
+                observerList.notifyObservers(currentStatus, status, api);
                 
             } catch (AppManagementException e) {
             	handleException("Error occured in the status change : " + api.getId().getApiName() , e);
@@ -2278,9 +2271,10 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
      * @param ssoProvider SSO provider
      * @param authorizedAdminCookie The cookie which was generated from the SAML assertion.
      * @throws barley.appmgt.api.AppManagementException
+     * @throws FaultGatewaysException 
      */
     public boolean deleteApp(APIIdentifier identifier, SSOProvider ssoProvider, String authorizedAdminCookie) throws
-                                                                                AppManagementException {
+                                                                                AppManagementException, FaultGatewaysException {
 
         SSOConfiguratorUtil ssoConfiguratorUtil;
         // (수정) path 수정 
@@ -2337,16 +2331,13 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             WebApp webapp = new WebApp(identifier);
             // gatewayType check is required when WebApp Management is deployed on other servers to avoid synapse
             if (gatewayExists && AppMConstants.API_GATEWAY_TYPE_SYNAPSE.equalsIgnoreCase(gatewayType)) {
-                webapp.setInSequence(inSequence); //need to remove the custom sequences
-                webapp.setOutSequence(outSequence);
-                try {
-                	removeFromGateway(webapp);
-                } catch (FaultGatewaysException e) {
-                	// 삭제의 경우 예외를 발생시키지 않는다. 예외 ignore... api-manager쪽 처리 또한 ignore로 되어 있어 참고하였음.
-                	//handleException("Error while Deleting WebApp to Gateway ", e);
-                	String msg = "Error while Deleting WebApp to Gateway ";
-                	log.error(msg, e);
-				}
+            	// 게시가 되어 있다면 삭제 
+            	if(isAPIPublished(webapp)) {
+	                webapp.setInSequence(inSequence); //need to remove the custom sequences
+	                webapp.setOutSequence(outSequence);
+	                // 게이트웨이에서 app 삭제
+	                removeFromGateway(webapp);
+            	}
             } else {
                 if(log.isDebugEnabled()) {
                     log.debug("Gateway is not existed for the current applications Provider");
@@ -2423,7 +2414,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             
             transactionCommitted = true;
             isAppDeleted = true;
-        } catch (Exception e) {
+        } catch (RegistryException e) {
         	try {
                 registry.rollbackTransaction();
             } catch (RegistryException re) {
