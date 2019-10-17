@@ -78,8 +78,8 @@ public class PublishAPPSimpleWorkflowExecutor extends WorkflowExecutor {
             log.error("Could not update APP lifecycle state to IN-REVIEW", e);
             throw new WorkflowException("Could not update APP lifecycle state to IN-REVIEW", e);
         } catch (FaultGatewaysException e) {
-        	log.error("Could not update APP lifecycle state to IN-REVIEW", e);
-            throw new WorkflowException("Could not update APP lifecycle state to IN-REVIEW", e);
+        	log.error("Could not update APP lifecycle state to IN-REVIEW from Gateway", e);
+            throw new WorkflowException("Could not update APP lifecycle state to IN-REVIEW from Gateway", e);
 		}
     }
 
