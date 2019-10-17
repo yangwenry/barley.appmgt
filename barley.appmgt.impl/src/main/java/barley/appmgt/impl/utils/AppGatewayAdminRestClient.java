@@ -131,6 +131,7 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
         try {
         	String apiConfig = builder.getConfigStringForVersionedWebAppTemplate(environment);
             List<NameValuePair> urlParams = new ArrayList<NameValuePair>(1);
+            urlParams.add(new BasicNameValuePair("apiName", qualifiedName));
 	        urlParams.add(new BasicNameValuePair("apiData", apiConfig));
 	        urlParams.add(new BasicNameValuePair("tenantDomain", tenantDomain));
 	        
@@ -164,6 +165,7 @@ public class AppGatewayAdminRestClient extends AbstractAPIGatewayAdminClient {
         try {
         	String apiConfig = builder.getConfigStringForNonVersionedWebAppTemplate();
             List<NameValuePair> urlParams = new ArrayList<NameValuePair>(1);
+            urlParams.add(new BasicNameValuePair("apiName", qualifiedDefaultApiName));
 	        urlParams.add(new BasicNameValuePair("apiData", apiConfig));
 	        urlParams.add(new BasicNameValuePair("tenantDomain", tenantDomain));
 	        
