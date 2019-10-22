@@ -223,7 +223,7 @@ public class SQLConstants {
     		"SELECT " + 
 					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
 					", TC.RATING, TB.CREATED_TIME, TB.UPDATED_TIME, TA.NEW_STATE AS STATE, TS.SUBS_CNT " +
-					", TB.CATEGORY, TB.THUMBNAIL_URL, TB.DESCRIPTION " +
+					", TB.CATEGORY, TB.THUMBNAIL_URL, TB.DESCRIPTION, TB.TITLE " +
 					", TA.TAG " +
 				"FROM( " +
 					"SELECT " + 
@@ -264,6 +264,7 @@ public class SQLConstants {
 					"OR UPPER(TB.APP_NAME) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.CATEGORY) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.DESCRIPTION) LIKE UPPER(CONCAT('%',?,'%')) " +
+					"OR UPPER(TB.TITLE) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TA.TAG) LIKE UPPER(CONCAT('%',?,'%')) ";
     
     public static final String GET_SORTED_RATING_APP_SQL =

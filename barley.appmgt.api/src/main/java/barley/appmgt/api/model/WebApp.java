@@ -43,7 +43,9 @@ public class WebApp extends App {
     private String context;
     private String thumbnailUrl;
     private Set<String> tags = new LinkedHashSet<String>();
-    private Set<Documentation> documents = new LinkedHashSet<Documentation>();
+    private String tag;
+
+	private Set<Documentation> documents = new LinkedHashSet<Documentation>();
     private String httpVerb;
     private Date lastUpdated;
     private Date createdDate;
@@ -297,6 +299,14 @@ public class WebApp extends App {
     public void removeTags(Set<String> tags) {
         this.tags.removeAll(tags);
     }
+    
+    public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 
     public Set<Documentation> getDocuments() {
         return Collections.unmodifiableSet(documents);

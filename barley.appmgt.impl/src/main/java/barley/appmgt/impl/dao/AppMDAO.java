@@ -4546,8 +4546,8 @@ public class AppMDAO {
 //                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         String query = "INSERT INTO APM_APP(APP_PROVIDER, TENANT_ID, APP_NAME, APP_VERSION, CONTEXT, TRACKING_CODE, " +
                 "VISIBLE_ROLES, UUID, SAML2_SSO_ISSUER, LOG_OUT_URL,APP_ALLOW_ANONYMOUS, APP_ENDPOINT, TREAT_AS_SITE, " + 
-        		"CREATED_BY, CREATED_TIME, CATEGORY, THUMBNAIL_URL, DESCRIPTION) " +
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        		"CREATED_BY, CREATED_TIME, CATEGORY, THUMBNAIL_URL, DESCRIPTION, TITLE) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             String gatewayURLs = ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().
@@ -4593,6 +4593,9 @@ public class AppMDAO {
             prepStmt.setString(16, app.getCategory());
             prepStmt.setString(17, app.getThumbnailUrl());
             prepStmt.setString(18, app.getDescription());
+            
+            // (추가) 2019.10.21 - 타이틀 컬럼 추가
+            prepStmt.setString(19, app.getTitle());
 
             prepStmt.execute();
 
@@ -5211,7 +5214,8 @@ public class AppMDAO {
                 "     UPDATED_TIME = ?, " +
                 "     CATEGORY = ?, " +
                 "     THUMBNAIL_URL = ?, " +
-                "     DESCRIPTION = ? " +
+                "     DESCRIPTION = ?, " +
+                "     TITLE = ? " +
                 "WHERE APP_PROVIDER = ? AND APP_NAME = ? AND APP_VERSION = ? ";
 
 		String gatewayURLs = ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().
@@ -5248,9 +5252,12 @@ public class AppMDAO {
             prepStmt.setString(10, api.getThumbnailUrl());
             prepStmt.setString(11, api.getDescription());
             
-            prepStmt.setString(12, AppManagerUtil.replaceEmailDomainBack(api.getId().getProviderName()));
-            prepStmt.setString(13, api.getId().getApiName());
-            prepStmt.setString(14, api.getId().getVersion());
+            // (추가) 2019.09.26 - 타이틀 컬럼 추가 
+            prepStmt.setString(12, api.getTitle());
+            
+            prepStmt.setString(13, AppManagerUtil.replaceEmailDomainBack(api.getId().getProviderName()));
+            prepStmt.setString(14, api.getId().getApiName());
+            prepStmt.setString(15, api.getId().getVersion());
             prepStmt.execute();
 
 			int webAppId = getWebAppIdFromUUID(api.getUUID(), connection);
@@ -10096,8 +10103,9 @@ public class AppMDAO {
             selectPreparedStatement.setNString(4, keyword);
             selectPreparedStatement.setNString(5, keyword);
             selectPreparedStatement.setNString(6, keyword);
-            selectPreparedStatement.setInt(7, startNo);
-            selectPreparedStatement.setInt(8, count);
+            selectPreparedStatement.setNString(7, keyword);
+            selectPreparedStatement.setInt(8, startNo);
+            selectPreparedStatement.setInt(9, count);
             resultSet = selectPreparedStatement.executeQuery();
             while (resultSet.next()) {
          	
@@ -10112,6 +10120,8 @@ public class AppMDAO {
             	app.setCategory(resultSet.getString("CATEGORY"));
             	app.setThumbnailUrl(resultSet.getString("THUMBNAIL_URL"));
             	app.setDescription(resultSet.getString("DESCRIPTION"));
+            	app.setTitle(resultSet.getString("TITLE"));
+            	app.setTag(resultSet.getString("TAG"));
             	
             	appList.add(app);
             }
