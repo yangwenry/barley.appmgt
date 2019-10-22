@@ -360,10 +360,16 @@ public final class AppManagerUtil {
 			api.setUriTemplates(uriTemplates);
 
 			Set<String> tags = new HashSet<String>();
-			barley.registry.core.Tag[] tag = registry.getTags(artifactPath);
-			for (Tag tag1 : tag) {
-				tags.add(tag1.getTagName());
-			}
+			//barley.registry.core.Tag[] tag = registry.getTags(artifactPath);
+			//for (Tag tag1 : tag) {
+			//	tags.add(tag1.getTagName());
+			//}
+			
+			// (수정) 2019.10.22 - Tag를 DAO에서 가져오도록 변경
+            List<String> tagList = getTags(apiId);
+            for (String tag : tagList) {
+            	tags.add(tag);
+            }
 			api.addTags(tags);
 			//api.setLastUpdated(registry.get(artifactPath).getLastModified());
 			//api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
@@ -4263,6 +4269,11 @@ public final class AppManagerUtil {
     public static float getAverageRating(int apiId) throws AppManagementException {
     	AppMDAO appMDAO = new AppMDAO();
         return appMDAO.getAverageRating(apiId);
+    }
+    
+    public static List<String> getTags(APIIdentifier apiId) throws AppManagementException {
+    	AppMDAO appMDAO = new AppMDAO();
+        return appMDAO.getTags(apiId);
     }
     
     public static String getFullLifeCycleData(Registry registry) throws XMLStreamException, RegistryException {
