@@ -169,7 +169,7 @@ public class SQLConstants {
 
     public static final String GET_AVERAGE_RATING_SQL =
             " SELECT " +
-            "   CAST( SUM(RATING) AS DECIMAL)/COUNT(RATING) AS RATING " +
+            "   FORMAT(ROUND(CAST(SUM(RATING) AS DECIMAL) / COUNT(RATING), 1), 1) AS RATING " +
             " FROM " +
             "   APM_APP_RATINGS " +
             " WHERE " +
@@ -222,7 +222,7 @@ public class SQLConstants {
     public static final String GET_SORTED_APP_SQL_PREFIX =
     		"SELECT " + 
 					"CONCAT_WS('_', TB.APP_PROVIDER, TB.APP_NAME, TB.APP_VERSION) AS APP_ID " +
-					", TC.RATING, TB.CREATED_TIME, TB.UPDATED_TIME, TA.NEW_STATE AS STATE, TS.SUBS_CNT " +
+					", FORMAT(TC.RATING, 1) AS RATING, TB.CREATED_TIME, TB.UPDATED_TIME, TA.NEW_STATE AS STATE, TS.SUBS_CNT " +
 					", TB.CATEGORY, TB.THUMBNAIL_URL, TB.DESCRIPTION, TB.TITLE " +
 					", TA.TAG " +
 				"FROM( " +
@@ -244,7 +244,7 @@ public class SQLConstants {
 					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) " +
 				"LEFT JOIN ( " +
 							"SELECT " +
-								"T.APP_ID, AVG(T.RATING) AS RATING " +
+								"T.APP_ID, ROUND(AVG(T.RATING), 1) AS RATING " +
 							"FROM APM_APP_RATINGS T " +
 							"GROUP BY T.APP_ID " +
 							"HAVING AVG(T.RATING) " +
