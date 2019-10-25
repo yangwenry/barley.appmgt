@@ -10109,7 +10109,7 @@ public class AppMDAO {
             resultSet = selectPreparedStatement.executeQuery();
             while (resultSet.next()) {
          	
-            	WebApp app = new WebApp(new APIIdentifier(resultSet.getString("APP_ID")));
+            	WebApp app = new WebApp(new APIIdentifier(resultSet.getString("APP_PROVIDER"), resultSet.getString("APP_NAME"), resultSet.getString("APP_VERSION")));
             	app.setRating(resultSet.getFloat("RATING"));
             	Date createdDate = resultSet.getDate("CREATED_TIME");
             	if(createdDate != null) app.setCreatedDate(createdDate);
