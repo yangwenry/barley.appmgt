@@ -2612,8 +2612,20 @@ public final class AppManagerUtil {
 				inputStream = AppManagerComponent.class.
 						getResourceAsStream("/signupconfigurations/default-sign-up-config.xml");
 			} else {
-				inputStream = AppManagerComponent.class.
-						getResourceAsStream("/signupconfigurations/tenant-sign-up-config.xml");
+				// (추가) 디폴트 디렉토리 위치 추가  
+                String signupconfiguration = BarleyUtils.getCarbonHome() + File.separator +
+                		AppMConstants.RESOURCE_FOLDER_LOCATION + File.separator + "signupconfigurations" + File.separator + 
+                        "tenant-sign-up-config.xml";
+
+                File signupconfigurationFile = new File(signupconfiguration);
+                if (signupconfigurationFile.exists()) { 
+                	inputStream = new FileInputStream(signupconfigurationFile);
+                } else { 
+                	inputStream =
+                			AppManagerComponent.class.getResourceAsStream("/signupconfigurations/tenant-sign-up-config.xml");
+                }     
+//				inputStream = AppManagerComponent.class.
+//						getResourceAsStream("/signupconfigurations/tenant-sign-up-config.xml");
 			}
 			byte[] data = IOUtils.toByteArray(inputStream);
 			Resource resource = govRegistry.newResource();
