@@ -158,8 +158,7 @@ public class AppManagerComponent {
 
             //load self sigup configuration to the registry
             AppManagerUtil.loadTenantSelfSignUpConfigurations(tenantId);
-            // (주석) 
-            //AppManagerUtil.createSelfSignUpRoles(tenantId);
+            AppManagerUtil.createSelfSignUpRoles(tenantId);
             AppManagerUtil.createTenantSpecificConfigurationFilesInRegistry(tenantId);
             AppManagerUtil.createTenantConfInRegistry(tenantId);
 //            SignupObserver signupObserver = new SignupObserver();
