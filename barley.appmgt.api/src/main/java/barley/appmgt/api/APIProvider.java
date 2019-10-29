@@ -382,6 +382,21 @@ public interface APIProvider extends APIManager {
     // (추가)
     public void createNewVersion(WebApp api, String newVersion) throws DuplicateAPIException, AppManagementException;
 
+    
+    // (추가)
+    /**
+     * Updates an existing WebApp. This method must not be used to change WebApp status. Implementations should throw an
+     * exceptions when such attempts are made. All life cycle state changes should be carried out using the
+     * changeAPIStatus method of this interface.
+     *
+     * @param api             WebApp
+     * @param authorizedAdminCookie Authorized cookie to access IDP admin services
+     * @throws AppManagementException if failed to update WebApp
+     * @throws FaultGatewaysException 
+     */
+    public void updateAPI(WebApp api) throws AppManagementException, FaultGatewaysException;
+    
+    
     /**
      * Updates an existing WebApp. This method must not be used to change WebApp status. Implementations should throw an
      * exceptions when such attempts are made. All life cycle state changes should be carried out using the

@@ -1136,6 +1136,18 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             handleException("Error while adding WebApp", e);
         }
     }
+    
+    
+    /**
+     * Updates an existing WebApp
+     *
+     * @param api             WebApp
+     * @throws AppManagementException if failed to update WebApp
+     * @throws FaultGatewaysException 
+     */
+    public void updateAPI(WebApp api) throws AppManagementException, FaultGatewaysException {
+    	updateAPI(api, null);
+    }
 
     /**
      * Updates an existing WebApp
