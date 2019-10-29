@@ -353,6 +353,13 @@ public class WebApp extends App {
     public void addAvailableTiers(Set<Tier> availableTiers) {
         this.availableTiers.addAll(availableTiers);
     }
+    
+    /**
+     * Removes all Tiers from the API object.
+     */
+    public void removeAllTiers(){
+        this.availableTiers.clear();
+    }
 
     public void removeAvailableTiers(Set<Tier> availableTiers) {
         this.availableTiers.removeAll(availableTiers);
