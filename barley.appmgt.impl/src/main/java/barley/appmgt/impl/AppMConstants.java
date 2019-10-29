@@ -250,6 +250,10 @@ public final class AppMConstants {
     public static final String API_OVERVIEW_TITLE = "overview_title";
     // (추가) 2019.09.26 - 카테고리 항목 추가
     public static final String API_OVERVIEW_CATEGORY = "overview_category";
+    // (추가) 2019.10.29 - 미리보기 항목 추가 
+    public static final String API_OVERVIEW_PREVIEW1 = "overview_preview1";
+    public static final String API_OVERVIEW_PREVIEW2 = "overview_preview2";
+    public static final String API_OVERVIEW_PREVIEW3 = "overview_preview3";
 
     //Those constance are used in Provider artifact.
     public static final String PROVIDER_OVERVIEW_NAME= "overview_name";
