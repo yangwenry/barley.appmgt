@@ -532,6 +532,15 @@ public final class AppMConstants {
     public static final String UNLIMITED_TIER = "Unlimited";
     public static final int UNLIMITED_TIER_REQUEST_PER_MINUTE = 10000;
     public static final String UNLIMITED_TIER_DESC = "Allows unlimited requests";
+    
+    public static final String GOLD_TIER = "Gold";
+    public static final String GOLD_TIER_DESC = "";
+    
+    public static final String SILVER_TIER = "Silver";
+    public static final String SILVER_TIER_DESC = "";
+    
+    public static final String BRONZE_TIER = "Bronze";
+    public static final String BRONZE_TIER_DESC = "";
 
     public static final String UNAUTHENTICATED_TIER = "Unauthenticated";
 
