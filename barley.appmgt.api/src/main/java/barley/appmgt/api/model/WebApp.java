@@ -135,8 +135,14 @@ public class WebApp extends App {
     private String originVersion;
 
     private boolean serviceProviderCreationEnabled;
+    
+    // (추가) 미리보기 화면 URI
+    private String preview1;
+    private String preview2;
+    private String preview3;
 
-    public WebApp() {
+
+	public WebApp() {
     }
 
     public int getDatabaseId() {
@@ -868,4 +874,33 @@ public class WebApp extends App {
 	public void setSubscriptionCount(int subscriptionCount) {
 		this.subscriptionCount = subscriptionCount;
 	}
+	
+	
+	public String getPreview1() {
+		return preview1;
+	}
+
+	public void setPreview1(String preview1) {
+		this.preview1 = preview1;
+	}
+
+	
+	public String getPreview2() {
+		return preview2;
+	}
+
+	public void setPreview2(String preview2) {
+		this.preview2 = preview2;
+	}
+
+	
+	public String getPreview3() {
+		return preview3;
+	}
+
+	public void setPreview3(String preview3) {
+		this.preview3 = preview3;
+	}
+	
+	
 }

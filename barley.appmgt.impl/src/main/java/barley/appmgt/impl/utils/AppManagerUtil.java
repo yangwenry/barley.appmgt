@@ -387,6 +387,10 @@ public final class AppManagerUtil {
                 }
             }
             api.setLifeCycleName(artifact.getLifecycleName());
+            
+            api.setPreview1(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW1));
+            api.setPreview2(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW2));
+            api.setPreview3(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW3));
 
 		} catch (GovernanceException e) {
 			String msg = "Failed to get WebApp fro artifact ";
@@ -1101,6 +1105,10 @@ public final class AppManagerUtil {
 				artifact.addAttribute(AppMConstants.APP_URITEMPLATE_POLICYGROUP_IDS + i, String.valueOf(uriTemplate.getPolicyGroupId()));
 				i++;
 			}
+			
+			artifact.setAttribute(AppMConstants.API_OVERVIEW_PREVIEW1, api.getPreview1());
+			artifact.setAttribute(AppMConstants.API_OVERVIEW_PREVIEW2, api.getPreview2());
+			artifact.setAttribute(AppMConstants.API_OVERVIEW_PREVIEW3, api.getPreview3());
 			
 		} catch (GovernanceException e) {
 			String msg = "Failed to create WebApp for : " + api.getId().getApiName();
