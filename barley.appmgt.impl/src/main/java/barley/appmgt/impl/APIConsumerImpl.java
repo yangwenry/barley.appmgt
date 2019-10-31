@@ -2044,6 +2044,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     	return appMDAO.getPublicAppCount(tenantDomain);
     }
     
+    @Override
+    public int setCommentAgreeValue(String userName, int commnetId, int agreeValue) throws AppManagementException {
+    	return appMDAO.setCommentAgreeValue(userName, commnetId, agreeValue);
+    }
+    
     private List<WebApp> addAppAttributeFromRegistry(List<WebApp> appList) throws AppManagementException {
     	List<WebApp> result = new ArrayList<WebApp>();
     	for(int i=0; i < appList.size(); i++) {

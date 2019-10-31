@@ -312,5 +312,15 @@ public class SQLConstants {
     public static final String GET_TAG_SQL =
             "SELECT TAG_NAME FROM APM_APP_TAG WHERE APP_ID = ? ORDER BY DATE_TAGGED ASC ";
     
+    /* 공감 테이블*/
+    public static final String GET_COMMENT_AGREE_VALUE_SQL =
+    		"SELECT AGREE FROM APM_APP_COMMENTS_AGREE WHERE USER_ID = ? AND COMMENT_ID = ?";
+    
+    public static final String SET_COMMENT_AGREE_VALID_VALUE_SQL =
+    		"INSERT INTO APM_APP_COMMENTS_AGREE(USER_ID, COMMENT_ID, AGREE, DATE_AGREED) VALUES (?, ?, ?, ?)";
+    
+    public static final String SET_COMMENT_AGREE_EMPTY_VALUE_SQL =
+    		"DELETE FROM APM_APP_COMMENTS_AGREE WHERE USER_ID = ? AND COMMENT_ID = ?";
+    
 
 }

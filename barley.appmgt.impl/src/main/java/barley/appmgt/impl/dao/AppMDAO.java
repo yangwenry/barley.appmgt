@@ -10269,4 +10269,50 @@ public class AppMDAO {
         }	
         return tags;
     }
+    
+    
+    public int setCommentAgreeValue(String userName, int commnetId, int agreeValue) throws AppManagementException {
+        Connection connection = null;
+        PreparedStatement prepStmt = null;
+        ResultSet rs = null;
+        int rtnVal = 0;
+
+        String sqlQuery = SQLConstants.GET_COMMENT_AGREE_VALUE_SQL;
+		
+        try {
+            connection = APIMgtDBUtil.getConnection();     
+                 
+            prepStmt = connection.prepareStatement(sqlQuery);
+            prepStmt.setNString(1, userName);
+            prepStmt.setInt(2, commnetId);       
+            
+            rs = prepStmt.executeQuery();          
+                 
+            if(rs.next()) {
+            	if(rs.getInt("AGREE") != agreeValue)
+            		return rs.getInt("AGREE");
+            	
+            	sqlQuery = SQLConstants.SET_COMMENT_AGREE_EMPTY_VALUE_SQL;
+            	prepStmt = connection.prepareStatement(sqlQuery);
+                prepStmt.setNString(1, userName);
+                prepStmt.setInt(2, commnetId);
+            } else {
+            	sqlQuery = SQLConstants.SET_COMMENT_AGREE_VALID_VALUE_SQL; 
+                prepStmt = connection.prepareStatement(sqlQuery);
+                prepStmt.setNString(1, userName);
+                prepStmt.setInt(2, commnetId);
+                prepStmt.setInt(3, agreeValue);
+                prepStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()), Calendar.getInstance());
+                
+                rtnVal = agreeValue;
+            }
+            prepStmt.executeUpdate();
+        } catch (SQLException e) {
+            handleException("Error when executing the SQL : " + sqlQuery, e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(prepStmt, connection, rs);
+        }
+        
+        return rtnVal;
+    }
 }
