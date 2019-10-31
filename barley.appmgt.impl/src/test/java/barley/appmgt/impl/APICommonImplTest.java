@@ -240,7 +240,7 @@ public class APICommonImplTest extends BaseTestCase {
     	
     	// um_role_permission => um_permission 테이블 데이터 추가. 즉, 롤별 권한 부여 
     	String roleName = "admin";
-//    	String roleName = "wso2.anonymous.role";	// um_user_role에서 um_role 테이블을 조회하면 사용자의 롤을 조회할 수 있음.
+//    	String roleName = "barley.anonymous.role";	// um_user_role에서 um_role 테이블을 조회하면 사용자의 롤을 조회할 수 있음.
 //    	String action = UserMgtConstants.EXECUTE_ACTION;
 //    	String resourceId = AppMConstants.Permissions.WEB_APP_DELETE;
 //    	realmService.getTenantUserRealm(tenantId).getAuthorizationManager().authorizeRole(roleName, resourceId, action);
