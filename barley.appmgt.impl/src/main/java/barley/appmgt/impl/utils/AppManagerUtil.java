@@ -199,6 +199,7 @@ public final class AppManagerUtil {
 //			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
 //			api.setRating(res.floatValue());
 			api.setRating(getAverageRating(apiId));
+			api.setRatingUserCount(getRatingUserCount(apiId));
 			
             //set name
             api.setApiName(apiName);
@@ -4289,6 +4290,24 @@ public final class AppManagerUtil {
     public static float getAverageRating(int apiId) throws AppManagementException {
     	AppMDAO appMDAO = new AppMDAO();
         return appMDAO.getAverageRating(apiId);
+    }
+    
+    public static int getRatingUserCount(APIIdentifier apiId) throws AppManagementException {
+    	AppMDAO appMDAO = new AppMDAO();
+        return appMDAO.getRatingUserCount(apiId);
+    }
+
+    public static int getRatingUserCount(int apiId) throws AppManagementException {
+    	AppMDAO appMDAO = new AppMDAO();
+        return appMDAO.getRatingUserCount(apiId);
+    }
+    
+    public static int getRatingUserCount(String providerName, String apiName, String version) throws AppManagementException {
+        
+    	APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
+    	AppMDAO appMDAO = new AppMDAO();
+    	
+    	return appMDAO.getRatingUserCount(apiIdentifier);
     }
     
     public static List<String> getTags(APIIdentifier apiId) throws AppManagementException {

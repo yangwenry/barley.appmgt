@@ -32,7 +32,9 @@ public class App {
     private String name;
     private String version;
     private float rating;
-    private String[] appVisibility;
+    private int ratingUserCount;
+    
+	private String[] appVisibility;
     private String banner;
     private String lifeCycleName;
     private APIStatus lifeCycleStatus;
@@ -93,6 +95,14 @@ public class App {
     public void setRating(float rating) {
         this.rating = rating;
     }
+    
+    public int getRatingUserCount() {
+		return ratingUserCount;
+	}
+
+	public void setRatingUserCount(int ratingUserCount) {
+		this.ratingUserCount = ratingUserCount;
+	}
 
     public String getBanner() {
         return banner;

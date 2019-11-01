@@ -177,6 +177,9 @@ public class SQLConstants {
             " GROUP BY " +
             "   APP_ID ";
     
+    public static final String GET_RATING_USER_COUNT_SQL = 
+    		"SELECT COUNT(SUBSCRIBER_ID) AS USER_COUNT FROM APM_APP_RATINGS WHERE APP_ID = ?";
+    
     // (추가) 2019.06.05
     public static final String GET_APPLICATION_BY_NAME_PREFIX =
             " SELECT " +
