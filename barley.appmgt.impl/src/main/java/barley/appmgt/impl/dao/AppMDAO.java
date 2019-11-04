@@ -7548,6 +7548,35 @@ public class AppMDAO {
 			APIMgtDBUtil.closeAllConnections(ps, conn, null);
 		}
 	}
+    
+    // (추가) 2019.11.04
+    public static boolean isExistsPolicyGroup(String policyGroupName)
+			throws AppManagementException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean result = false;
+		
+		String query =
+				"SELECT POLICY_GRP_ID "
+						+ "FROM APM_POLICY_GROUP "
+						+ "WHERE NAME = ? ";
+		try {
+			conn = APIMgtDBUtil.getConnection();
+			ps = conn.prepareStatement(query);
+			ps.setString(1, policyGroupName);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			handleException("SQL Error while executing the query to get policy group " + 
+											query + " : (policyGroupName:" + policyGroupName + ")", e);
+		} finally {
+			APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+		}
+		return result;
+	}
 
 
 	/**

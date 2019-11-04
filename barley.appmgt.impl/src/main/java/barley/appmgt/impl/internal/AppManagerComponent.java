@@ -262,6 +262,9 @@ public class AppManagerComponent {
             //Find the app usage statistics client which is proffered in the configuration and set instance of it.
             appUsageStatisticsClientImplClass = configuration.getFirstProperty(AppMConstants.APP_STATISTIC_CLIENT_PROVIDER);
             doRegisterAppUsageStatisticsClient();
+            
+            // (추가) 2019.11.04 - 기본 policy 추가 
+            AppManagerUtil.addDefaultSuperTenantAdvancedThrottlePolicies();
 
         } catch (AppManagementException e) {
             log.error("Error while initializing the WebApp manager component", e);

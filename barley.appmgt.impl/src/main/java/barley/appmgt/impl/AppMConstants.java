@@ -96,7 +96,7 @@ public final class AppMConstants {
     public static final String API_IMAGE_LOCATION = APPMGT_APPLICATION_DATA_LOCATION + "/icons";
 
     //Workflow Config Location
-    public static final String WORKFLOW_EXECUTOR_LOCATION = APPMGT_APPLICATION_DATA_LOCATION + "/workflow-extensions.xml";
+    public static final String WORKFLOW_EXECUTOR_LOCATION = APPMGT_APPLICATION_DATA_LOCATION + "/workflow-app-extensions.xml";
 
     public static final String WORKFLOW_MEDIA_TYPE = "workflow-config";
 
@@ -533,6 +533,9 @@ public final class AppMConstants {
     public static final String TIER_MANAGEMENT = "TierManagement.";
     public static final String ENABLE_UNLIMITED_TIER = TIER_MANAGEMENT + "EnableUnlimitedTier";
 
+    // (추가) 2019.11.04 - 기본 Policy 추가 
+    public static final String BASIC_POLICY = "Basic";
+    
     public static final String UNLIMITED_TIER = "Unlimited";
     public static final int UNLIMITED_TIER_REQUEST_PER_MINUTE = 10000;
     public static final String UNLIMITED_TIER_DESC = "Allows unlimited requests";

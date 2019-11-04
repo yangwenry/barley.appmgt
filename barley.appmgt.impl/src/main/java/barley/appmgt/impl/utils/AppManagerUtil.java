@@ -2752,7 +2752,7 @@ public final class AppManagerUtil {
                 log.debug("Adding External Stores configuration to the tenant's registry");
             }
             InputStream inputStream =
-                    AppManagerComponent.class.getResourceAsStream("/workflowextensions/default-workflow-extensions.xml");
+                    AppManagerComponent.class.getResourceAsStream("/workflowextensions/default-workflow-app-extensions.xml");
             byte[] data = IOUtils.toByteArray(inputStream);
             Resource resource = govRegistry.newResource();
             resource.setContent(data);
@@ -4353,4 +4353,20 @@ public final class AppManagerUtil {
     	}
     	return lastEnvironment;
 	}
+    
+    // (추가) 테넌트 기본 dao throttling policy 등록을 위해 추가 
+    public static void addDefaultSuperTenantAdvancedThrottlePolicies() throws AppManagementException {
+    	String policyGroupName = AppMConstants.BASIC_POLICY;
+    	String throttlingTier = AppMConstants.UNLIMITED_TIER;
+    	String policyGroupDesc = "System Default Value";
+    	String userRoles = null;
+    	String isAnonymousAllowed = "0";
+    	Object[] partialMappingsObj = null;
+    	
+    	if(!AppMDAO.isExistsPolicyGroup(policyGroupName)) {
+    		AppMDAO.savePolicyGroup(policyGroupName, throttlingTier, userRoles, isAnonymousAllowed, partialMappingsObj, policyGroupDesc);
+    	}
+    	
+    }
+    
 }
