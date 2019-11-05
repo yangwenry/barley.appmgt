@@ -9752,6 +9752,67 @@ public class AppMDAO {
         }
         return commentList.toArray(new Comment[commentList.size()]);
     }
+    
+    
+    public Comment[] getSortedCreatedTimeComments(APIIdentifier identifier, int page, int count) throws AppManagementException {
+    	String query = SQLConstants.GET_SORTED_CREATED_TIME_COMMENTS_SQL;
+    	return getSortedComments(query, identifier, page, count);
+    }
+    
+    
+    public Comment[] getSortedAgreeCountComments(APIIdentifier identifier, int page, int count) throws AppManagementException {
+    	String query = SQLConstants.GET_SORTED_AGREE_COUNT_COMMENT_SQL;
+    	return getSortedComments(query, identifier, page, count);
+    }
+    
+    
+    public Comment[] getSortedComments(String query, APIIdentifier identifier, int page, int count) throws AppManagementException {
+        List<Comment> commentList = new ArrayList<Comment>();
+        Connection connection = null;
+        ResultSet resultSet = null;
+        PreparedStatement prepStmt = null;
+        
+        int startNo = (page-1) * count;
+
+        try {
+            connection = APIMgtDBUtil.getConnection();
+            prepStmt = connection.prepareStatement(query);
+            prepStmt.setString(1, AppManagerUtil.replaceEmailDomainBack(identifier.getProviderName()));
+            prepStmt.setString(2, identifier.getApiName());
+            prepStmt.setString(3, identifier.getVersion());
+            prepStmt.setInt(4, startNo);
+            prepStmt.setInt(5, count);
+            
+            
+            resultSet = prepStmt.executeQuery();
+            while (resultSet.next()) {
+                Comment comment = new Comment();
+                comment.setCommentId(resultSet.getInt("COMMENT_ID"));
+                comment.setText(resultSet.getString("COMMENT_TEXT"));
+                comment.setUser(resultSet.getString("COMMENTED_USER"));
+                comment.setCreatedTime(new java.util.Date(resultSet.getTimestamp("DATE_COMMENTED").getTime()));
+                
+                comment.setAgreeCount(resultSet.getInt("COMMENT_AGREE_COUNT"));
+                comment.setDisagreeCount(resultSet.getInt("COMMENT_DISAGREE_COUNT"));
+                
+                commentList.add(comment);
+            }
+        } catch (SQLException e) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException e1) {
+                log.error("Failed to retrieve comments ", e1);
+            }
+            handleException("Failed to retrieve comments for  " + identifier.getApiName() + '-' + identifier
+                    .getVersion(), e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(prepStmt, connection, resultSet);
+        }
+        return commentList.toArray(new Comment[commentList.size()]);
+    }
+    
 
     
     public void addRating(APIIdentifier apiId, int rating, String user) throws AppManagementException {
@@ -10407,33 +10468,44 @@ public class AppMDAO {
         String sqlQuery = SQLConstants.GET_COMMENT_AGREE_VALUE_SQL;
 		
         try {
-            connection = APIMgtDBUtil.getConnection();     
-                 
+        	connection = APIMgtDBUtil.getConnection();     
+            
             prepStmt = connection.prepareStatement(sqlQuery);
             prepStmt.setNString(1, userName);
-            prepStmt.setInt(2, commnetId);       
+            prepStmt.setInt(2, commnetId);
+            prepStmt.setInt(3, commnetId);
             
             rs = prepStmt.executeQuery();          
                  
             if(rs.next()) {
-            	if(rs.getInt("AGREE") != agreeValue)
-            		return rs.getInt("AGREE");
             	
-            	sqlQuery = SQLConstants.SET_COMMENT_AGREE_EMPTY_VALUE_SQL;
-            	prepStmt = connection.prepareStatement(sqlQuery);
-                prepStmt.setNString(1, userName);
-                prepStmt.setInt(2, commnetId);
-            } else {
-            	sqlQuery = SQLConstants.SET_COMMENT_AGREE_VALID_VALUE_SQL; 
-                prepStmt = connection.prepareStatement(sqlQuery);
-                prepStmt.setNString(1, userName);
-                prepStmt.setInt(2, commnetId);
-                prepStmt.setInt(3, agreeValue);
-                prepStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()), Calendar.getInstance());
-                
-                rtnVal = agreeValue;
+            	//댓글 작성자와 공감 사용자가 같다면 종료
+            	if(rs.getString("COMMENTED_USER").equals(userName))
+            		return 0;
+            	
+            	if(rs.getInt("AGREE")==0) {
+            		//공감 내용이 입력되어 있지 않다면 입력 처리
+            		sqlQuery = SQLConstants.SET_COMMENT_AGREE_VALID_VALUE_SQL;
+                    prepStmt = connection.prepareStatement(sqlQuery);
+                    prepStmt.setNString(1, userName);
+                    prepStmt.setInt(2, commnetId);
+                    prepStmt.setInt(3, agreeValue);
+                    prepStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()), Calendar.getInstance());
+                    
+                    rtnVal = agreeValue;
+            	} else if(rs.getInt("AGREE") != agreeValue) {
+            		//공감 내용이 입력되어있는 상태에서 다른 입력값이 들어온다면 이전 입력 값을 리턴하며 종료
+            		return rs.getInt("AGREE");
+            	} else {
+            		//동일한 입력 값인 경우 삭제 처리
+            		sqlQuery = SQLConstants.SET_COMMENT_AGREE_EMPTY_VALUE_SQL;
+                	prepStmt = connection.prepareStatement(sqlQuery);
+                    prepStmt.setNString(1, userName);
+                    prepStmt.setInt(2, commnetId);
+            	}
+            	
+            	prepStmt.executeUpdate();
             }
-            prepStmt.executeUpdate();
         } catch (SQLException e) {
             handleException("Error when executing the SQL : " + sqlQuery, e);
         } finally {

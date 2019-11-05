@@ -2011,6 +2011,16 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         return appMDAO.getComments(identifier);
     }
     
+    @Override
+    public Comment[] getSortedCreatedTimeComments(APIIdentifier identifier, int page, int count) throws AppManagementException {
+        return appMDAO.getSortedCreatedTimeComments(identifier, page, count);
+    }
+    
+    @Override
+    public Comment[] getSortedAgreeCountComments(APIIdentifier identifier, int page, int count) throws AppManagementException {
+        return appMDAO.getSortedAgreeCountComments(identifier, page, count);
+    }
+    
     
     @Override
     public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException {    	

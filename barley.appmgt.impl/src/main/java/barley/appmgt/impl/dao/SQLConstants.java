@@ -144,6 +144,51 @@ public class SQLConstants {
             "   AND APP.APP_VERSION  = ? " +
             "   AND APP.APP_ID = APM_APP_COMMENTS.APP_ID";
     
+    
+    public static final String GET_SORTED_COMMENTS_SQL =
+    		" SELECT " +
+    		" 	TB.COMMENT_ID AS COMMENT_ID, " +
+    		" 	TB.COMMENT_TEXT AS COMMENT_TEXT, " +
+    		" 	TB.COMMENTED_USER AS COMMENTED_USER, " +
+    		" 	TB.DATE_COMMENTED AS DATE_COMMENTED, " +
+    		" 	CASE WHEN TC.AGREE_COUNT IS NULL THEN 0 ELSE TC.AGREE_COUNT END AS COMMENT_AGREE_COUNT, " +
+    		" 	CASE WHEN TD.DISAGREE_COUNT IS NULL THEN 0 ELSE TD.DISAGREE_COUNT END AS COMMENT_DISAGREE_COUNT " +
+    		" FROM APM_APP TA " +
+    		" LEFT JOIN APM_APP_COMMENTS TB " +
+    		" 	ON TA.APP_ID = TB.APP_ID " +
+    		" LEFT JOIN ( " +
+    		" 		SELECT " +
+    		" 			ITA.COMMENT_ID, " +
+    		" 				COUNT(ITA.AGREE) AS AGREE_COUNT " +
+    		" 			FROM APM_APP_COMMENTS_AGREE ITA " +
+    		" 			WHERE ITA.AGREE = 1 " +
+    		" 			GROUP BY ITA.COMMENT_ID " +
+    		" 	) TC " +
+    		" 	ON TB.COMMENT_ID = TC.COMMENT_ID " +
+    		" LEFT JOIN ( " +
+    		" 		SELECT " +
+    		" 			ITB.COMMENT_ID, " +
+    		" 				COUNT(ITB.AGREE) AS DISAGREE_COUNT " +
+    		" 			FROM APM_APP_COMMENTS_AGREE ITB " +
+    		" 			WHERE ITB.AGREE = -1 " +
+    		" 			GROUP BY ITB.COMMENT_ID " +
+    		" 	) TD " +
+    		" 	ON TB.COMMENT_ID = TD.COMMENT_ID " +
+    		" WHERE " +
+    		" 	TA.APP_PROVIDER = ? " +
+    		" 	AND TA.APP_NAME = ? " +
+    		" 	AND TA.APP_VERSION = ? ";
+    		
+    public static final String GET_SORTED_CREATED_TIME_COMMENTS_SQL =
+    		GET_SORTED_COMMENTS_SQL +
+    			" ORDER BY TB.DATE_COMMENTED DESC " +
+    			" LIMIT ?, ? ";
+    
+    public static final String GET_SORTED_AGREE_COUNT_COMMENT_SQL =
+    		GET_SORTED_COMMENTS_SQL +
+    			" ORDER BY TC.AGREE_COUNT DESC, TB.DATE_COMMENTED DESC " +
+    			" LIMIT ?, ? ";
+
     // (추가) 2019.06.03
     public static final String GET_APP_ID_SQL =
             "SELECT APP.APP_ID FROM APM_APP APP WHERE APP.APP_PROVIDER = ? AND APP.APP_NAME = ? AND APP.APP_VERSION = ?";
@@ -317,7 +362,19 @@ public class SQLConstants {
     
     /* 공감 테이블*/
     public static final String GET_COMMENT_AGREE_VALUE_SQL =
-    		"SELECT AGREE FROM APM_APP_COMMENTS_AGREE WHERE USER_ID = ? AND COMMENT_ID = ?";
+    		" SELECT " +
+    		"   	TA.COMMENTED_USER AS COMMENTED_USER, " +
+    		"   	CASE WHEN TB.AGREE IS NULL THEN 0 ELSE TB.AGREE END AS AGREE " +
+    		" FROM APM_APP_COMMENTS TA " +
+    		" LEFT JOIN ( " +
+    		" 		SELECT " +
+    		"   			IT.AGREE, " +
+    		"   			IT.COMMENT_ID " + 
+    		"   		FROM APM_APP_COMMENTS_AGREE IT " + 
+    		"   		WHERE IT.USER_ID = ? AND IT.COMMENT_ID = ? " + 
+    		" 	) TB " + 
+    		" ON TA.COMMENT_ID = TB.COMMENT_ID " + 
+    		" WHERE TA.COMMENT_ID= ? ";
     
     public static final String SET_COMMENT_AGREE_VALID_VALUE_SQL =
     		"INSERT INTO APM_APP_COMMENTS_AGREE(USER_ID, COMMENT_ID, AGREE, DATE_AGREED) VALUES (?, ?, ?, ?)";
