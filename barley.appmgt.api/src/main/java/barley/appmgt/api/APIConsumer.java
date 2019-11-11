@@ -523,6 +523,8 @@ public interface APIConsumer extends APIManager {
      * @throws APIManagementException
      */
     void deleteComment(int commentId) throws AppManagementException;
+    
+    void deleteComment(String userId, int commentId) throws AppManagementException;
 
     /**
      * @param identifier Api identifier

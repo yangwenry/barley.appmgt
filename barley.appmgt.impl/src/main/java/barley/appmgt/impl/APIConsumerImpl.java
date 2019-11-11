@@ -2005,6 +2005,11 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
 	public void deleteComment(int commentId) throws AppManagementException {
 		appMDAO.deleteComment(commentId);
 	}
+	
+	@Override
+	public void deleteComment(String userId, int commentId) throws AppManagementException {
+		appMDAO.deleteComment(userId, commentId);
+	}
 
     @Override
     public Comment[] getComments(APIIdentifier identifier) throws AppManagementException {

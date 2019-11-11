@@ -9677,6 +9677,17 @@ public class AppMDAO {
         }
     }
     
+    public void deleteComment(String userId, int commentId) throws AppManagementException {
+    	
+    	Comment commentObj = getCommentById(commentId);
+    	
+    	if(!userId.equals(commentObj.getUser())){
+    		throw new AppManagementException("Unmatched comment register - " + userId);
+    	}
+    	
+    	deleteComment(commentId);
+ 	}
+    
     public void deleteComment(int commentId) throws AppManagementException {
 
         Connection connection = null;
@@ -9753,6 +9764,44 @@ public class AppMDAO {
         return commentList.toArray(new Comment[commentList.size()]);
     }
     
+    public Comment getCommentById(int commentId) throws AppManagementException {
+   	 Connection connection = null;
+        ResultSet resultSet = null;
+        PreparedStatement prepStmt = null;
+        Comment comment = null;
+              
+        String sqlQuery = SQLConstants.GET_COMMENT_BY_ID_SQL;
+        try {
+            connection = APIMgtDBUtil.getConnection();
+            prepStmt = connection.prepareStatement(sqlQuery);
+            prepStmt.setInt(1, commentId);
+            resultSet = prepStmt.executeQuery();
+            if (resultSet.next()) {
+                comment = new Comment();
+                comment.setCommentId(resultSet.getInt("COMMENT_ID"));
+                comment.setText(resultSet.getString("COMMENT_TEXT"));
+                comment.setUser(resultSet.getString("COMMENTED_USER"));
+                comment.setCreatedTime(new java.util.Date(resultSet.getTimestamp("DATE_COMMENTED").getTime()));
+              
+                comment.setAgreeCount(resultSet.getInt("COMMENT_AGREE_COUNT"));
+                comment.setDisagreeCount(resultSet.getInt("COMMENT_DISAGREE_COUNT"));
+            }
+        } catch (SQLException e) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException e1) {
+                log.error("Failed to retrieve comment ", e1);
+            }
+            handleException("Failed to retrieve comment for Comment ID : " + commentId , e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(prepStmt, connection, resultSet);
+        }
+        
+        
+        return comment;
+   }
     
     public Comment[] getSortedCreatedTimeComments(APIIdentifier identifier, int page, int count) throws AppManagementException {
     	String query = SQLConstants.GET_SORTED_CREATED_TIME_COMMENTS_SQL;
