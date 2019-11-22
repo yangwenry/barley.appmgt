@@ -2255,6 +2255,60 @@ public class AppMDAO {
 		}
 		return subscribedAPIs;
 	}
+	
+	// (추가) 2019.11.20 - 구독한 app을 가져오기 위한 id 조회  
+    public List<APIIdentifier> getSubscribedApiIds(Subscriber subscriber, String groupingId)
+            throws AppManagementException {
+        List<APIIdentifier> apiIds = new ArrayList<APIIdentifier>();
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet result = null;
+        
+        //identify subscribeduser used email/ordinalusername
+        String subscribedUserName = getLoginUserName(subscriber.getName());
+        subscriber.setName(subscribedUserName);
+
+        String sqlQuery = SQLConstants.GET_SUBSCRIBED_APPS_OF_SUBSCRIBER_SQL;
+        //String whereClause = " AND  SUB.USER_ID = ? ";
+        String whereClauseCaseInSensitive = " AND  LOWER(SUB.USER_ID) = LOWER(?) ";
+        //String whereClauseWithGroupId = " AND (APP.GROUP_ID = ? OR (APP.GROUP_ID = '' AND SUB.USER_ID = ?))";
+        String whereClauseWithGroupIdorceCaseInsensitiveComp = " AND (APP.GROUP_ID = ? OR (APP.GROUP_ID = '' " + "AND" +
+                                                               " LOWER(SUB.USER_ID) = LOWER(?)))";
+        try {
+            connection = APIMgtDBUtil.getConnection();
+
+            if (groupingId != null && !"null".equals(groupingId) && !groupingId.isEmpty()) {
+            	sqlQuery += whereClauseWithGroupIdorceCaseInsensitiveComp;
+            } else {
+            	sqlQuery += whereClauseCaseInSensitive;
+            }
+
+            ps = connection.prepareStatement(sqlQuery);
+            int tenantId = AppManagerUtil.getTenantId(subscriber.getName());
+            ps.setInt(1, tenantId);
+            if (groupingId != null && !"null".equals(groupingId) && !groupingId.isEmpty()) {
+                ps.setString(2, groupingId);
+                ps.setString(3, subscriber.getName());
+            } else {
+                ps.setString(2, subscriber.getName());
+            }
+
+            result = ps.executeQuery();
+
+            while (result.next()) {
+            	APIIdentifier apiIdentifier = new APIIdentifier(AppManagerUtil.replaceEmailDomainBack(result.getString
+                        ("APP_PROVIDER")), result.getString("APP_NAME"), result.getString("APP_VERSION"));
+            	apiIds.add(apiIdentifier);
+            }
+            
+        } catch (SQLException e) {
+            handleException("Failed to get SubscribedAPI of :" + subscriber.getName(), e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, connection, result);
+        }
+        
+        return apiIds;
+    }
 
 	public String getTokenScope(String consumerKey) throws AppManagementException {
 		String tokenScope = null;
@@ -10334,18 +10388,21 @@ public class AppMDAO {
         	connection = APIMgtDBUtil.getConnection();
             connection.setAutoCommit(false);
             selectPreparedStatement = connection.prepareStatement(query);
-            selectPreparedStatement.setNString(1, tenantDomain);
-            selectPreparedStatement.setNString(2, keyword);
+            selectPreparedStatement.setNString(1, "PUBLISHED");
+            selectPreparedStatement.setNString(2, tenantDomain);
             selectPreparedStatement.setNString(3, keyword);
             selectPreparedStatement.setNString(4, keyword);
             selectPreparedStatement.setNString(5, keyword);
             selectPreparedStatement.setNString(6, keyword);
             selectPreparedStatement.setNString(7, keyword);
-            selectPreparedStatement.setInt(8, startNo);
-            selectPreparedStatement.setInt(9, count);
+            selectPreparedStatement.setNString(8, keyword);
+            selectPreparedStatement.setInt(9, startNo);
+            selectPreparedStatement.setInt(10, count);
             resultSet = selectPreparedStatement.executeQuery();
             while (resultSet.next()) {
          	
+            	//삭제 할 것
+            	/*	
             	WebApp app = new WebApp(new APIIdentifier(resultSet.getString("APP_PROVIDER"), resultSet.getString("APP_NAME"), resultSet.getString("APP_VERSION")));
             	app.setRating(resultSet.getFloat("RATING"));
             	Date createdDate = resultSet.getDate("CREATED_TIME");
@@ -10359,6 +10416,9 @@ public class AppMDAO {
             	app.setDescription(resultSet.getString("DESCRIPTION"));
             	app.setTitle(resultSet.getString("TITLE"));
             	app.setTag(resultSet.getString("TAG"));
+            	*/
+            	
+            	WebApp app = createAppFromResultSet(resultSet);
             	
             	appList.add(app);
             }
@@ -10562,5 +10622,100 @@ public class AppMDAO {
         }
         
         return rtnVal;
+    }
+    
+    public WebApp getApp(APIIdentifier apiIdentifier) throws AppManagementException {
+        Connection connection = null;
+        PreparedStatement selectPreparedStatement = null;
+        ResultSet resultSet = null;
+        
+        WebApp app = null;
+        
+        String tenantDomain = MultitenantUtils.getTenantDomain(apiIdentifier.getProviderName());
+        try {
+            connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
+            String query = SQLConstants.GET_APP_SQL;
+            selectPreparedStatement = connection.prepareStatement(query);
+            selectPreparedStatement.setNString(1, "");
+            selectPreparedStatement.setNString(2, tenantDomain);
+            selectPreparedStatement.setNString(3, apiIdentifier.getProviderName());
+            selectPreparedStatement.setNString(4, apiIdentifier.getApiName());
+            selectPreparedStatement.setNString(5, apiIdentifier.getVersion());
+            resultSet = selectPreparedStatement.executeQuery();
+            if (resultSet.next()) {
+            	app = createAppFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    handleException("Failed to rollback getting sorted rating api ", ex);
+                }
+            }
+            handleException("Failed to get sorted rating api", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(selectPreparedStatement, connection, resultSet);
+        }
+        
+        return app;
+    }
+    
+    private WebApp createAppFromResultSet(ResultSet resultSet) throws SQLException, AppManagementException {
+    	
+    	WebApp app = new WebApp(new APIIdentifier(resultSet.getString("APP_PROVIDER"), resultSet.getString("APP_NAME"), resultSet.getString("APP_VERSION")));
+    	app.setRating(resultSet.getFloat("RATING"));
+    	Date createdDate = resultSet.getDate("CREATED_TIME");
+    	if(createdDate != null) app.setCreatedDate(createdDate);
+    	Date updatedDate = resultSet.getDate("UPDATED_TIME");
+    	if(updatedDate != null) app.setLastUpdated(updatedDate);
+    	app.setStatus(AppManagerUtil.getApiStatus(resultSet.getString("STATE")));
+    	app.setSubscriptionCount(resultSet.getInt("SUBS_CNT"));
+    	app.setCategory(resultSet.getString("CATEGORY"));
+    	app.setThumbnailUrl(resultSet.getString("THUMBNAIL_URL"));
+    	app.setDescription(resultSet.getString("DESCRIPTION"));
+    	app.setTitle(resultSet.getString("TITLE"));
+    	app.setTag(resultSet.getString("TAG"));
+
+    	return app;
+    }
+    
+    
+ // (추가) 2019.11.21 - 사용자가 생성한 app 목록 가져오기   
+    public List<WebApp> getAPPsByProvider(String providerName) throws AppManagementException {
+        Connection connection = null;
+        PreparedStatement selectPreparedStatement = null;
+        ResultSet resultSet = null;
+        
+        List<WebApp> appList = new ArrayList<WebApp>();
+        String tenantDomain = MultitenantUtils.getTenantDomain(providerName);
+        try {
+            connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
+            String query = SQLConstants.GET_APPS_OF_PUBLISHER_SQL;
+            selectPreparedStatement = connection.prepareStatement(query);
+            selectPreparedStatement.setNString(1, "");
+            selectPreparedStatement.setNString(2, tenantDomain);
+            selectPreparedStatement.setNString(3, providerName);
+            resultSet = selectPreparedStatement.executeQuery();
+            while (resultSet.next()) {
+            	WebApp app = createAppFromResultSet(resultSet);
+            	appList.add(app);
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    handleException("Failed to rollback getting sorted rating api ", ex);
+                }
+            }
+            handleException("Failed to get api list by provider", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(selectPreparedStatement, connection, resultSet);
+        }
+        
+        return appList;
     }
 }

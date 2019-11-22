@@ -800,7 +800,10 @@ public abstract class AbstractAPIManager implements APIManager {
 
     public Set<WebApp> getSubscriberAPIs(Subscriber subscriber) throws AppManagementException {
         SortedSet<WebApp> apiSortedSet = new TreeSet<WebApp>(new APINameComparator());
+        //레지스트리 사용 시
         Set<SubscribedAPI> subscribedAPIs = appMDAO.getSubscribedAPIs(subscriber);
+        //DAO 사용 시
+        //List<APIIdentifier> apiIds = appMDAO.getSubscribedApiIds(subscriber, null);
         boolean isTenantFlowStarted = false;
         try {
 	        if(tenantDomain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)){
@@ -808,6 +811,8 @@ public abstract class AbstractAPIManager implements APIManager {
 	            PrivilegedBarleyContext.startTenantFlow();
 	            PrivilegedBarleyContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
 	        }
+	        
+	        //레지스트리 사용 시
 	        for (SubscribedAPI subscribedAPI : subscribedAPIs) {
 	            String apiPath = AppManagerUtil.getAPIPath(subscribedAPI.getApiId());
 	            Resource resource;
@@ -824,6 +829,17 @@ public abstract class AbstractAPIManager implements APIManager {
 	                handleException("Failed to get APIs for subscriber: " + subscriber.getName(), e);
 	            }
 	        }
+	        
+	        /*
+	        //DAO 사용 시
+	        for(APIIdentifier apiId : apiIds) {
+		        WebApp api = appMDAO.getApp(apiId);
+	        	if (api != null) {
+	                apiSortedSet.add(api);
+	            }
+	        }
+	        */
+	                
         } finally {
         	if (isTenantFlowStarted) {
         		PrivilegedBarleyContext.endTenantFlow();

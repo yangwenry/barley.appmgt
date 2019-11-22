@@ -289,6 +289,59 @@ public class SQLConstants {
     		"SELECT USER_ID, TENANT_ID, EMAIL_ADDRESS, DATE_SUBSCRIBED " +
                     "FROM APM_SUBSCRIBER WHERE SUBSCRIBER_ID = ?";
     
+    
+    public static final String GET_PAGINATED_SUBSCRIBED_APPS_SQL =
+    		" SELECT " +
+    	    "    SUBS.SUBSCRIPTION_ID, " +
+    	    "    API.APP_PROVIDER AS APP_PROVIDER, " +
+    	    "    API.APP_NAME AS APP_NAME, " +
+    	    "    API.APP_VERSION AS APP_VERSION, " +
+    	    "    SUBS.TIER_ID AS TIER_ID, " +
+    	    "    APP.APPLICATION_ID AS APP_ID, " + 
+    	    "    SUBS.SUB_STATUS AS SUB_STATUS, " +
+    	  //"    SUBS.SUBS_CREATE_STATE AS SUBS_CREATE_STATE, " +
+    	  	"    APP.NAME AS APP_NAME, " +
+    	  	"    APP.CALLBACK_URL AS CALLBACK_URL " +
+    	  	" FROM " +
+    	  	"    APM_SUBSCRIBER SUB, " +
+    	  	"    APM_APPLICATION APP, " +
+    	  	"    APM_SUBSCRIPTION SUBS, " +
+    	  	"    APM_APP API " +
+    	  	" WHERE 1=1 " +
+    	  //"    AND SUBS.SUBS_CREATE_STATE = '" + AppMConstants.SubscriptionCreatedStatus.SUBSCRIBE + "'"
+    	  	"    AND SUB.TENANT_ID = ? " +
+    	  	"    AND SUB.SUBSCRIBER_ID=APP.SUBSCRIBER_ID " +
+    	  	"    AND APP.APPLICATION_ID=SUBS.APPLICATION_ID " +
+    	  	"    AND API.APP_ID=SUBS.APP_ID " +
+    	  	"    AND APP.NAME= ? ";
+    		
+    public static final String GET_SUBSCRIBED_APPS_OF_SUBSCRIBER_SQL =
+    		" SELECT " +
+    		"    SUBS.SUBSCRIPTION_ID AS SUBS_ID, " +
+    		"    API.APP_PROVIDER AS APP_PROVIDER, " +
+    		"    API.APP_NAME AS APP_NAME, " +
+    		"    API.APP_VERSION AS APP_VERSION, " +
+    		"    SUBS.TIER_ID AS TIER_ID, " +
+    		"    APP.APPLICATION_ID AS APP_ID, " + 
+    		"    SUBS.SUB_STATUS AS SUB_STATUS, " +
+    	  //"    SUBS.SUBS_CREATE_STATE AS SUBS_CREATE_STATE, " +
+    	  //"    SUBS.UUID AS SUB_UUID, " +
+    	  //"    APP.UUID AS APP_UUID, " +
+    		"    APP.NAME AS APP_NAME, " +
+    		"    APP.CALLBACK_URL AS CALLBACK_URL " +
+    		" FROM " +
+    		"    APM_SUBSCRIBER SUB, " +
+    		"    APM_APPLICATION APP, " +
+    		"    APM_SUBSCRIPTION SUBS, " +
+    		"    APM_APP API " +
+    		"  WHERE 1=1 " +
+    	  //"    AND SUBS.SUBS_CREATE_STATE = '" + AppMConstants.SubscriptionCreatedStatus.SUBSCRIBE + "'"
+    		"    AND SUB.TENANT_ID = ? " +
+    		"    AND SUB.SUBSCRIBER_ID=APP.SUBSCRIBER_ID " +
+    		"    AND APP.APPLICATION_ID=SUBS.APPLICATION_ID " +
+    		"    AND API.APP_ID=SUBS.APP_ID ";
+    
+
     // 어플리케이션 삭제시 구독삭제 
     public static final String REMOVE_APPLICATION_FROM_SUBSCRIPTIONS_SQL =
             "DELETE FROM APM_SUBSCRIPTION WHERE APPLICATION_ID = ?";
@@ -315,7 +368,7 @@ public class SQLConstants {
 						 ") SA " +
 					"LEFT JOIN APM_APP_LC_EVENT SB " +
 						"ON (SA.APP_ID = SB.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
-					"WHERE SB.NEW_STATE = 'PUBLISHED' " +
+					"WHERE SB.NEW_STATE LIKE UPPER(CONCAT('%',?,'%')) " +	
 					 ") TA " +
 				"INNER JOIN APM_APP TB " +
 					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) " +
@@ -336,28 +389,46 @@ public class SQLConstants {
 							"GROUP BY T.APP_ID " +
 							"ORDER BY COUNT(T.APP_ID) DESC " +
 							") TS " +
-				"ON TA.APP_ID = TS.APP_ID " +
-				"WHERE UPPER(TB.APP_PROVIDER) LIKE UPPER(CONCAT('%',?,'%')) " +
+				"ON TA.APP_ID = TS.APP_ID ";
+				
+    public static final String GET_SORTED_APP_WHERE_SQL =	
+    		"WHERE UPPER(TB.APP_PROVIDER) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.APP_NAME) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.CATEGORY) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.DESCRIPTION) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.TITLE) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TA.TAG) LIKE UPPER(CONCAT('%',?,'%')) ";
     
+    public static final String GET_SORTED_APP_SQL = GET_SORTED_APP_SQL_PREFIX + GET_SORTED_APP_WHERE_SQL;
+    
     public static final String GET_SORTED_RATING_APP_SQL =
-    		GET_SORTED_APP_SQL_PREFIX +
+    		GET_SORTED_APP_SQL +
 				"ORDER BY TC.RATING DESC, TA.APP_ID DESC " +
 				"LIMIT ?, ?";
     
     public static final String GET_SORTED_SUBS_CNT_APP_SQL =
-    		GET_SORTED_APP_SQL_PREFIX +
+    		GET_SORTED_APP_SQL +
 				"ORDER BY TS.SUBS_CNT DESC, TA.APP_ID DESC " +
 				"LIMIT ?, ?";
     
     public static final String GET_SORTED_CREATED_TIME_APP_SQL =
-    		GET_SORTED_APP_SQL_PREFIX +  
+    		GET_SORTED_APP_SQL +  
 				"ORDER BY TB.CREATED_TIME DESC, TA.APP_ID DESC " +
 				"LIMIT ?, ?";
+    
+    public static final String GET_APP_WHERE_SQL =						   
+			" WHERE TB.APP_PROVIDER = ? " +
+    		"   AND TB.APP_NAME = ? " +
+    		"   AND TB.APP_VERSION = ? ";
+    
+    public static final String GET_APP_SQL = GET_SORTED_APP_SQL_PREFIX + GET_APP_WHERE_SQL;
+    
+    // 사용자가 생성한  APP 조회  
+    public static final String GET_APPS_OF_PUBLISHER_WHERE_SQL =						   
+			" WHERE TB.APP_PROVIDER = ? ";    		
+    
+    public static final String GET_APPS_OF_PUBLISHER_SQL = GET_SORTED_APP_SQL_PREFIX + GET_APPS_OF_PUBLISHER_WHERE_SQL;
+    
         
     public static final String GET_PUBLIC_APP_CNT_SQL = 
     		"SELECT " + 

@@ -156,7 +156,7 @@ public final class AppMConstants {
     public static final String APPLICATION_JSON_MEDIA_TYPE = "application/json";
 
     public static final int ASSET_CREATED_DATE_LENGTH = 20;
-
+    
     // Those constance are used in WebApp artifact.
     public static final String API_OVERVIEW_NAME = "overview_name";    
     public static final String API_OVERVIEW_DISPLAY_NAME = "overview_displayName";
@@ -347,6 +347,19 @@ public final class AppMConstants {
         public static final String UNBLOCKED = "UNBLOCKED";
         public static final String ON_HOLD = "ON_HOLD";
         public static final String REJECTED = "REJECTED";
+    }
+    
+    public enum OAuthAppMode {
+        CREATED, MAPPED
+    }
+
+    public static class SubscriptionCreatedStatus   {
+        public static final String SUBSCRIBE = "SUBSCRIBE";
+        public static final String UN_SUBSCRIBE = "UN_SUBSCRIBE";
+        
+        private SubscriptionCreatedStatus(){
+            
+        }
     }
 
     public static final String RXT_MEDIA_TYPE = "application/vnd.wso2.registry-ext-type+xml";
