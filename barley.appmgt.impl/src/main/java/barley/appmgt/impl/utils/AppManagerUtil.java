@@ -80,9 +80,9 @@ import org.apache.http.params.HttpParams;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.wso2.carbon.core.commons.stub.loggeduserinfo.ExceptionException;
-import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfo;
-import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfoAdminStub;
+//import org.wso2.carbon.core.commons.stub.loggeduserinfo.ExceptionException;
+//import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfo;
+//import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfoAdminStub;
 
 import com.google.gson.Gson;
 
@@ -2207,6 +2207,7 @@ public final class AppManagerUtil {
 	 *            Url of the authentication service.
 	 * @return LoggedUserInfo object containing details of the logged in user.
 	 */
+	/* (임시주석)
 	public static LoggedUserInfo getLoggedInUserInfo(String cookie, String serviceUrl)
 	                                                                                  throws RemoteException,
 	                                                                                  ExceptionException {
@@ -2220,6 +2221,7 @@ public final class AppManagerUtil {
 		LoggedUserInfo userInfo = stub.getUserInfo();
 		return userInfo;
 	}
+	*/
 
 	/**
 	 * Retrieves the role list of a user

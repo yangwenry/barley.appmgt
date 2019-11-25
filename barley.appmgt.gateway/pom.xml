@@ -78,6 +78,11 @@
             <artifactId>synapse-commons</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>libthrift.wso2</groupId>
+            <artifactId>libthrift</artifactId>
+        </dependency>
+        
     </dependencies>
     
 </project>

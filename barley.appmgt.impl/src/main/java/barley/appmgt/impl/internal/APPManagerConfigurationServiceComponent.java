@@ -22,7 +22,7 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.service.component.ComponentContext;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.impl.AppManagerConfiguration;
@@ -45,7 +45,7 @@ public class APPManagerConfigurationServiceComponent {
     private static final Log log = LogFactory.getLog(APPManagerConfigurationServiceComponent.class);
     private static AppManagerConfigurationService amConfigService;
 
-    protected void activate(ComponentContext componentContext) throws Exception {
+    protected void activate() throws Exception {
 
         if (log.isDebugEnabled()) {
             log.debug("App Manager implementation configuration service component activation started");
@@ -80,7 +80,7 @@ public class APPManagerConfigurationServiceComponent {
         }
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    protected void deactivate() {
         if (log.isDebugEnabled()) {
             log.debug("Deactivating App Manager configuration service component");
         }

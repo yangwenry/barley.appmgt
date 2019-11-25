@@ -29,9 +29,9 @@ import org.apache.axis2.engine.ListenerManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.ComponentContext;
+//import org.osgi.framework.BundleContext;
+//import org.osgi.framework.ServiceRegistration;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.AppUsageStatisticsClient;
@@ -126,7 +126,7 @@ public class AppManagerComponent {
 
     private static final Log log = LogFactory.getLog(AppManagerComponent.class);
 
-    private ServiceRegistration registration;
+    //private ServiceRegistration registration;
     private static TenantRegistryLoader tenantRegistryLoader;
     private APIMGTSampleService apimgtSampleService;
     private AppUsageStatisticsClient appUsageStatisticsClient;
@@ -271,11 +271,11 @@ public class AppManagerComponent {
         }
     }
 
-    public void deactivate(ComponentContext componentContext) {
+    public void deactivate() {
         if (log.isDebugEnabled()) {
             log.debug("Deactivating WebApp manager component");
         }
-        registration.unregister();
+        //registration.unregister();
         APIManagerFactory.getInstance().clearAll();
         RemoteAuthorizationManager authorizationManager = RemoteAuthorizationManager.getInstance();
         authorizationManager.destroy();

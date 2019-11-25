@@ -262,11 +262,11 @@ public class APIKeyValidationService {
         super("validateKey");
       }
 
-      protected validateKey_args getEmptyArgsInstance() {
+      public validateKey_args getEmptyArgsInstance() {
         return new validateKey_args();
       }
 
-      protected validateKey_result getResult(I iface, validateKey_args args) throws org.apache.thrift.TException {
+      public validateKey_result getResult(I iface, validateKey_args args) throws org.apache.thrift.TException {
         validateKey_result result = new validateKey_result();
         try {
           result.success = iface.validateKey(args.context, args.version, args.accessToken, args.sessionId, args.requiredAuthenticationLevel, args.clientDomain);
@@ -277,6 +277,12 @@ public class APIKeyValidationService {
         }
         return result;
       }
+
+		@Override
+		protected boolean isOneway() {
+			// TODO Auto-generated method stub
+			return false;
+		}
     }
 
       private static class getAllURITemplates<I extends Iface>
@@ -285,11 +291,11 @@ public class APIKeyValidationService {
               super("getAllURITemplates");
           }
 
-          protected getAllURITemplates_args getEmptyArgsInstance() {
+          public getAllURITemplates_args getEmptyArgsInstance() {
               return new getAllURITemplates_args();
           }
 
-          protected getAllURITemplates_result getResult(I iface, getAllURITemplates_args args)
+          public getAllURITemplates_result getResult(I iface, getAllURITemplates_args args)
                   throws org.apache.thrift.TException {
               getAllURITemplates_result result = new getAllURITemplates_result();
               try {
@@ -301,6 +307,12 @@ public class APIKeyValidationService {
               }
               return result;
           }
+
+		@Override
+		protected boolean isOneway() {
+			// TODO Auto-generated method stub
+			return false;
+		}
       }
 
   }

@@ -32,7 +32,6 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.derby.impl.sql.compile.FromSubquery;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;

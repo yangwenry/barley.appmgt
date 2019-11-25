@@ -40,12 +40,6 @@
 		<dependency>
 		    <groupId>barley.governance</groupId> 
 		    <artifactId>barley.governance.registry.extensions</artifactId>
-		    <exclusions>
-		    	<exclusion>
-		    		<groupId>javax.servlet.jsp.jstl.wso2</groupId>
-		    		<artifactId>jstl</artifactId>
-		    	</exclusion>
-		    </exclusions>
 		</dependency>
         <dependency>
             <groupId>barley.user.api</groupId>
@@ -98,44 +92,6 @@
         <dependency>
         	<groupId>org.wso2.carbon.store</groupId>
           	<artifactId>jaggery-scxml-executors</artifactId>
-          	<exclusions>
-          		<exclusion>
-          			<groupId>org.apache.httpcomponents.wso2</groupId>
-          			<artifactId>httpclient</artifactId>
-    	      	</exclusion>
-	          	<exclusion>
-			    	<groupId>javax.servlet.jsp.jstl.wso2</groupId>
-			    	<artifactId>jstl</artifactId>
-		    	</exclusion>
-		    	<exclusion>
-            		<groupId>net.sf.ehcache</groupId>
-            		<artifactId>ehcache</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>net.sf.ehcache</groupId>
-            		<artifactId>ehcache</artifactId>
-            	</exclusion>
-            	<exclusion>
-		    		<groupId>org.hibernate</groupId>
-					<artifactId>hibernate</artifactId>
-		    	</exclusion>
-		    	<exclusion>
-		    		<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-entitymanager</artifactId>
-		    	</exclusion>
-		    	<exclusion>
-		    		<groupId>javax.persistence</groupId>
-		    		<artifactId>persistence-api</artifactId>
-		    	</exclusion>
-		    	<exclusion>
-		    		<groupId>org.apache.openjpa</groupId>
-		    		<artifactId>openjpa</artifactId>
-		    	</exclusion>
-		    	<exclusion>
-		    		<groupId>org.apache.geronimo.specs</groupId>
-		    		<artifactId>geronimo-jpa_2.0_spec</artifactId>
-		    	</exclusion>
-        	</exclusions>
         </dependency>
         <dependency>
           	<groupId>org.wso2.carbon</groupId>
@@ -144,40 +100,14 @@
       	<dependency>
 	        <groupId>org.wso2.carbon.identity</groupId>
 	        <artifactId>org.wso2.carbon.identity.entitlement</artifactId>
-	        <exclusions>
-	        	<exclusion>
-	        		<groupId>org.apache.httpcomponents</groupId>
-	        		<artifactId>httpcore</artifactId>
-	        	</exclusion>
-	        	<exclusion>
-            		<groupId>org.wso2.carbon</groupId>
-            		<artifactId>javax.cache.wso2</artifactId>
-            	</exclusion>
-	        </exclusions>
 	    </dependency>
       	<dependency>
 	        <groupId>org.wso2.carbon.identity</groupId>
 	        <artifactId>org.wso2.carbon.identity.entitlement.stub</artifactId>
-	        <exclusions>
-	        	<exclusion>
-	        		<groupId>org.apache.httpcomponents.wso2</groupId>
-	        		<artifactId>httpcore</artifactId>
-	        	</exclusion>
-	        </exclusions>
 	    </dependency>
 	    <dependency>
 	        <groupId>org.wso2.carbon.identity</groupId>
 	        <artifactId>org.wso2.carbon.identity.entitlement.proxy</artifactId>
-	        <exclusions>
-	        	<exclusion>
-	        		<groupId>org.apache.httpcomponents.wso2</groupId>
-	        		<artifactId>httpcore</artifactId>
-	        	</exclusion>
-	        	<exclusion>
-            		<groupId>org.wso2.carbon</groupId>
-            		<artifactId>javax.cache.wso2</artifactId>
-            	</exclusion>
-	        </exclusions>
 	    </dependency>
 	    <dependency>
           	<groupId>org.wso2.carbon.identity</groupId>
@@ -195,6 +125,10 @@
 			<groupId>org.wso2.carbon.appmgt</groupId>
 	        <artifactId>org.wso2.carbon.appmgt.gateway.stub</artifactId>
       	</dependency>
+      	<dependency>
+            <groupId>org.wso2.carbon.identity</groupId>
+            <artifactId>org.wso2.carbon.um.ws.api.stub</artifactId>
+	    </dependency>
       	
 		<!-- util -->	        
 	    <dependency>

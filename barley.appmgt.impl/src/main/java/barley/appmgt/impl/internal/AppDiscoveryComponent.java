@@ -23,8 +23,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.ComponentContext;
+//import org.osgi.framework.ServiceRegistration;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.impl.discovery.ApplicationDiscoveryHandler;
@@ -41,9 +41,9 @@ public class AppDiscoveryComponent {
 
     private static final Log log = LogFactory.getLog(AppDiscoveryComponent.class);
 
-    private ServiceRegistration registration;
+    //private ServiceRegistration registration;
 
-    protected void activate(ComponentContext componentContext) throws Exception {
+    protected void activate() throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("WebApp Discovery component is being activated");
         }
@@ -52,9 +52,9 @@ public class AppDiscoveryComponent {
         ApplicationDiscoveryServiceFactory applicationDiscoveryServiceFactory = createFactory(
                 configuration);
 
-        registration = componentContext.getBundleContext()
+        /*registration = componentContext.getBundleContext()
                 .registerService(ApplicationDiscoveryServiceFactory.class,
-                        applicationDiscoveryServiceFactory, null);
+                        applicationDiscoveryServiceFactory, null);*/
 
         log.info("WebApp Discovery component activated");
 
@@ -107,12 +107,12 @@ public class AppDiscoveryComponent {
         return applicationDiscoveryServiceFactory;
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    protected void deactivate() {
         if (log.isDebugEnabled()) {
             log.debug("Deactivating WebApp manager component");
         }
-        if (registration != null) {
-            registration.unregister();
-        }
+//        if (registration != null) {
+//            registration.unregister();
+//        }
     }
 }

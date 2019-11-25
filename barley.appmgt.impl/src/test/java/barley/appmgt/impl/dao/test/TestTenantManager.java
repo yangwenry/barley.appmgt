@@ -16,7 +16,7 @@
 
 package barley.appmgt.impl.dao.test;
 
-import org.osgi.framework.BundleContext;
+//import org.osgi.framework.BundleContext;
 
 import barley.core.MultitenantConstants;
 import barley.user.api.Tenant;
@@ -29,9 +29,9 @@ public class TestTenantManager implements TenantManager {
         return null;
     }
 
-    public void setBundleContext(BundleContext bundleContext) {
+    /*public void setBundleContext(BundleContext bundleContext) {
 
-    }
+    }*/
 
     public void initializeExistingPartitions() {
 
