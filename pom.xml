@@ -819,6 +819,10 @@
 						<groupId>org.eclipse.equinox</groupId>
   						<artifactId>org.apache.jasper.glassfish</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.wso2.carbon</groupId>
+						<artifactId>org.wso2.carbon.base</artifactId>
+					</exclusion>
 	            </exclusions>
 		    </dependency>
 		    <dependency>
@@ -884,6 +888,10 @@
 		        	<exclusion>
 		        		<groupId>org.wso2.carbon</groupId>
 						<artifactId>org.wso2.carbon.tomcat.ext</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.wso2.carbon</groupId>
+						<artifactId>org.wso2.carbon.registry.core</artifactId>
 		        	</exclusion>
 		        </exclusions>
 		    </dependency>
