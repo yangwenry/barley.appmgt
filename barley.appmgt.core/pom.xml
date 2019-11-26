@@ -25,6 +25,22 @@
             <artifactId>barley.core</artifactId>
         </dependency>	
         <dependency>
+            <groupId>barley.user.api</groupId>
+            <artifactId>barley.user.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.user</groupId>
+            <artifactId>barley.user.core</artifactId>
+        </dependency>
+        <dependency> 
+            <groupId>barley.registry.api</groupId>
+            <artifactId>barley.registry.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>barley.registry</groupId>
+            <artifactId>barley.registry.core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>barley.appmgt</groupId>
             <artifactId>barley.appmgt.api</artifactId>
         </dependency>

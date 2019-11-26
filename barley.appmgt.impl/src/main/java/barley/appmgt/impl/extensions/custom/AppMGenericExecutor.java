@@ -24,10 +24,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.jaggery.scxml.management.DynamicValueInjector;
-import org.wso2.jaggery.scxml.management.StateExecutor;
-import org.wso2.jaggery.scxml.threading.JaggeryThreadLocalMediator;
-import org.wso2.jaggery.scxml.threading.contexts.JaggeryThreadContext;
+//import org.wso2.jaggery.scxml.management.DynamicValueInjector;
+//import org.wso2.jaggery.scxml.management.StateExecutor;
+//import org.wso2.jaggery.scxml.threading.JaggeryThreadLocalMediator;
+//import org.wso2.jaggery.scxml.threading.contexts.JaggeryThreadContext;
 
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
@@ -60,6 +60,7 @@ import barley.user.api.UserRealm;
  * (수정) 
  * Execution 구현으로 추상클래스를 제거함.  
  */
+//public class __AppMGenericExecutor extends GenericExecutor {
 public class AppMGenericExecutor implements Execution {
 
     private static final Log log= LogFactory.getLog(AppMGenericExecutor.class);
@@ -67,12 +68,12 @@ public class AppMGenericExecutor implements Execution {
 
     private UserRealm userRealm;
     private int tenantId;
-    private StateExecutor stateExecutor;
+    //private StateExecutor stateExecutor;
     
     public void init(Map map) {
         obtainTenantId();
         obtainUserRealm();
-        this.stateExecutor=new StateExecutor(map);
+        //this.stateExecutor=new StateExecutor(map);
     }
 
     public boolean execute(RequestContext requestContext, String fromState, String toState) {
@@ -122,7 +123,7 @@ public class AppMGenericExecutor implements Execution {
 		} catch (FaultGatewaysException e) {
 			log.error("Error occurred while changing api status");
 		}
-        
+        /*
         JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();
 
         //The path of the asset
@@ -144,7 +145,7 @@ public class AppMGenericExecutor implements Execution {
         jaggeryThreadContext.setDynamicValueInjector(dynamicValueInjector);
         //jaggeryThreadContext.setUserRealm(userRealm);
         jaggeryThreadContext.setStateExecutor(stateExecutor);
-        JaggeryThreadLocalMediator.set(jaggeryThreadContext);
+        JaggeryThreadLocalMediator.set(jaggeryThreadContext);*/
 
         return true;
     }

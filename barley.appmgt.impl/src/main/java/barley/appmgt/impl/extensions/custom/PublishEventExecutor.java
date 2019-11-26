@@ -20,10 +20,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.jaggery.scxml.management.DynamicValueInjector;
-import org.wso2.jaggery.scxml.management.StateExecutor;
-import org.wso2.jaggery.scxml.threading.JaggeryThreadLocalMediator;
-import org.wso2.jaggery.scxml.threading.contexts.JaggeryThreadContext;
+//import org.wso2.jaggery.scxml.management.DynamicValueInjector;
+//import org.wso2.jaggery.scxml.management.StateExecutor;
+//import org.wso2.jaggery.scxml.threading.JaggeryThreadLocalMediator;
+//import org.wso2.jaggery.scxml.threading.contexts.JaggeryThreadContext;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.model.APIIdentifier;
@@ -67,13 +67,13 @@ public class PublishEventExecutor implements Execution
 
     private UserRealm userRealm;
     private int tenantId;
-    private StateExecutor stateExecutor;
+    //private StateExecutor stateExecutor;
 
     public void init(Map map) {
 
         obtainTenantId();
         obtainUserRealm();
-        this.stateExecutor=new StateExecutor(map);
+        //this.stateExecutor=new StateExecutor(map);
     }
 
 
@@ -186,7 +186,7 @@ public class PublishEventExecutor implements Execution
         	return false;
         }
 
-        JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();
+        /*JaggeryThreadContext jaggeryThreadContext=new JaggeryThreadContext();
 
         //The path of the asset
         String path=requestContext.getResource().getPath();
@@ -217,7 +217,7 @@ public class PublishEventExecutor implements Execution
         //jaggeryThreadContext.setUserRealm(userRealm);
         jaggeryThreadContext.setStateExecutor(stateExecutor);
 
-        JaggeryThreadLocalMediator.set(jaggeryThreadContext);
+        JaggeryThreadLocalMediator.set(jaggeryThreadContext);*/
 
         return true;
     }

@@ -89,10 +89,10 @@
     	</dependency>
         
         <!-- wso2 -->
-        <dependency>
+        <!-- <dependency>
         	<groupId>org.wso2.carbon.store</groupId>
           	<artifactId>jaggery-scxml-executors</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
           	<groupId>org.wso2.carbon</groupId>
           	<artifactId>org.wso2.carbon.webapp.mgt.stub</artifactId>
