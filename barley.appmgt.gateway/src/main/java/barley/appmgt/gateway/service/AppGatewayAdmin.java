@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.rest.api.stub.types.carbon.APIData;
-import org.wso2.carbon.sequences.common.SequenceEditorException;
+//import org.wso2.carbon.sequences.common.SequenceEditorException;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.gateway.dto.ResourceData;
@@ -334,6 +334,7 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException on errors.
      */
     public void addSequence(String sequence) throws AppManagementException {
+    	/* 
         if (!StringUtils.isEmpty(sequence)) {
             OMElement element = null;
             try {
@@ -347,6 +348,7 @@ public class AppGatewayAdmin extends AbstractAdmin {
                 throw new AppManagementException(errorMsg, e);
             }
         }
+        */
     }
 
     /**
@@ -357,7 +359,7 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException on errors.
      */
     public void addSequenceForTenant(String sequence, String tenantDomain) throws AppManagementException {
-        if (!StringUtils.isEmpty(sequence)) {
+        /*if (!StringUtils.isEmpty(sequence)) {
             OMElement element = null;
             try {
                 element = AXIOMUtil.stringToOM(sequence);
@@ -370,7 +372,7 @@ public class AppGatewayAdmin extends AbstractAdmin {
                 String errorMsg = "Error while streaming the sequence : " + sequence + " for super tenant.";
                 throw new AppManagementException(errorMsg, e);
             }
-        }
+        }*/
     }
 
     /**
@@ -380,12 +382,12 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException on errors.
      */
     public void deleteSequence(String sequenceName) throws AppManagementException {
-        try {
+        /*try {
             ServiceReferenceHolder.getInstance().getSequenceAdminService().deleteSequence(sequenceName);
         } catch (SequenceEditorException e) {
             String errorMsg = "Error while deleting the sequence : " + sequenceName + " for super tenant.";
             throw new AppManagementException(errorMsg, e);
-        }
+        }*/
     }
 
     /**
@@ -396,13 +398,13 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException on errors.
      */
     public void deleteSequenceForTenant(String sequenceName, String tenantDomain) throws AppManagementException {
-        try {
+        /*try {
             ServiceReferenceHolder.getInstance().getSequenceAdminService().deleteSequenceForTenant
                     (sequenceName, tenantDomain);
         } catch (SequenceEditorException e) {
             String errorMsg = "Error while deleting the sequence : " + sequenceName + " for tenant : " + tenantDomain;
             throw new AppManagementException(errorMsg, e);
-        }
+        }*/
     }
 
     /**
@@ -412,12 +414,13 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException on errors.
      */
     public OMElement getSequence(String sequenceName) throws AppManagementException {
-        try {
+        /*try {
             return ServiceReferenceHolder.getInstance().getSequenceAdminService().getSequence(sequenceName);
         } catch (SequenceEditorException e) {
             String errorMsg = "Error while retrieving the sequence : " + sequenceName + " for super tenant.";
             throw new AppManagementException(errorMsg, e);
-        }
+        }*/
+    	return null;
     }
 
     /**
@@ -428,12 +431,13 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException on errors.
      */
     public OMElement getSequenceForTenant(String sequenceName, String tenantDomain) throws AppManagementException {
-        try {
+        /*try {
             return ServiceReferenceHolder.getInstance().getSequenceAdminService().getSequenceForTenant(sequenceName, tenantDomain);
         } catch (SequenceEditorException e) {
             String errorMsg = "Error while retrieving the sequence : " + sequenceName + " for tenant : " + tenantDomain;
             throw new AppManagementException(errorMsg, e);
-        }
+        }*/
+    	return null;
     }
 
     /**
@@ -443,12 +447,13 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException
      */
     public boolean isExistingSequence(String sequenceName) throws AppManagementException {
-        try {
+        /*try {
             return ServiceReferenceHolder.getInstance().getSequenceAdminService().isExistingSequence(sequenceName);
         } catch (SequenceEditorException e) {
             String errorMsg = "Error while checking for existence of sequence : " + sequenceName;
             throw new AppManagementException(errorMsg, e);
-        }
+        }*/
+    	return false;
     }
 
     /**
@@ -459,13 +464,14 @@ public class AppGatewayAdmin extends AbstractAdmin {
      * @throws AppManagementException
      */
     public boolean isExistingSequenceForTenant(String sequenceName, String tenantDomain) throws AppManagementException {
-        try {
+        /*try {
             return ServiceReferenceHolder.getInstance().getSequenceAdminService().isExistingSequenceForTenant
                     (sequenceName, tenantDomain);
         } catch (SequenceEditorException e) {
             String errorMsg = "Error while checking for existence of sequence : " + sequenceName + "in tenant " +
                     tenantDomain;
             throw new AppManagementException(errorMsg, e);
-        }
+        }*/
+    	return false;
     }
 }

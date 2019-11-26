@@ -731,6 +731,17 @@
 	            	</exclusion>
 	          	</exclusions>
 	        </dependency> -->
+	        <!-- <dependency>
+		        <groupId>org.wso2.carbon.mediation</groupId>
+		        <artifactId>org.wso2.carbon.sequences</artifactId>
+		        <version>${carbon.mediation.version}</version>
+		        <exclusions>
+	            	<exclusion>
+	            		<groupId>org.wso2.carbon</groupId>
+	            		<artifactId>javax.cache.wso2</artifactId>
+	            	</exclusion>
+	            </exclusions>
+		    </dependency> -->
 		    
 		    <!-- wso2 stub -->
 	      	<dependency>
@@ -788,6 +799,26 @@
 	            		<groupId>org.wso2.carbon</groupId>
 	            		<artifactId>javax.cache.wso2</artifactId>
 	            	</exclusion>
+	            	<exclusion>
+						<groupId>org.eclipse.equinox</groupId>
+  						<artifactId>javax.servlet</artifactId>
+					</exclusion>
+	            	<exclusion>
+						<groupId>org.eclipse.equinox</groupId>
+	  					<artifactId>javax.servlet.jsp</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.eclipse.equinox</groupId>
+  						<artifactId>org.eclipse.equinox.http.servlet</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.eclipse.equinox</groupId>
+    					<artifactId>org.eclipse.equinox.http.helper</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.eclipse.equinox</groupId>
+  						<artifactId>org.apache.jasper.glassfish</artifactId>
+					</exclusion>
 	            </exclusions>
 		    </dependency>
 		    <dependency>
@@ -810,17 +841,6 @@
 		        <artifactId>org.wso2.carbon.rest.api.stub</artifactId>
 		        <version>${carbon.mediation.version}</version>
 			</dependency>
-			<dependency>
-		        <groupId>org.wso2.carbon.mediation</groupId>
-		        <artifactId>org.wso2.carbon.sequences</artifactId>
-		        <version>${carbon.mediation.version}</version>
-		        <exclusions>
-	            	<exclusion>
-	            		<groupId>org.wso2.carbon</groupId>
-	            		<artifactId>javax.cache.wso2</artifactId>
-	            	</exclusion>
-	            </exclusions>
-		    </dependency>
 			<dependency>
 	            <groupId>org.wso2.carbon.appmgt</groupId>
 	            <artifactId>org.wso2.carbon.appmgt.gateway.stub</artifactId>
@@ -856,6 +876,16 @@
 		        <groupId>org.wso2.carbon.multitenancy</groupId>
 		        <artifactId>org.wso2.carbon.tenant.usage.agent</artifactId>
 		        <version>${carbon.multitenancy.version}</version>
+		        <exclusions>
+		        	<exclusion>
+		        		<groupId>org.wso2.carbon.registry</groupId>
+						<artifactId>org.wso2.carbon.registry.common</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.wso2.carbon</groupId>
+						<artifactId>org.wso2.carbon.tomcat.ext</artifactId>
+		        	</exclusion>
+		        </exclusions>
 		    </dependency>
 			<!-- <dependency>
 		        <groupId>org.wso2.carbon.analytics-common</groupId>
@@ -867,11 +897,11 @@
 		        <artifactId>org.wso2.carbon.ganalytics.publisher</artifactId>
 		        <version>${carbon.commons.version}</version>
 		   	</dependency>
-		   	<dependency>
+		   	<!-- <dependency>
 	        	<groupId>org.wso2.carbon</groupId>
 	        	<artifactId>org.wso2.carbon.tomcat</artifactId>
 	        	<version>4.3.0</version>
-	        </dependency>
+	        </dependency> -->
 	        <dependency>
 		        <groupId>org.apache.cxf.wso2</groupId>
 		        <artifactId>cxf-bundle</artifactId>

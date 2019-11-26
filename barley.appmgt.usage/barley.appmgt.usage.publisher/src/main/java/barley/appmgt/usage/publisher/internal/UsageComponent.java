@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.databridge.agent.DataPublisher;
-import org.wso2.carbon.tomcat.api.CarbonTomcatService;
+//import org.wso2.carbon.tomcat.api.CarbonTomcatService;
 
 import barley.appmgt.impl.AppManagerConfigurationService;
 import barley.appmgt.impl.service.APIMGTSampleService;
@@ -57,7 +57,7 @@ public class UsageComponent {
     private static APIMGTConfigReaderService apimgtConfigReaderService;
 
     private static AppManagerConfigurationService amConfigService;
-    private static CarbonTomcatService carbonTomcatService;
+    //private static CarbonTomcatService carbonTomcatService;
     private static ConfigurationContextService configContextService;
 
     protected void activate(ComponentContext ctx) {
@@ -175,7 +175,7 @@ public class UsageComponent {
         }
     }
 
-    public static CarbonTomcatService getCarbonTomcatService() {
+    /*public static CarbonTomcatService getCarbonTomcatService() {
         return carbonTomcatService;
     }
 
@@ -188,7 +188,7 @@ public class UsageComponent {
 
     public static void unsetConfigContextService(ConfigurationContextService configContext) {
         UsageComponent.carbonTomcatService = null;
-    }
+    }*/
 
     protected void setAPIManagerConfigurationService(AppManagerConfigurationService service) {
         log.debug("WebApp manager configuration service bound to the WebApp usage handler");

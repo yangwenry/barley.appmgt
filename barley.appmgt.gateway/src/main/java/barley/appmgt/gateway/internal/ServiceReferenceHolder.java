@@ -17,7 +17,7 @@
 package barley.appmgt.gateway.internal;
 
 import org.apache.axis2.context.ConfigurationContext;
-import org.wso2.carbon.sequences.services.SequenceAdminService;
+//import org.wso2.carbon.sequences.services.SequenceAdminService;
 
 import barley.appmgt.gateway.token.TokenGenerator;
 import barley.appmgt.impl.AppManagerConfiguration;
@@ -32,7 +32,7 @@ public class ServiceReferenceHolder {
     private ConfigurationContextService cfgCtxService;
     private AppManagerConfigurationService amConfigService;
     private TokenGenerator tokenGenerator;
-    private SequenceAdminService sequenceAdminService;
+    //private SequenceAdminService sequenceAdminService;
     private TenantConfigurationService tenantConfigurationService;
 
     private ServiceReferenceHolder() {
@@ -71,13 +71,13 @@ public class ServiceReferenceHolder {
         this.tokenGenerator = tokenGenerator;
     }
 
-    public SequenceAdminService getSequenceAdminService() {
+    /*public SequenceAdminService getSequenceAdminService() {
         return sequenceAdminService;
     }
 
     public void setSequenceAdminService(SequenceAdminService sequenceAdminService) {
         this.sequenceAdminService = sequenceAdminService;
-    }
+    }*/
     
     public void setTenantConfigurationService(TenantConfigurationService tenantConfigurationService) {
         this.tenantConfigurationService = tenantConfigurationService;

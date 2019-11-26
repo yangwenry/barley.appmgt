@@ -53,7 +53,7 @@
            <groupId>org.wso2.carbon.mediation</groupId>
            <artifactId>org.wso2.carbon.rest.api.stub</artifactId>
        	</dependency>
-       	<dependency>
+       	<!-- <dependency>
             <groupId>org.wso2.carbon.mediation</groupId>
             <artifactId>org.wso2.carbon.sequences</artifactId>
             <exclusions>
@@ -66,7 +66,7 @@
             		<artifactId>synapse-extensions</artifactId>
             	</exclusion>
             </exclusions>
-        </dependency>
+        </dependency> -->
         
         <!-- synapse -->		
         <dependency>

@@ -26,7 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.databridge.agent.DataPublisher;
-import org.wso2.carbon.tomcat.api.CarbonTomcatService;
+//import org.wso2.carbon.tomcat.api.CarbonTomcatService;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.impl.AppManagerConfiguration;
@@ -109,7 +109,7 @@ public class APPManagerConfigurationServiceComponent {
         return dataPublisherMap;
     }
 
-    protected void setCarbonTomcatService(CarbonTomcatService carbonTomcatService) {
+    /*protected void setCarbonTomcatService(CarbonTomcatService carbonTomcatService) {
         UsageComponent.setCarbonTomcatService(carbonTomcatService);
     }
 
@@ -124,6 +124,6 @@ public class APPManagerConfigurationServiceComponent {
 
     protected void unsetConfigurationContextService(ConfigurationContextService configCtx) {
         UsageComponent.setConfigContextService(null);
-    }
+    }*/
 }
 
