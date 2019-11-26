@@ -276,6 +276,8 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
 
         List<WebApp> apiSortedList = new ArrayList<WebApp>();
 
+        /*
+        //레지스트리 사용
         try {
             providerId = AppManagerUtil.replaceEmailDomain(providerId);
             String providerPath = AppMConstants.API_ROOT_LOCATION + RegistryConstants.PATH_SEPARATOR +
@@ -299,6 +301,10 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
         } catch (RegistryException e) {
             handleException("Failed to get APIs for provider : " + providerId, e);
         }
+        */
+        
+        //DAO 사용
+        apiSortedList = appMDAO.getAPPsByProvider(providerId);
         Collections.sort(apiSortedList, new APINameComparator());
 
         return apiSortedList;
