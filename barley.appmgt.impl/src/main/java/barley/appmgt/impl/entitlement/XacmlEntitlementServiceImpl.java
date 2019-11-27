@@ -35,11 +35,11 @@ import barley.appmgt.api.model.entitlement.EntitlementPolicyValidationResult;
 import barley.appmgt.api.model.entitlement.XACMLPolicyTemplateContext;
 
 import org.wso2.carbon.identity.entitlement.EntitlementUtil;
-import org.wso2.carbon.identity.entitlement.proxy.Attribute;
-import org.wso2.carbon.identity.entitlement.proxy.PEPProxy;
-import org.wso2.carbon.identity.entitlement.proxy.PEPProxyConfig;
-import org.wso2.carbon.identity.entitlement.proxy.ProxyConstants;
-import org.wso2.carbon.identity.entitlement.proxy.exception.EntitlementProxyException;
+//import org.wso2.carbon.identity.entitlement.proxy.Attribute;
+//import org.wso2.carbon.identity.entitlement.proxy.PEPProxy;
+//import org.wso2.carbon.identity.entitlement.proxy.PEPProxyConfig;
+//import org.wso2.carbon.identity.entitlement.proxy.ProxyConstants;
+//import org.wso2.carbon.identity.entitlement.proxy.exception.EntitlementProxyException;
 import org.wso2.carbon.identity.entitlement.stub.EntitlementPolicyAdminServiceEntitlementException;
 import org.wso2.carbon.identity.entitlement.stub.EntitlementPolicyAdminServiceStub;
 import org.wso2.carbon.identity.entitlement.stub.dto.PolicyDTO;
@@ -185,7 +185,7 @@ public class XacmlEntitlementServiceImpl implements EntitlementService {
 
     @Override
     public boolean isPermitted(EntitlementDecisionRequest request) throws AppManagementException {
-
+    	/* (임시주석)
         PEPProxy pepProxy = getPepProxy();
 
         if(pepProxy == null){
@@ -212,7 +212,8 @@ public class XacmlEntitlementServiceImpl implements EntitlementService {
             log.error(errorMessage, e);
             throw new AppManagementException(errorMessage, e);
         }
-
+		*/
+    	return false;
     }
 
     @Override
@@ -296,7 +297,8 @@ public class XacmlEntitlementServiceImpl implements EntitlementService {
         XACMLTemplateBuilder templateBuilder = new XACMLTemplateBuilder();
         return templateBuilder.generateMockPolicy(partial);
     }
-
+    
+    /*
     private PEPProxy getPepProxy() {
 
         Map<String, Map<String, String>> appToPDPClientConfigMap = new HashMap<String, Map<String, String>>();
@@ -320,6 +322,7 @@ public class XacmlEntitlementServiceImpl implements EntitlementService {
         return pepProxy;
 
     }
+    */
 
     private EntitlementPolicy preProcess(EntitlementPolicy policy){
 
@@ -341,11 +344,11 @@ public class XacmlEntitlementServiceImpl implements EntitlementService {
 
     }
 
-    private Attribute[] getEntitlementAttributes(EntitlementDecisionRequest request){
+    /*private Attribute[] getEntitlementAttributes(EntitlementDecisionRequest request){
     
     	Attribute policyIdAttribute = new Attribute(XACML_ATTRIBUTE_CATEGORY_CUSTOM, XACML_ATTRIBUTE_ID_POLICY_ID, ProxyConstants.DEFAULT_DATA_TYPE, request.getPolicyId());
     	Attribute subjectIdAttribute = new Attribute(XACML_ATTRIBUTE_CATEGORY_SUBJECT, XACML_ATTRIBUTE_ID_SUBJECT_ID, ProxyConstants.DEFAULT_DATA_TYPE, request.getSubject());
     	
     	return new Attribute[]{policyIdAttribute, subjectIdAttribute};
-    }
+    }*/
 }

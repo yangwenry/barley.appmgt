@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.user.mgt.stub.UserAdminStub;
-import org.wso2.carbon.user.mgt.stub.types.carbon.FlaggedName;
+//import org.wso2.carbon.user.mgt.stub.UserAdminStub;
+//import org.wso2.carbon.user.mgt.stub.types.carbon.FlaggedName;
 
 import barley.appmgt.impl.service.ServiceReferenceHolder;
 import barley.core.utils.BarleyUtils;
@@ -62,7 +62,8 @@ public abstract class UserSignUpWorkflowExecutor extends WorkflowExecutor {
             throw new Exception("Could not find role " + role + " in the user store");
         }
 
-        UserAdminStub userAdminStub = new UserAdminStub(url);
+        // (임시주석)
+        /*UserAdminStub userAdminStub = new UserAdminStub(url);
         BarleyUtils.setBasicAccessSecurityHeaders(adminUsername, adminPassword, true, userAdminStub._getServiceClient());
         FlaggedName[] flaggedNames = userAdminStub.getRolesOfUser(userName, "*", -1);
         List<String> roles = new ArrayList<String>();
@@ -74,7 +75,7 @@ public abstract class UserSignUpWorkflowExecutor extends WorkflowExecutor {
             }
         }
         roles.add(role);
-        userAdminStub.updateRolesOfUser(userName, roles.toArray(new String[roles.size()]));
+        userAdminStub.updateRolesOfUser(userName, roles.toArray(new String[roles.size()]));*/
     }
 
     /**
@@ -113,7 +114,8 @@ public abstract class UserSignUpWorkflowExecutor extends WorkflowExecutor {
                 }
             }
 
-            UserAdminStub userAdminStub = new UserAdminStub(url);
+            // (임시주석)
+            /*UserAdminStub userAdminStub = new UserAdminStub(url);
             BarleyUtils.setBasicAccessSecurityHeaders(adminUsername, adminPassword, true,
                     userAdminStub._getServiceClient());
 
@@ -129,7 +131,8 @@ public abstract class UserSignUpWorkflowExecutor extends WorkflowExecutor {
             for (String role : roleList) {
                 roles.add(role);
             }
-            userAdminStub.updateRolesOfUser(userName, roles.toArray(new String[roles.size()]));
+            userAdminStub.updateRolesOfUser(userName, roles.toArray(new String[roles.size()]));*/
+            
         } else {
             log.error("User does not exist. Unable to approve user " + userName);
         }

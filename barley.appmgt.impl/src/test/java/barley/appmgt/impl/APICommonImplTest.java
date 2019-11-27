@@ -16,8 +16,6 @@
 
 package barley.appmgt.impl;
 
-import static org.testng.Assert.assertNotEquals;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
