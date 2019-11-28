@@ -71,8 +71,6 @@ import org.opensaml.saml2.core.impl.SessionIndexBuilder;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.util.Base64;
 import org.w3c.dom.NodeList;
-import org.wso2.carbon.identity.base.IdentityException;
-import org.wso2.carbon.identity.sso.saml.util.SAMLSSOUtil;
 
 import barley.appmgt.api.model.AuthenticatedIDP;
 import barley.appmgt.api.model.WebApp;
@@ -80,6 +78,8 @@ import barley.appmgt.gateway.handlers.security.Session;
 import barley.appmgt.gateway.handlers.security.authentication.AuthenticationContext;
 import barley.appmgt.gateway.utils.GatewayUtils;
 import barley.core.multitenancy.MultitenantUtils;
+import barley.identity.base.IdentityException;
+import barley.identity.sso.saml.util.SAMLSSOUtil;
 
 /**
  * The utility class which provides SAML related operations.

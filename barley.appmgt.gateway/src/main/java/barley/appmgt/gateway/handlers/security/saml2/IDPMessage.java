@@ -40,17 +40,17 @@ import org.opensaml.xml.security.credential.Credential;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.validation.ValidationException;
-import org.wso2.carbon.identity.sso.saml.exception.IdentitySAML2SSOException;
 
 import barley.appmgt.api.model.AuthenticatedIDP;
 import barley.appmgt.api.model.WebApp;
-import barley.appmgt.impl.service.ServiceReferenceHolder;
 import barley.appmgt.gateway.utils.GatewayUtils;
 import barley.appmgt.impl.AppMConstants;
 import barley.appmgt.impl.AppManagerConfiguration;
 import barley.appmgt.impl.idp.sso.SSOConfiguratorUtil;
+import barley.appmgt.impl.service.ServiceReferenceHolder;
 import barley.core.MultitenantConstants;
 import barley.core.context.BarleyContext;
+import barley.identity.sso.saml.exception.IdentitySAML2SSOException;
 
 /**
  * Represents the call back request from the IDP.

@@ -25,13 +25,13 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.NativeObject;
-import org.wso2.carbon.databridge.agent.DataPublisher;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.impl.AppMConstants;
 import barley.appmgt.impl.dao.AppMDAO;
 import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
 import barley.appmgt.usage.publisher.service.APIMGTConfigReaderService;
+import barley.databridge.agent.DataPublisher;
 
 /*
  * This class is used to capture the UI activity changes events and publish to

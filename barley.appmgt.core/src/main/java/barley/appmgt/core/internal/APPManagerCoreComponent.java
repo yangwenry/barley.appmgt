@@ -20,7 +20,7 @@ package barley.appmgt.core.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.service.component.ComponentContext;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.impl.AppManagerConfiguration;
 import barley.appmgt.impl.AppManagerConfigurationService;
@@ -39,13 +39,13 @@ public class APPManagerCoreComponent {
 
     private static AppManagerConfiguration configuration = null;
 
-    protected void activate(ComponentContext componentContext) {
+    protected void activate() {
         if (log.isDebugEnabled()){
             log.debug("HostObjectComponent activated");
         }
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    protected void deactivate() {
         if (log.isDebugEnabled()){
             log.debug("HostObjectComponent deactivated");
         }

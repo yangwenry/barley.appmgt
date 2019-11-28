@@ -24,9 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.databridge.agent.DataPublisher;
-//import org.wso2.carbon.tomcat.api.CarbonTomcatService;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.impl.AppManagerConfiguration;
@@ -34,7 +31,7 @@ import barley.appmgt.impl.AppManagerConfigurationService;
 import barley.appmgt.impl.AppManagerConfigurationServiceImpl;
 import barley.appmgt.usage.publisher.service.APIMGTConfigReaderService;
 import barley.core.utils.BarleyUtils;
-import barley.core.utils.ConfigurationContextService;
+import barley.databridge.agent.DataPublisher;
 
 /**
  * @scr.component name="org.wso2.carbon.appmgt.usage.publisher.services" immediate="true"

@@ -20,8 +20,8 @@
             <artifactId>barley.appmgt.impl</artifactId>
         </dependency>
 		<dependency>
-            <groupId>barley.core</groupId>
-            <artifactId>barley.core</artifactId>
+            <groupId>barley.analytics-common</groupId>
+            <artifactId>barley.databridge.agent</artifactId>
         </dependency>
         
         <!-- synapse -->		

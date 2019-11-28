@@ -6,7 +6,7 @@ import java.net.URLEncoder;
 
 import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.wso2.carbon.ui.CarbonUIUtil;
+//import org.wso2.carbon.ui.CarbonUIUtil;
 
 import barley.appmgt.gateway.service.AppManagerOAuth2Service;
 import barley.core.configuration.ServerConfiguration;
@@ -124,7 +124,7 @@ public class EndpointUtil {
         if(redirect_uri != null && !redirect_uri.equals("")){
             errorPageUrl = redirect_uri;
         } else {
-            errorPageUrl = CarbonUIUtil.getAdminConsoleURL("/")+ "../authenticationendpoint/oauth2_error.do";
+            //errorPageUrl = CarbonUIUtil.getAdminConsoleURL("/")+ "../authenticationendpoint/oauth2_error.do";
         }
         try {
             errorPageUrl += "?" + OAuthConstants.OAUTH_ERROR_CODE + "="
@@ -154,7 +154,7 @@ public class EndpointUtil {
      */
     public static String getLoginPageURL(String sessionDataKey, boolean forceAuthenticate, boolean checkAuthentication) {
 
-        String commonAuthURL = CarbonUIUtil.getAdminConsoleURL("/");
+        /*String commonAuthURL = CarbonUIUtil.getAdminConsoleURL("/");
         commonAuthURL = commonAuthURL.replace("carbon", "commonauth");
         String selfPath = "../../oauth2";
         String queryParams = "";
@@ -163,7 +163,8 @@ public class EndpointUtil {
                 + "&" + "forceAuthenticate" + "=" + forceAuthenticate
                 + "&" + "checkAuthentication" + "=" + checkAuthentication;
 
-        return commonAuthURL + queryParams;
+        return commonAuthURL + queryParams;*/
+    	return null;
     }
 
     /**
@@ -176,13 +177,13 @@ public class EndpointUtil {
     public static String getUserConsentURL(OAuth2Parameters params, String loggedInUser, String sessiondataKey, boolean  isOIDC) {
         String consentPage = null;
         try {
-            if(isOIDC) {
+            /*if(isOIDC) {
                 consentPage = CarbonUIUtil.getAdminConsoleURL("/") +
                         "../authenticationendpoint/oauth2_consent.do";
             } else {
                 consentPage = CarbonUIUtil.getAdminConsoleURL("/") +
                         "../authenticationendpoint/oauth2_authz.do";
-            }
+            }*/
             consentPage +=
                     "?" + OAuthConstants.OIDC_LOGGED_IN_USER + "=" +
                             URLEncoder.encode(loggedInUser, "UTF-8") + "&" +

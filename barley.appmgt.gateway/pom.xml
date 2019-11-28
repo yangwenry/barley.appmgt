@@ -16,10 +16,6 @@
 	<dependencies>
 		<!-- barley -->
 		<dependency>
-            <groupId>barley.core</groupId>
-            <artifactId>barley.core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>barley.appmgt</groupId>
             <artifactId>barley.appmgt.api</artifactId>
         </dependency>
@@ -36,15 +32,19 @@
             <artifactId>barley.identity.oauth</artifactId>
         </dependency>
         <dependency>
+            <groupId>barley.identity</groupId>
+            <artifactId>barley.identity.sso.saml</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.cache.barley</groupId>
             <artifactId>javax.cache.barley</artifactId>
         </dependency>
 	
         <!-- wso2 -->
-        <dependency>
+        <!-- <dependency>
             <groupId>org.wso2.carbon.identity</groupId>
             <artifactId>org.wso2.carbon.identity.sso.saml</artifactId>
-         </dependency>
+         </dependency> -->
         <dependency>
             <groupId>org.wso2.carbon.identity</groupId>
             <artifactId>org.wso2.carbon.identity.authenticator.saml2.sso.stub</artifactId>

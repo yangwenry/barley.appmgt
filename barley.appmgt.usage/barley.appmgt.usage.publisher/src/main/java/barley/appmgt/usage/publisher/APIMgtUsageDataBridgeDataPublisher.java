@@ -19,7 +19,6 @@ package barley.appmgt.usage.publisher;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.databridge.agent.DataPublisher;
 
 import barley.appmgt.usage.publisher.dto.CacheStatPublisherDTO;
 import barley.appmgt.usage.publisher.dto.DataBridgeCacheStatPublisherDTO;
@@ -31,6 +30,7 @@ import barley.appmgt.usage.publisher.dto.RequestPublisherDTO;
 import barley.appmgt.usage.publisher.dto.ResponsePublisherDTO;
 import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
 import barley.appmgt.usage.publisher.service.APIMGTConfigReaderService;
+import barley.databridge.agent.DataPublisher;
 
 public class APIMgtUsageDataBridgeDataPublisher implements APIMgtUsageDataPublisher {
 

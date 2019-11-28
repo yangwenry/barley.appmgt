@@ -24,16 +24,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.base.ServerConfiguration;
-import org.wso2.carbon.databridge.agent.DataPublisher;
-//import org.wso2.carbon.tomcat.api.CarbonTomcatService;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.impl.AppManagerConfigurationService;
 import barley.appmgt.impl.service.APIMGTSampleService;
 import barley.appmgt.usage.publisher.DataPublisherUtil;
 import barley.appmgt.usage.publisher.service.APIMGTConfigReaderService;
+import barley.core.configuration.ServerConfiguration;
 import barley.core.utils.ConfigurationContextService;
+import barley.databridge.agent.DataPublisher;
 import barley.user.core.service.RealmService;
 
 /**
@@ -60,7 +59,7 @@ public class UsageComponent {
     //private static CarbonTomcatService carbonTomcatService;
     private static ConfigurationContextService configContextService;
 
-    protected void activate(ComponentContext ctx) {
+    protected void activate() {
         try {
             DataPublisherUtil.setEnabledMetering(Boolean.parseBoolean(ServerConfiguration.getInstance().getFirstProperty("EnableMetering")));
             responseTimeMap = new ConcurrentHashMap<String, List>();
@@ -85,7 +84,7 @@ public class UsageComponent {
 		return realmService;
 	}
 
-	protected void deactivate(ComponentContext ctx) {
+	protected void deactivate() {
 
     }
 

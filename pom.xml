@@ -59,6 +59,17 @@
     	<dependencies>
     		<!-- barley -->
     		<dependency>
+	            <groupId>barley.core</groupId>
+	            <artifactId>barley.core</artifactId>
+	            <version>${project.version}</version> 
+	            <exclusions>
+	            	<exclusion>
+	            		<groupId>org.apache.geronimo.specs</groupId>
+	  					<artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+	            	</exclusion>
+	            </exclusions>
+	        </dependency>
+    		<dependency>
 	            <groupId>barley.appmgt</groupId>
 	            <artifactId>barley.appmgt.api</artifactId>
 	            <version>${project.version}</version> 
@@ -79,17 +90,6 @@
 	            <version>${project.version}</version> 
 	        </dependency>
     		<dependency>
-	            <groupId>barley.core</groupId>
-	            <artifactId>barley.core</artifactId>
-	            <version>${project.version}</version> 
-	            <exclusions>
-	            	<exclusion>
-	            		<groupId>org.apache.httpcomponents</groupId>
-	            		<artifactId>httpcore</artifactId>
-	            	</exclusion>
-	            </exclusions>
-	        </dependency>	
-	        <dependency>
 	            <groupId>barley.governance</groupId> 
 		    	<artifactId>barley.governance.api</artifactId>
 	            <version>${project.version}</version> 
@@ -182,6 +182,10 @@
 			    		<groupId>org.slf4j</groupId>
 			    		<artifactId>slf4j-jdk14</artifactId>
 			    	</exclusion>
+			    	<exclusion>
+			    		<groupId>org.apache.xalan</groupId>
+  						<artifactId>xalan</artifactId>
+			    	</exclusion>
 	            </exclusions>
 	        </dependency>
 	        <dependency>
@@ -240,10 +244,20 @@
 	            <version>${project.version}</version> 
 	        </dependency>
 	        <dependency>
+	            <groupId>barley.identity</groupId>
+	            <artifactId>barley.identity.sso.saml</artifactId>
+	            <version>${project.version}</version>
+	        </dependency>
+	        <dependency>
 	            <groupId>javax.cache.barley</groupId>
 	            <artifactId>javax.cache.barley</artifactId>
 	            <version>${project.version}</version> 
-	        </dependency>			
+	        </dependency>	
+	        <dependency>
+	            <groupId>barley.analytics-common</groupId>
+	            <artifactId>barley.databridge.agent</artifactId>
+	            <version>${project.version}</version>
+	        </dependency>		
 	        
 	        
 	        <!-- wso2 -->
@@ -825,6 +839,12 @@
 	            <groupId>org.wso2.carbon.identity</groupId>
 	            <artifactId>org.wso2.carbon.identity.authenticator.saml2.sso.stub</artifactId>
 	            <version>${carbon-identity-authenticator-saml2-stub-version}</version>
+	            <exclusions>
+	            	<exclusion>
+	            		<groupId>org.apache.axis2.wso2</groupId>
+    					<artifactId>axis2-client</artifactId>
+	            	</exclusion>
+	            </exclusions>
 	        </dependency>
 		    <dependency>
 		        <groupId>org.wso2.carbon.identity</groupId>
@@ -880,6 +900,12 @@
 		        <groupId>org.wso2.carbon.mediation</groupId>
 		        <artifactId>org.wso2.carbon.rest.api.stub</artifactId>
 		        <version>${carbon.mediation.version}</version>
+		        <exclusions>
+		        	<exclusion>
+		        		<groupId>org.apache.neethi.wso2</groupId>
+    					<artifactId>neethi</artifactId>
+    				</exclusion>
+		        </exclusions>
 			</dependency>
 			<dependency>
 	            <groupId>org.wso2.carbon.appmgt</groupId>
@@ -960,6 +986,22 @@
 		        		<groupId>org.wso2.carbon</groupId>
 						<artifactId>org.wso2.carbon.registry.core</artifactId>
 		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.wso2.carbon</groupId>
+						<artifactId>org.wso2.carbon.utils</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.wso2.carbon.commons</groupId>
+						<artifactId>org.wso2.carbon.event.core</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.wso2.carbon.commons</groupId>
+						<artifactId>org.wso2.carbon.tenant.common</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.wso2.carbon.analytics-common</groupId>
+						<artifactId>org.wso2.carbon.databridge.agent</artifactId>
+		        	</exclusion>
 		        </exclusions>
 		    </dependency>
 			<!-- <dependency>
@@ -971,6 +1013,16 @@
 		        <groupId>org.wso2.carbon.commons</groupId>
 		        <artifactId>org.wso2.carbon.ganalytics.publisher</artifactId>
 		        <version>${carbon.commons.version}</version>
+		        <exclusions>
+		        	<exclusion>
+		        		<groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+    					<artifactId>httpclient</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.apache.httpcomponents.wso2</groupId>
+    					<artifactId>httpcore</artifactId>
+		        	</exclusion>
+		        </exclusions>
 		   	</dependency>
 		   	<!-- <dependency>
 	        	<groupId>org.wso2.carbon</groupId>
@@ -1079,6 +1131,10 @@
 		        	<exclusion>
 		        		<groupId>org.apache.httpcomponents</groupId>
 		    			<artifactId>httpclient</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.apache.httpcomponents</groupId>
+		    			<artifactId>httpcore</artifactId>
 		        	</exclusion>
 		        </exclusions>
             </dependency>

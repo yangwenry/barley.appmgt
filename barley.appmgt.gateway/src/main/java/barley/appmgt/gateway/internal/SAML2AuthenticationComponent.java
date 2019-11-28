@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.service.component.ComponentContext;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.gateway.token.TokenGenerator;
@@ -52,7 +52,7 @@ public class SAML2AuthenticationComponent {
     private Set<TokenGenerator> tokenGenerators = new HashSet<>();
     private AppManagerConfiguration configuration = null;
 
-    protected void activate(ComponentContext componentContext) throws Exception {
+    protected void activate() throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("Gateway token generator register component activated");
         }

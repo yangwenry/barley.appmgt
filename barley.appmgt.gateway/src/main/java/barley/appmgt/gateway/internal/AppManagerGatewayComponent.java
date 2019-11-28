@@ -20,13 +20,12 @@ package barley.appmgt.gateway.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentContext;
-//import org.wso2.carbon.sequences.services.SequenceAdminService;
-import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
+//import org.osgi.framework.BundleContext;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.impl.AppManagerConfigurationService;
 import barley.appmgt.impl.service.TenantConfigurationService;
+import barley.core.utils.Axis2ConfigurationContextObserver;
 
 /**
  *
@@ -51,19 +50,19 @@ public class AppManagerGatewayComponent {
 
     private static final Log log = LogFactory.getLog(AppManagerGatewayComponent.class);
 
-    protected void activate(ComponentContext componentContext) throws Exception {
+    protected void activate() throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("Gateway manager component activated");
         }
-        BundleContext bundleContext = componentContext.getBundleContext();
+        //BundleContext bundleContext = componentContext.getBundleContext();
 
         //Register Tenant service creator to deploy tenant specific common synapse configurations
-        TenantCreateGatewayObserver listener = new TenantCreateGatewayObserver();
-        bundleContext.registerService(Axis2ConfigurationContextObserver.class.getName(), listener, null);
+//        TenantCreateGatewayObserver listener = new TenantCreateGatewayObserver();
+//        bundleContext.registerService(Axis2ConfigurationContextObserver.class.getName(), listener, null);
 
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    protected void deactivate() {
         if (log.isDebugEnabled()) {
             log.debug("Deactivating Gateway manager component");
         }

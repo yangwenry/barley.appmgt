@@ -20,8 +20,8 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentContext;
+//import org.osgi.framework.BundleContext;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.gateway.service.AppManagerOAuth2Service;
 import barley.appmgt.impl.AppManagerConfiguration;
@@ -40,13 +40,13 @@ public class APIHandlerServiceComponent {
     
     private static final Log log = LogFactory.getLog(APIHandlerServiceComponent.class);
 
-    private static BundleContext bundleContext;
+    //private static BundleContext bundleContext;
     private static AppManagerConfigurationService amConfigService;
 
-    protected void activate(ComponentContext context) {
+    protected void activate() {
         //Registering AppManagerOAuth2Service as a OSGIService
-        bundleContext = context.getBundleContext();
-        bundleContext.registerService(AppManagerOAuth2Service.class.getName(), new AppManagerOAuth2Service(), null);
+        //bundleContext = context.getBundleContext();
+        //bundleContext.registerService(AppManagerOAuth2Service.class.getName(), new AppManagerOAuth2Service(), null);
         if (log.isDebugEnabled()) {
             log.debug("App Manager sampl deployer component activated");
         }
@@ -65,7 +65,7 @@ public class APIHandlerServiceComponent {
         }
     }
 
-    protected void deactivate(ComponentContext context) {
+    protected void deactivate() {
         if (log.isDebugEnabled()) {
             log.debug("WebApp handlers component deactivated");
         }

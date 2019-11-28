@@ -20,8 +20,8 @@ package barley.appmgt.gateway.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentContext;
+//import org.osgi.framework.BundleContext;
+//import org.osgi.service.component.ComponentContext;
 
 import barley.appmgt.gateway.token.JWTGenerator;
 import barley.appmgt.gateway.token.TokenGenerator;
@@ -44,16 +44,16 @@ public class TokenGeneratorRegistrationComponent {
     //This configuration will be used for the TokenGenerator init.
     private static AppManagerConfiguration configuration = null;
 
-    protected void activate(ComponentContext componentContext) throws Exception {
+    protected void activate() throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("Gateway token generator registration component activated");
         }
-        BundleContext bundleContext = componentContext.getBundleContext();
+        //BundleContext bundleContext = componentContext.getBundleContext();
         //register JWT implementation class as a OSGi service
-        bundleContext.registerService(TokenGenerator.class.getName(), new JWTGenerator(), null);
+        //bundleContext.registerService(TokenGenerator.class.getName(), new JWTGenerator(), null);
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    protected void deactivate() {
         if (log.isDebugEnabled()) {
             log.debug("Deactivating Gateway manager component");
         }

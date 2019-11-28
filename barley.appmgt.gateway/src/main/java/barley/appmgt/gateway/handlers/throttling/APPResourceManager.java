@@ -28,7 +28,6 @@ import javax.cache.Caching;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.rest.RESTUtils;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 
 import barley.appmgt.api.model.URITemplate;
 import barley.appmgt.gateway.handlers.security.APISecurityException;
@@ -40,6 +39,7 @@ import barley.appmgt.impl.dto.APIInfoDTO;
 import barley.appmgt.impl.dto.APIKeyValidationInfoDTO;
 import barley.appmgt.impl.dto.ResourceInfoDTO;
 import barley.appmgt.impl.dto.VerbInfoDTO;
+import barley.core.context.PrivilegedBarleyContext;
 
 public class APPResourceManager {
 
@@ -255,7 +255,7 @@ public class APPResourceManager {
 	                                                      String user, String accessToken)
 	                                                                                      throws APISecurityException {
 
-        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+        String tenantDomain = PrivilegedBarleyContext.getThreadLocalCarbonContext().getTenantDomain();
         if (!tenantDomain.equalsIgnoreCase("carbon.super")) {
             user = user + '@' + tenantDomain;
         }

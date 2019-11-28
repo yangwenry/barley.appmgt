@@ -47,8 +47,6 @@ import org.apache.synapse.transport.nhttp.NhttpConstants;
 import org.apache.synapse.transport.passthru.util.RelayUtils;
 import org.opensaml.saml2.core.RequestAbstractType;
 import org.opensaml.xml.security.credential.Credential;
-import org.wso2.carbon.identity.sso.saml.exception.IdentitySAML2SSOException;
-import org.wso2.carbon.identity.sso.saml.util.SAMLSSOUtil;
 
 import barley.appmgt.api.model.URITemplate;
 import barley.appmgt.api.model.WebApp;
@@ -61,7 +59,8 @@ import barley.appmgt.impl.AppMConstants;
 import barley.appmgt.impl.dto.Environment;
 import barley.appmgt.impl.utils.UrlPatternMatcher;
 import barley.core.context.BarleyContext;
-import barley.core.context.PrivilegedBarleyContext;
+import barley.identity.sso.saml.exception.IdentitySAML2SSOException;
+import barley.identity.sso.saml.util.SAMLSSOUtil;
 
 public class GatewayUtils {
 
