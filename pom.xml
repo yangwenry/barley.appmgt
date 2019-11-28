@@ -905,6 +905,26 @@
 		        		<groupId>org.apache.neethi.wso2</groupId>
     					<artifactId>neethi</artifactId>
     				</exclusion>
+    				<exclusion>
+    					<groupId>javax.xml.stream</groupId>
+  						<artifactId>stax-api</artifactId>
+    				</exclusion>
+    				<exclusion>
+    					<groupId>org.apache.ws.commons.schema</groupId>
+  						<artifactId>XmlSchema</artifactId>
+    				</exclusion>
+    				<exclusion>
+    					<groupId>org.apache.ws.commons.schema.wso2</groupId>
+    					<artifactId>XmlSchema</artifactId>
+    				</exclusion>
+    				<exclusion>
+    					<groupId>org.apache.geronimo.specs.wso2</groupId>
+    					<artifactId>geronimo-stax-api_1.0_spec</artifactId>
+    				</exclusion>
+    				<exclusion>
+    					<groupId>wsdl4j.wso2</groupId>
+    					<artifactId>wsdl4j</artifactId>
+    				</exclusion>
 		        </exclusions>
 			</dependency>
 			<dependency>
@@ -1001,6 +1021,10 @@
 		        	<exclusion>
 		        		<groupId>org.wso2.carbon.analytics-common</groupId>
 						<artifactId>org.wso2.carbon.databridge.agent</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.apache.axis2.transport</groupId>
+						<artifactId>axis2-transport-mail</artifactId>
 		        	</exclusion>
 		        </exclusions>
 		    </dependency>
@@ -1135,6 +1159,10 @@
 		        	<exclusion>
 		        		<groupId>org.apache.httpcomponents</groupId>
 		    			<artifactId>httpcore</artifactId>
+		        	</exclusion>
+		        	<exclusion>
+		        		<groupId>org.apache.thrift</groupId>
+  						<artifactId>libthrift</artifactId>
 		        	</exclusion>
 		        </exclusions>
             </dependency>
