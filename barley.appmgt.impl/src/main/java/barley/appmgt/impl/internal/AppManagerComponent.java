@@ -237,7 +237,8 @@ public class AppManagerComponent {
             RemoteAuthorizationManager authorizationManager = RemoteAuthorizationManager.getInstance();
             authorizationManager.init();
             APIMgtDBUtil.initialize();
-            AppMgtDataSourceProvider.initialize();
+            // (주석) 2019.11.28 - 스토리지 데이터소스가 필요없어서 주석처리. 
+            //AppMgtDataSourceProvider.initialize();
             
             //Check User add listener enabled or not
             /*
