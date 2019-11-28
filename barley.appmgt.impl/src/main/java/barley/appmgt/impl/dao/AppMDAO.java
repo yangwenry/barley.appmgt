@@ -10662,6 +10662,62 @@ public class AppMDAO {
         return app;
     }
     
+    
+    public WebApp getAppById(int appId) throws AppManagementException {
+        Connection connection = null;
+        PreparedStatement selectPreparedStatement = null;
+        ResultSet resultSet = null;
+        
+        WebApp app = null;
+        
+        try {
+            connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
+            String query = SQLConstants.GET_APP_BY_ID_SQL;
+            selectPreparedStatement = connection.prepareStatement(query);
+            selectPreparedStatement.setInt(1, appId);
+            resultSet = selectPreparedStatement.executeQuery();
+            if (resultSet.next()) {
+            	app = new WebApp(new APIIdentifier(resultSet.getString("APP_PROVIDER"), resultSet.getString("APP_NAME"), resultSet.getString("APP_VERSION")));
+            	
+            	//APM_APP의 TENANT_ID, APP_ENDPOINT는 미사용 처리 예정
+            	
+            	app.setContext(resultSet.getString("CONTEXT"));
+            	app.setTrackingCode(resultSet.getString("TRACKING_CODE"));
+            	app.setVisibleRoles(resultSet.getString("VISIBLE_ROLES"));
+            	app.setUUID(resultSet.getString("UUID"));
+            	app.setSaml2SsoIssuer(resultSet.getString("SAML2_SSO_ISSUER"));
+            	app.setLogoutURL(resultSet.getString("LOG_OUT_URL"));
+            	app.setAllowAnonymous(resultSet.getBoolean("APP_ALLOW_ANONYMOUS"));
+            	
+            	app.setTreatAsASite(resultSet.getString("TREAT_AS_SITE"));
+            	app.setCategory(resultSet.getString("CATEGORY"));
+            	app.setThumbnailUrl(resultSet.getString("THUMBNAIL_URL"));
+            	app.setDescription(resultSet.getString("DESCRIPTION"));
+            	app.setTitle(resultSet.getString("TITLE"));
+            	
+            	Date createdDate = resultSet.getDate("CREATED_TIME");
+            	if(createdDate != null) app.setCreatedDate(createdDate);
+            	Date updatedDate = resultSet.getDate("UPDATED_TIME");
+            	if(updatedDate != null) app.setLastUpdated(updatedDate);
+            	            	
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    handleException("Failed to rollback getting sorted rating api ", ex);
+                }
+            }
+            handleException("Failed to get sorted rating api", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(selectPreparedStatement, connection, resultSet);
+        }
+        
+        return app;
+    }
+    
     private WebApp createAppFromResultSet(ResultSet resultSet) throws SQLException, AppManagementException {
     	
     	WebApp app = new WebApp(new APIIdentifier(resultSet.getString("APP_PROVIDER"), resultSet.getString("APP_NAME"), resultSet.getString("APP_VERSION")));

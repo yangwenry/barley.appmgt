@@ -482,5 +482,31 @@ public class SQLConstants {
     public static final String SET_COMMENT_AGREE_EMPTY_VALUE_SQL =
     		"DELETE FROM APM_APP_COMMENTS_AGREE WHERE USER_ID = ? AND COMMENT_ID = ?";
     
+    public static final String GET_APP_BY_ID_SQL =
+    		" SELECT " + 
+    		"	APP_ID " +
+    		"  , APP_PROVIDER " +
+    		"  , TENANT_ID " +
+    		"  , APP_NAME " +
+    		"  , APP_VERSION " +
+    		"  , CONTEXT " +
+    		"  , TRACKING_CODE " +
+    		"  , VISIBLE_ROLES " +
+    		"  , UUID " +
+    		"  , SAML2_SSO_ISSUER " +
+    		"  , LOG_OUT_URL " +
+    		"  , APP_ALLOW_ANONYMOUS " +
+    		"  , APP_ENDPOINT " +
+    		"  , TREAT_AS_SITE " +
+    		"  , CATEGORY " +
+    		"  , THUMBNAIL_URL " +
+    		"  , DESCRIPTION " +
+    		"  , CREATED_BY " +
+    		"  , CREATED_TIME " +
+    		"  , UPDATED_BY " +
+    		"  , UPDATED_TIME " +
+    		"  , TITLE " +
+    		" FROM APM_APP " + 
+    		" WHERE APP_ID = ? ";
 
 }
