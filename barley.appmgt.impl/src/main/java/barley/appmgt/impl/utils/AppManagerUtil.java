@@ -169,7 +169,117 @@ public final class AppManagerUtil {
 	private static boolean isContextCacheInitialized = false;
 
 	private static Set<Integer> registryInitializedTenants = new HashSet<Integer>();
+	
+	
 
+	private static WebApp getAPIInformation(GovernanceArtifact artifact) throws AppManagementException {
+		
+		WebApp api = null;	
+		try {
+			String providerName = artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER);
+			String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
+			String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
+			
+			APIIdentifier apiId = new APIIdentifier(AppManagerUtil.replaceEmailDomainBack(providerName), apiName, apiVersion);
+			
+			int appId = AppMDAO.getAPIID(apiId, null);			
+			if (appId == -1) {
+                return null;
+            }
+			
+			AppMDAO appMDAO = new AppMDAO();
+			api = appMDAO.getAppById(appId);
+			
+            api.setRating(getAverageRating(apiId));
+			api.setRatingUserCount(getRatingUserCount(apiId));
+            api.setApiName(apiName);
+
+            //from appmgt.apm_app
+            //api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
+            //api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
+            //api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
+            //api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
+            //api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));
+            //api.setUUID(artifact.getId());
+            //api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));
+            //api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));
+            //api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
+            //api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));		// <--->
+            //api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));	// <--->
+
+
+
+            api.setWebAppUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL));		// <---> 'APP_ENDPOINT'
+        	api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));		// <---> 'LOG_OUT_URL'
+            api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
+
+            api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
+
+            api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
+            api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
+			api.setEndpointSecured(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_SECURED)));
+			api.setEndpointUTUsername(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_USERNAME));
+			api.setEndpointUTPassword(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_PASSWORD));
+			api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
+
+            api.setSsoEnabled(artifact.getAttribute("sso_singleSignOn"));
+            api.setUUID(artifact.getId());
+            api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
+
+            api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
+            api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
+            api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
+            api.setAppTenant(artifact.getAttribute(AppMConstants.API_OVERVIEW_TENANT));
+            api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
+			api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
+			api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
+
+            api.setLatest(Boolean.valueOf(artifact.getAttribute(AppMConstants.API_OVERVIEW_IS_LATEST)));
+
+            String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
+                                                              AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
+            api.setDefaultVersion(apiVersion.equals(defaultVersion));
+
+             //Set Lifecycle status
+            if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
+                if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
+                    api.setLifeCycleStatus(APIStatus.INREVIEW);
+                } else {
+                    api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
+                }
+            }
+            api.setLifeCycleName(artifact.getLifecycleName());
+
+
+            api.setPreview1(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW1));
+            api.setPreview2(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW2));
+            api.setPreview3(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW3));
+
+
+            //api.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));
+            //api.setStatus(getApiStatus(artifact.getLifecycleState().toUpperCase()));
+            //api.setWsdlUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WSDL));
+            //api.setWadlUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WADL));
+            //api.setTechnicalOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_TEC_OWNER));
+            //api.setTechnicalOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_TEC_OWNER_EMAIL));
+            //api.setBusinessOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER));
+            //api.setBusinessOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER_EMAIL));
+            //api.setBusinessOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER_EMAIL));
+            //api.setThumbnailUrl(artifact.getAttribute(AppMConstants.APP_IMAGES_THUMBNAIL));
+            //api.setEndpointConfig(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_CONFIG));
+
+			
+		}catch (GovernanceException e) {
+			String msg = "Failed to get WebApp fro artifact ";
+			throw new AppManagementException(msg, e);
+		} catch (RegistryException e) {
+			String msg = "Failed to get LastAccess time or Rating";
+			throw new AppManagementException(msg, e);
+		}
+		
+		return api;
+	}
+	
 	/**
 	 * This method used to get WebApp from governance artifact
 	 * 
@@ -195,8 +305,9 @@ public final class AppManagerUtil {
 			//api = new WebApp(apiId);
 			
 			int appId = AppMDAO.getAPIID(apiId, null);
-			AppMDAO appMDAO = new AppMDAO();
-			api = appMDAO.getAppById(appId);
+			//AppMDAO appMDAO = new AppMDAO();
+			//api = appMDAO.getAppById(appId);
+			api = getAPIInformation(artifact);
 			
 			// set rating - 
 			// (수정)
@@ -204,11 +315,11 @@ public final class AppManagerUtil {
 //			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
 //			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
 //			api.setRating(res.floatValue());
-			api.setRating(getAverageRating(apiId));
+			//api.setRating(getAverageRating(apiId));
 			api.setRatingUserCount(getRatingUserCount(apiId));
 			
             //set name
-            api.setApiName(apiName);
+            //api.setApiName(apiName);
             
             // (추가) 2019.05.29 - 타이틀 추가
       //      api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));	// <--->
@@ -218,18 +329,18 @@ public final class AppManagerUtil {
             // set description
       //	api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));	// <--->
 			// set last access time
-			api.setLastUpdated(registry.get(artifactPath).getLastModified());	// <--->
-			api.setCreatedDate(registry.get(artifactPath).getCreatedTime());	// <--->
+			//api.setLastUpdated(registry.get(artifactPath).getLastModified());	// <--->
+			//api.setCreatedDate(registry.get(artifactPath).getCreatedTime());	// <--->
 			// set url
 	  //	api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));		// <---> 'APP_ENDPOINT'
       //	api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));		// <---> 'LOG_OUT_URL'
-			api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
+			//api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
 //			api.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));
 			
 			// (수정) 2018.03.29 - 라이프사이클 상태값을 가져오는걸로 되어있는데 주석처리하고 상태값을 가져오도록 변경.
 			// 기존코드대로라면, registry.lifecycle.* 값을 reg_property 테이블에서 가져와 artifact 속성을 만든다. 
 			//api.setStatus(getApiStatus(artifact.getLifecycleState().toUpperCase()));
-			api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
+			//api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
 			
       //	api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));	// <--->
 //			api.setWsdlUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WSDL));
@@ -238,21 +349,21 @@ public final class AppManagerUtil {
 //			api.setTechnicalOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_TEC_OWNER_EMAIL));
 //			api.setBusinessOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER));
 //			api.setBusinessOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER_EMAIL));
-			api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
+			//api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
 	 //		api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));	// <--->
-			api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
-			api.setEndpointSecured(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_SECURED)));
-			api.setEndpointUTUsername(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_USERNAME));
-			api.setEndpointUTPassword(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_PASSWORD));
-			api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
+			//api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
+			//api.setEndpointSecured(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_SECURED)));
+			//api.setEndpointUTUsername(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_USERNAME));
+			//api.setEndpointUTPassword(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_PASSWORD));
+			//api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
 //			api.setInSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_INSEQUENCE));
 //			api.setOutSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_OUTSEQUENCE));
 //			api.setResponseCache(artifact.getAttribute(AppMConstants.API_OVERVIEW_RESPONSE_CACHING));
-            api.setSsoEnabled(artifact.getAttribute("sso_singleSignOn"));
-            api.setUUID(artifact.getId());															// <--->
+            //api.setSsoEnabled(artifact.getAttribute("sso_singleSignOn"));
+            //api.setUUID(artifact.getId());															// <--->
             // (주석) 2018.10.11 - 썸네일 이미지를 가져오지 못해 주석처리함. 
 //            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.APP_IMAGES_THUMBNAIL));
-            api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
+            //api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
       //	api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));		// <--->
       //	api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));	// <--->
             
@@ -269,13 +380,13 @@ public final class AppManagerUtil {
 			*/
 //			api.setEndpointConfig(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_CONFIG));
 
-			api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
-            api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
-            api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
-            api.setAppTenant(artifact.getAttribute(AppMConstants.API_OVERVIEW_TENANT));
-            api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
-			api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
-			api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
+			//api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
+            //api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
+            //api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
+            //api.setAppTenant(artifact.getAttribute(AppMConstants.API_OVERVIEW_TENANT));
+            //api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
+			//api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
+			//api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
 
 			String tenantDomainName =
 			                          MultitenantUtils.getTenantDomain(replaceEmailDomainBack(providerName));
@@ -315,7 +426,7 @@ public final class AppManagerUtil {
             */
 	  //	api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));	// <--->
 			
-			api.setLatest(Boolean.valueOf(artifact.getAttribute(AppMConstants.API_OVERVIEW_IS_LATEST)));
+			//api.setLatest(Boolean.valueOf(artifact.getAttribute(AppMConstants.API_OVERVIEW_IS_LATEST)));
 
 			Set<URITemplate> uriTemplates = new LinkedHashSet<URITemplate>();
 			List<String> uriTemplateNames = new ArrayList<String>();
@@ -381,26 +492,26 @@ public final class AppManagerUtil {
 			//api.setLastUpdated(registry.get(artifactPath).getLastModified());
 			//api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 
-            String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
-                                                              AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
-            api.setDefaultVersion(apiVersion.equals(defaultVersion));
+            //String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
+            //                                                  AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
+            //api.setDefaultVersion(apiVersion.equals(defaultVersion));
 
             //Set Lifecycle status
-            if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
-                if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
-                    api.setLifeCycleStatus(APIStatus.INREVIEW);
-                } else {
-                    api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
-                }
-            }
-            api.setLifeCycleName(artifact.getLifecycleName());
+            //if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
+            //    if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
+            //        api.setLifeCycleStatus(APIStatus.INREVIEW);
+            //    } else {
+            //        api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
+            //    }
+            //}
+            //api.setLifeCycleName(artifact.getLifecycleName());
             
             api.setPreview1(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW1));
             api.setPreview2(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW2));
             api.setPreview3(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW3));
 
 		} catch (GovernanceException e) {
-			String msg = "Failed to get WebApp fro artifact ";
+			String msg = "Failed to get WebApp from artifact ";
 			throw new AppManagementException(msg, e);
 		} catch (RegistryException e) {
 			String msg = "Failed to get LastAccess time or Rating";
@@ -421,21 +532,31 @@ public final class AppManagerUtil {
     public static MobileApp getMobileApp(GenericArtifact artifact) throws AppManagementException {
         MobileApp mobileApp = new MobileApp();
         try {
-            mobileApp.setAppName(artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME));
+        	WebApp app = getAPIInformation(artifact);
+        	
+        	
+        	
+            //mobileApp.setAppName(artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME));
+        	mobileApp.setAppName(app.getId().getApiName());
             mobileApp.setAppUrl(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_URL));
             mobileApp.setBundleVersion(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_BUNDLE_VERSION));
             mobileApp.setPackageName(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_PACKAGE_NAME));
-            mobileApp.setCategory(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_CATEGORY));
-            mobileApp.setThumbnail(artifact.getAttribute(AppMConstants.MOBILE_APP_IMAGES_THUMBNAIL));
+            //mobileApp.setCategory(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_CATEGORY));
+            mobileApp.setCategory(app.getCategory());
+            //mobileApp.setThumbnail(artifact.getAttribute(AppMConstants.MOBILE_APP_IMAGES_THUMBNAIL));
+            mobileApp.setThumbnail(app.getThumbnailUrl());
             mobileApp.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
             mobileApp.setRecentChanges(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_RECENT_CHANGES));
-            mobileApp.setAppProvider(artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER));
-            mobileApp.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
-            mobileApp.setThumbnail(artifact.getAttribute(AppMConstants.MOBILE_APP_IMAGES_THUMBNAIL));
+            //mobileApp.setAppProvider(artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER));
+            mobileApp.setAppProvider(app.getId().getProviderName());
+            //mobileApp.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
+            //mobileApp.setThumbnail(artifact.getAttribute(AppMConstants.MOBILE_APP_IMAGES_THUMBNAIL));
+            mobileApp.setThumbnail(app.getThumbnailUrl());
             mobileApp.setBanner(artifact.getAttribute(AppMConstants.APP_IMAGES_BANNER));
             mobileApp.setPlatform(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_PLATFORM));
             mobileApp.setType(artifact.getAttribute(AppMConstants.MOBILE_APP_OVERVIEW_TYPE));
-            mobileApp.setCreatedTime(artifact.getAttribute(AppMConstants.API_OVERVIEW_CREATED_TIME));
+            //mobileApp.setCreatedTime(artifact.getAttribute(AppMConstants.API_OVERVIEW_CREATED_TIME));
+            mobileApp.setCreatedTime(app.getCreatedTime());
             mobileApp.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
           //  mobileApp.setAppVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
             String screenShots = artifact.getAttribute(AppMConstants.MOBILE_APP_IMAGES_SCREENSHOTS);
@@ -451,23 +572,26 @@ public final class AppManagerUtil {
 
         WebApp api;
         try {
-            String providerName = artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER);
-            String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
-            String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
-            api = new WebApp(new APIIdentifier(providerName, apiName, apiVersion));
-            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
-            api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
-            api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
-            api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
-            api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));
-            api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
-            api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
-            api.setInSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_INSEQUENCE));
+        	
+        	api = getAPIInformation(artifact);
+        	
+            //String providerName = artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER);
+            //String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
+            //String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
+            //api = new WebApp(new APIIdentifier(providerName, apiName, apiVersion));
+            //api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL)); 
+            ////api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
+            ////api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
+            //api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY)); 
+            ////api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));
+            //api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS)); 
+            //api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
+            api.setInSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_INSEQUENCE)); 
             api.setInSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_OUTSEQUENCE));
-            api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
+            ////api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
             api.setResponseCache(artifact.getAttribute(AppMConstants.API_OVERVIEW_RESPONSE_CACHING));
-            api.setSsoEnabled(artifact.getAttribute("sso_enableSso"));
-            api.setUUID(artifact.getId());
+            api.setSsoEnabled(artifact.getAttribute("sso_enableSso")); // 다름
+            //api.setUUID(artifact.getId());
             // (주석) 2018.10.11 - 썸네일 이미지 중복되어서 주석처리  
 //            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.APP_IMAGES_THUMBNAIL));
 
@@ -481,18 +605,19 @@ public final class AppManagerUtil {
             }
             api.setCacheTimeout(cacheTimeout);
 
-            api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
-            api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
-            api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(
-                    AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
+            //api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
+            //api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
+            //api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(
+            //       AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
 
-            api.setEndpointConfig(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_CONFIG));
+            ////api.setEndpointConfig(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_CONFIG));
 
-            api.setSubscriptionAvailability(artifact.getAttribute(
-                    AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
-            api.setSubscriptionAvailableTenants(artifact.getAttribute(
-                    AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
+            //api.setSubscriptionAvailability(artifact.getAttribute(
+            //        AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
+            //api.setSubscriptionAvailableTenants(artifact.getAttribute(
+            //        AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
 
+            /*
             //Set Lifecycle status
             if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
                 if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
@@ -502,10 +627,11 @@ public final class AppManagerUtil {
                 }
             }
             api.setLifeCycleName(artifact.getLifecycleName());
-
+			*/
+            
             api.setMediaType(artifact.getMediaType());
             api.setPath(artifact.getPath());
-            api.setCreatedTime(artifact.getAttribute(AppMConstants.API_OVERVIEW_CREATED_TIME));
+            ////api.setCreatedTime(artifact.getAttribute(AppMConstants.API_OVERVIEW_CREATED_TIME));
 
         } catch (GovernanceException e) {
             String msg = "Failed to get WebApp from artifact ";
@@ -534,58 +660,59 @@ public final class AppManagerUtil {
             String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
             String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
             APIIdentifier apiId = new APIIdentifier(AppManagerUtil.replaceEmailDomainBack(providerName), apiName, apiVersion);
-            api = new WebApp(apiId);
+            //api = new WebApp(apiId);
+        	api = getAPIInformation(artifact);
             // set rating
             // (수정) 
             String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
 //			BigDecimal bigDecimal = new BigDecimal(registry.getAverageRating(artifactPath));
 //			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
 //			api.setRating(res.floatValue());
-            api.setRating(getAverageRating(apiId));
+            //api.setRating(getAverageRating(apiId));
             
             //set name
-            api.setApiName(apiName);
+            ////api.setApiName(apiName);
             
             // (추가) 2019.05.29 - 타이틀 추가
-            api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
+            ////api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
             // (추가) 2019.09.26 - API에 카테고리 속성 추가
-            api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
+            ////api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
 
             // set description
-            api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
+            ////api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
             // set last access time
-            api.setLastUpdated(registry.get(artifactPath).getLastModified());
-            api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
+            ////api.setLastUpdated(registry.get(artifactPath).getLastModified());
+            ////api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
             // set url
-            api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL));
-            api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
-            api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
+            //api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
+            //api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
+            //api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
 //            api.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));
-            api.setStatus(getApiStatus(artifact.getLifecycleState().toUpperCase()));
-            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
+            //api.setStatus(getApiStatus(artifact.getLifecycleState().toUpperCase()));
+            ////api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
 //            api.setWsdlUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WSDL));
 //            api.setWadlUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WADL));
 //            api.setTechnicalOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_TEC_OWNER));
 //            api.setTechnicalOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_TEC_OWNER_EMAIL));
 //            api.setBusinessOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER));
 //            api.setBusinessOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER_EMAIL));
-            api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
-            api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));
-            api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
-            api.setEndpointSecured(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_SECURED)));
-            api.setEndpointUTUsername(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_USERNAME));
-            api.setEndpointUTPassword(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_PASSWORD));
-            api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
+            //api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
+            ////api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));
+            //api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
+            //api.setEndpointSecured(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_SECURED)));
+            //api.setEndpointUTUsername(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_USERNAME));
+            //api.setEndpointUTPassword(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_PASSWORD));
+            //api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
 //            api.setInSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_INSEQUENCE));
 //            api.setOutSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_OUTSEQUENCE));
 //            api.setResponseCache(artifact.getAttribute(AppMConstants.API_OVERVIEW_RESPONSE_CACHING));
-            api.setSsoEnabled(artifact.getAttribute("sso_singleSignOn"));
-            api.setUUID(artifact.getId());
+            //api.setSsoEnabled(artifact.getAttribute("sso_singleSignOn"));
+            //api.setUUID(artifact.getId());
             // (주석) 2018.10.11 - 썸네일 이미지 중복되어서 주석처리
 //            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.APP_IMAGES_THUMBNAIL));
-            api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
-            api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));
-            api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));
+            //api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
+            ////api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));
+            ////api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));
 
             /*
             int cacheTimeout = AppMConstants.API_RESPONSE_CACHE_TIMEOUT;
@@ -600,13 +727,13 @@ public final class AppManagerUtil {
 
 //            api.setEndpointConfig(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_CONFIG));
 
-            api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
-            api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
-            api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
-            api.setAppTenant(artifact.getAttribute(AppMConstants.API_OVERVIEW_TENANT));
-            api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
-            api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
-            api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
+            //api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
+            //api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
+            //api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
+            //api.setAppTenant(artifact.getAttribute(AppMConstants.API_OVERVIEW_TENANT));
+            //api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
+            //api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
+            //api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
 
             String tenantDomainName =
                     MultitenantUtils.getTenantDomain(replaceEmailDomainBack(providerName));
@@ -644,9 +771,10 @@ public final class AppManagerUtil {
                 api.setContext(RegistryConstants.PATH_SEPARATOR + "t" + RegistryConstants.PATH_SEPARATOR + tenantDomainName + context);
             }
             */
-            api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
             
-            api.setLatest(Boolean.valueOf(artifact.getAttribute(AppMConstants.API_OVERVIEW_IS_LATEST)));
+            ////api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
+            
+            //api.setLatest(Boolean.valueOf(artifact.getAttribute(AppMConstants.API_OVERVIEW_IS_LATEST)));
 
             Set<URITemplate> uriTemplates = new LinkedHashSet<URITemplate>();
             List<String> uriTemplateNames = new ArrayList<String>();
@@ -705,23 +833,23 @@ public final class AppManagerUtil {
             //api.setLastUpdated(registry.get(artifactPath).getLastModified());
             //api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 
-            String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
-                                                              AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
-            api.setDefaultVersion(apiVersion.equals(defaultVersion));
+            //String defaultVersion = AppMDAO.getDefaultVersion(apiName, providerName,
+            //                                                  AppDefaultVersion.APP_IS_ANY_LIFECYCLE_STATE);
+            //api.setDefaultVersion(apiVersion.equals(defaultVersion));
 
             //Set Lifecycle status
-            if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
-                if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
-                    api.setLifeCycleStatus(APIStatus.INREVIEW);
-                } else {
-                    api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
-                }
-            }
-            api.setLifeCycleName(artifact.getLifecycleName());
+            //if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
+            //    if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
+            //        api.setLifeCycleStatus(APIStatus.INREVIEW);
+            //    } else {
+            //        api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
+            //    }
+            //}
+            //api.setLifeCycleName(artifact.getLifecycleName());
 
             api.setMediaType(artifact.getMediaType());
             api.setPath(artifact.getPath());
-            api.setCreatedTime(artifact.getAttribute(AppMConstants.API_OVERVIEW_CREATED_TIME));
+            ////api.setCreatedTime(artifact.getAttribute(AppMConstants.API_OVERVIEW_CREATED_TIME));
 
         } catch (GovernanceException e) {
             String msg = "Failed to get WebApp fro artifact ";
@@ -742,34 +870,36 @@ public final class AppManagerUtil {
 
 		WebApp api;
 		try {
-			String providerName = artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER);
-			String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
-			String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
-			api = new WebApp(new APIIdentifier(providerName, apiName, apiVersion));
-			api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
-			api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
-			api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
-			api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
-			api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));
-			api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
-			api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
+			//String providerName = artifact.getAttribute(AppMConstants.API_OVERVIEW_PROVIDER);
+			//String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
+			//String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
+			//api = new WebApp(new APIIdentifier(providerName, apiName, apiVersion));
+			api = getAPIInformation(artifact);
+			
+			//api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
+			//api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
+			//api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
+			//api.setVisibility(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBILITY));
+			//api.setVisibleRoles(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_ROLES));
+			//api.setVisibleTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_VISIBLE_TENANTS));
+			//api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
 //			api.setInSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_INSEQUENCE));
 //			api.setInSequence(artifact.getAttribute(AppMConstants.API_OVERVIEW_OUTSEQUENCE));
-			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
+			//api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
 //			api.setResponseCache(artifact.getAttribute(AppMConstants.API_OVERVIEW_RESPONSE_CACHING));
             api.setSsoEnabled(artifact.getAttribute("sso_enableSso"));
-            api.setUUID(artifact.getId());
+            //api.setUUID(artifact.getId());
             // (주석) 2018.10.11 - 썸네일 이미지 중복되어서 주석처리
 //            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.APP_IMAGES_THUMBNAIL));
             // (추가) 2018.10.12 - apiName, apiDisplayName도 가져오도록 처리
-            api.setApiName(artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME));
+            //api.setApiName(artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME));
             
             // (추가) 2019.05.29 - 타이틀 추가
-            api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
+            //api.setTitle(artifact.getAttribute(AppMConstants.API_OVERVIEW_TITLE));
             // (추가) 2019.09.26 - API에 카테고리 속성 추가
-            api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
+            //api.setCategory(artifact.getAttribute(AppMConstants.API_OVERVIEW_CATEGORY));
             
-            api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
+            //api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
 
             /*
             int cacheTimeout = AppMConstants.API_RESPONSE_CACHE_TIMEOUT;
@@ -782,24 +912,24 @@ public final class AppManagerUtil {
 			api.setCacheTimeout(cacheTimeout);
 			*/
 
-			api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
-            api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
-			api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
+			//api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
+            //api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
+			//api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
 
 //			api.setEndpointConfig(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_CONFIG));
 
-			api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
-			api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
+			//api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
+			//api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
 
             //Set Lifecycle status
-            if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
-                if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
-                    api.setLifeCycleStatus(APIStatus.INREVIEW);
-                } else {
-                    api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
-                }
-            }
-            api.setLifeCycleName(artifact.getLifecycleName());
+            //if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
+            //    if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
+            //        api.setLifeCycleStatus(APIStatus.INREVIEW);
+            //    } else {
+            //        api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
+            //    }
+            //}
+            //api.setLifeCycleName(artifact.getLifecycleName());
 
 
 		} catch (GovernanceException e) {
@@ -831,7 +961,9 @@ public final class AppManagerUtil {
 			String apiName = artifact.getAttribute(AppMConstants.API_OVERVIEW_NAME);
 			String apiVersion = artifact.getAttribute(AppMConstants.API_OVERVIEW_VERSION);
 			APIIdentifier apiId = new APIIdentifier(providerName, apiName, apiVersion);
-			api = new WebApp(apiId);
+			//api = new WebApp(apiId);
+			api = getAPIInformation(artifact);
+			
 			int oldApiId = AppMDAO.getAPIID(oldId, null);
             if (oldApiId == -1) {
                 return null;
@@ -843,46 +975,47 @@ public final class AppManagerUtil {
 //			BigDecimal res = bigDecimal.setScale(1, RoundingMode.HALF_UP);
 //			api.setRating(res.floatValue());
 			api.setRating(getAverageRating(oldApiId));
+			api.setRatingUserCount(getRatingUserCount(oldApiId));
 			
 			// set description
-			api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
+			//api.setDescription(artifact.getAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION));
 			// set last access time
-			api.setLastUpdated(registry.get(artifactPath).getLastModified());
-			api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
+			//api.setLastUpdated(registry.get(artifactPath).getLastModified());
+			//api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 			// set url
-			api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL));
+			//api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
             api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
 //			api.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));
-			api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
-			api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
+			//api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
+			//api.setThumbnailUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_THUMBNAIL_URL));
 //			api.setWsdlUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WSDL));
 //			api.setWadlUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WADL));
 //			api.setTechnicalOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_TEC_OWNER));
 //			api.setTechnicalOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_TEC_OWNER_EMAIL));
 //			api.setBusinessOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER));
 //			api.setBusinessOwnerEmail(artifact.getAttribute(AppMConstants.API_OVERVIEW_BUSS_OWNER_EMAIL));
-			api.setEndpointSecured(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_SECURED)));
-			api.setEndpointUTUsername(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_USERNAME));
-			api.setEndpointUTPassword(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_PASSWORD));
-			api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
+			//api.setEndpointSecured(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_SECURED)));
+			//api.setEndpointUTUsername(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_USERNAME));
+			//api.setEndpointUTPassword(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_PASSWORD));
+			//api.setTransports(artifact.getAttribute(AppMConstants.API_OVERVIEW_TRANSPORTS));
 
 //			api.setEndpointConfig(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_CONFIG));
 
-			api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
-            api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
-			api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
+			//api.setRedirectURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_REDIRECT_URL));
+            //api.setAppOwner(artifact.getAttribute(AppMConstants.API_OVERVIEW_OWNER));
+			//api.setAdvertiseOnly(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ADVERTISE_ONLY)));
 
-			api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
-			api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
+			//api.setSubscriptionAvailability(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABILITY));
+			//api.setSubscriptionAvailableTenants(artifact.getAttribute(AppMConstants.API_OVERVIEW_SUBSCRIPTION_AVAILABLE_TENANTS));
 
 //			api.setResponseCache(artifact.getAttribute(AppMConstants.API_OVERVIEW_RESPONSE_CACHING));
 			
-			api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));
-			api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
-            api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));
+			//api.setAllowAnonymous(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_ALLOW_ANONYMOUS)));
+			//api.setSkipGateway(Boolean.parseBoolean(artifact.getAttribute(AppMConstants.API_OVERVIEW_SKIP_GATEWAY)));
+            //api.setTreatAsASite(artifact.getAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE));
 
             api.setSsoEnabled(artifact.getAttribute("sso_enableSso"));
-            api.setUUID(artifact.getId());
+            //api.setUUID(artifact.getId());
             // (주석) 2018.10.11 - 썸네일 이미지 중복되어서 주석처리
 //            api.setThumbnailUrl(artifact.getAttribute(AppMConstants.APP_IMAGES_THUMBNAIL));
 
@@ -918,8 +1051,10 @@ public final class AppManagerUtil {
 				}
 			}
 			api.addAvailableTiers(availableTier);
-			api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
-			api.setLatest(Boolean.valueOf(artifact.getAttribute(AppMConstants.API_OVERVIEW_IS_LATEST)));
+			
+			//api.setContext(artifact.getAttribute(AppMConstants.API_OVERVIEW_CONTEXT));
+			//api.setLatest(Boolean.valueOf(artifact.getAttribute(AppMConstants.API_OVERVIEW_IS_LATEST)));
+			
 			ArrayList<URITemplate> urlPatternsList;
 
 			urlPatternsList = AppMDAO.getAllURITemplates(api.getContext(), oldId.getVersion());
@@ -942,14 +1077,14 @@ public final class AppManagerUtil {
 			//api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 
             //Set Lifecycle status
-            if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
-                if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
-                    api.setLifeCycleStatus(APIStatus.INREVIEW);
-                } else {
-                    api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
-                }
-            }
-            api.setLifeCycleName(artifact.getLifecycleName());
+            //if (artifact.getLifecycleState() != null && artifact.getLifecycleState() != "") {
+            //    if (artifact.getLifecycleState().toUpperCase().equalsIgnoreCase(APIStatus.INREVIEW.getStatus())) {
+            //        api.setLifeCycleStatus(APIStatus.INREVIEW);
+            //    } else {
+            //        api.setLifeCycleStatus(APIStatus.valueOf(artifact.getLifecycleState().toUpperCase()));
+            //    }
+            //}
+            //api.setLifeCycleName(artifact.getLifecycleName());
 
 		} catch (GovernanceException e) {
 			String msg = "Failed to get WebApp fro artifact ";
