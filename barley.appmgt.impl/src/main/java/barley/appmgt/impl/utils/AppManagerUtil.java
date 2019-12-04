@@ -557,7 +557,7 @@ public final class AppManagerUtil {
             api.setLastUpdated(registry.get(artifactPath).getLastModified());
             api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
             // set url
-            api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
+            api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL));
             api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
             api.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
 //            api.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));
@@ -850,7 +850,7 @@ public final class AppManagerUtil {
 			api.setLastUpdated(registry.get(artifactPath).getLastModified());
 			api.setCreatedDate(registry.get(artifactPath).getCreatedTime());
 			// set url
-			api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
+			api.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL));
             api.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
 //			api.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));
 			api.setStatus(getApiStatus(artifact.getAttribute(AppMConstants.API_OVERVIEW_STATUS)));
@@ -1014,7 +1014,7 @@ public final class AppManagerUtil {
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_PROVIDER, api.getId().getProviderName());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION, api.getDescription());
             artifact.setAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE, api.getTreatAsASite());
-			artifact.setAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL, api.getUrl());
+			artifact.setAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL, api.getWebAppUrl());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL, api.getLogoutURL());
             // (주석)
 //			artifact.setAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL, api.getSandboxUrl());
@@ -1201,7 +1201,7 @@ public final class AppManagerUtil {
             artifact.setAttribute(AppMConstants.API_OVERVIEW_PROVIDER, AppManagerUtil.replaceEmailDomainBack(webApp.getId().getProviderName()));
             artifact.setAttribute(AppMConstants.API_OVERVIEW_DESCRIPTION, webApp.getDescription());
             artifact.setAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE, webApp.getTreatAsASite());
-            artifact.setAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL, webApp.getUrl()); //
+            artifact.setAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL, webApp.getUrl()); //
             // (수정) 2018.10.11 - APP_IMAGES_THUMBNAIL 이미지를 공백이 아닌 주소값으로 변경. 왜 공백으로 설정했는지 의문이 든다.
             //artifact.setAttribute(AppMConstants.APP_IMAGES_THUMBNAIL, ""); //webApp.getThumbnailUrl()
             artifact.setAttribute(AppMConstants.APP_IMAGES_THUMBNAIL, webApp.getThumbnailUrl()); 

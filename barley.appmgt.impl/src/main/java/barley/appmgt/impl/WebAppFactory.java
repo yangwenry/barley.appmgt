@@ -73,7 +73,7 @@ public class WebAppFactory extends AppFactory {
             String artifactPath = GovernanceUtils.getArtifactPath(registry, artifact.getId());
             webApp.setLastUpdated(registry.get(artifactPath).getLastModified());
 
-            webApp.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_ENDPOINT_URL));
+            webApp.setUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL));
             webApp.setLogoutURL(artifact.getAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL));
             webApp.setDisplayName(artifact.getAttribute(AppMConstants.API_OVERVIEW_DISPLAY_NAME));
             webApp.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));

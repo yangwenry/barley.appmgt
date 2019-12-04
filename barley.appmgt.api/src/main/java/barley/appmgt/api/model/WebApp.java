@@ -36,8 +36,12 @@ public class WebApp extends App {
     private int subscriptionCount;
 
     private String description;
+    private String webAppUrl;
+    
+    // 현재 사용하지 않음 
     private String url;
     private String sandboxUrl;
+    
     private String wsdlUrl;
     private String wadlUrl;
     private String context;
@@ -105,7 +109,7 @@ public class WebApp extends App {
     private String subscriptionAvailability;
     private String subscriptionAvailableTenants;
 
-
+    // App에서는 사용하지 않는다. 
     private String endpointConfig;
 
     private String responseCache;
@@ -901,6 +905,13 @@ public class WebApp extends App {
 	public void setPreview3(String preview3) {
 		this.preview3 = preview3;
 	}
-	
+
+	public String getWebAppUrl() {
+		return webAppUrl;
+	}
+
+	public void setWebAppUrl(String webAppUrl) {
+		this.webAppUrl = webAppUrl;
+	}
 	
 }
