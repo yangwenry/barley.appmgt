@@ -10359,23 +10359,68 @@ public class AppMDAO {
     }
     
     
-    public List<WebApp> getSortedRatingApp(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
+    public List<WebApp> getSortedRatingApp(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
     	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
-        return getSortedAppList(query, tenantDomain, page, count, keyword);
+        return getSortedAppList(query, tenantDomain, page, count, keyword, tag, category);
     }
     
     
-    public List<WebApp> getSortedSubscribersCountApp(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
+    public List<WebApp> getSortedSubscribersCountApp(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
     	String query = SQLConstants.GET_SORTED_RATING_APP_SQL;
-    	return getSortedAppList(query, tenantDomain, page, count, keyword);
+    	return getSortedAppList(query, tenantDomain, page, count, keyword, tag, category);
     }
     
-    public List<WebApp> getSortedCreatedTimeApp(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
+    public List<WebApp> getSortedCreatedTimeApp(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
         String query = SQLConstants.GET_SORTED_CREATED_TIME_APP_SQL;
-    	return getSortedAppList(query, tenantDomain, page, count, keyword);
+    	return getSortedAppList(query, tenantDomain, page, count, keyword, tag, category);
     }
     
-    private List<WebApp> getSortedAppList(String query, String tenantDomain, int page, int count, String keyword) throws AppManagementException {
+    
+    public int getPagenatedAppCount(String tenantDomain, String keyword, String tag, String category) throws AppManagementException {
+    	Connection connection = null;
+        PreparedStatement selectPreparedStatement = null;
+        ResultSet resultSet = null;
+        
+        int count = 0;
+        
+        String query = SQLConstants.GET_SORTED_APP_CNT_SQL_PREFIX + SQLConstants.GET_SORTED_APP_WHERE_SQL;
+        
+        try {
+            
+        	connection = APIMgtDBUtil.getConnection();
+            connection.setAutoCommit(false);
+            selectPreparedStatement = connection.prepareStatement(query);
+            selectPreparedStatement.setNString(1, "PUBLISHED");
+            selectPreparedStatement.setNString(2, tenantDomain);
+            selectPreparedStatement.setNString(3, keyword);
+            selectPreparedStatement.setNString(4, keyword);
+            selectPreparedStatement.setNString(5, keyword);
+            selectPreparedStatement.setNString(6, keyword);
+            selectPreparedStatement.setNString(7, tag);
+            selectPreparedStatement.setNString(8, category);
+            
+            resultSet = selectPreparedStatement.executeQuery();
+            while (resultSet.next()) {
+            	count = resultSet.getInt("ROW_CNT");
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    handleException("Failed to rollback getting paginated app count", ex);
+                }
+            }
+            handleException("Failed to get paginated app count", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(selectPreparedStatement, connection, resultSet);
+        }
+        
+        return count;
+    }
+    
+        
+    private List<WebApp> getSortedAppList(String query, String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
     	Connection connection = null;
         PreparedStatement selectPreparedStatement = null;
         ResultSet resultSet = null;
@@ -10394,8 +10439,8 @@ public class AppMDAO {
             selectPreparedStatement.setNString(4, keyword);
             selectPreparedStatement.setNString(5, keyword);
             selectPreparedStatement.setNString(6, keyword);
-            selectPreparedStatement.setNString(7, keyword);
-            selectPreparedStatement.setNString(8, keyword);
+            selectPreparedStatement.setNString(7, tag);
+            selectPreparedStatement.setNString(8, category);
             selectPreparedStatement.setInt(9, startNo);
             selectPreparedStatement.setInt(10, count);
             resultSet = selectPreparedStatement.executeQuery();

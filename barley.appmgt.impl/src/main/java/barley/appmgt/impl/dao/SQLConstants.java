@@ -390,14 +390,53 @@ public class SQLConstants {
 							"ORDER BY COUNT(T.APP_ID) DESC " +
 							") TS " +
 				"ON TA.APP_ID = TS.APP_ID ";
+    
+    public static final String GET_SORTED_APP_CNT_SQL_PREFIX =
+    		"SELECT " + 
+    				" COUNT(TB.APP_ID) AS ROW_CNT " +
+				"FROM( " +
+					"SELECT " + 
+						"SB.APP_ID, SB.EVENT_ID, SB.NEW_STATE " +
+						", (SELECT COALESCE(GROUP_CONCAT(TAG_NAME SEPARATOR ','), '') FROM APM_APP_TAG IT WHERE IT.APP_ID = SA.APP_ID) AS TAG " +
+					"FROM ( " +
+						"SELECT " + 
+							  "APP_ID " +
+							", MAX(EVENT_ID) AS EVENT_ID " + 
+						"FROM APM_APP_LC_EVENT " + 
+						"GROUP BY APP_ID " +
+						 ") SA " +
+					"LEFT JOIN APM_APP_LC_EVENT SB " +
+						"ON (SA.APP_ID = SB.APP_ID AND SA.EVENT_ID = SB.EVENT_ID) " +
+					"WHERE SB.NEW_STATE LIKE UPPER(CONCAT('%',?,'%')) " +	
+					 ") TA " +
+				"INNER JOIN APM_APP TB " +
+					"ON (TA.APP_ID = TB.APP_ID AND SUBSTRING_INDEX(TB.APP_PROVIDER, '@', -1) = ?) " +
+				"LEFT JOIN ( " +
+							"SELECT " +
+								"T.APP_ID, ROUND(AVG(T.RATING), 1) AS RATING " +
+							"FROM APM_APP_RATINGS T " +
+							"GROUP BY T.APP_ID " +
+							"HAVING AVG(T.RATING) " +
+							"ORDER BY AVG(T.RATING) DESC " +
+							
+							") TC " +
+				"ON TA.APP_ID = TC.APP_ID " +
+				"LEFT JOIN ( " +
+							"SELECT " +
+								"T.APP_ID, COUNT(T.APP_ID) AS SUBS_CNT " +
+							"FROM APM_SUBSCRIPTION T " +
+							"GROUP BY T.APP_ID " +
+							"ORDER BY COUNT(T.APP_ID) DESC " +
+							") TS " +
+				"ON TA.APP_ID = TS.APP_ID ";
 				
     public static final String GET_SORTED_APP_WHERE_SQL =	
-    		"WHERE UPPER(TB.APP_PROVIDER) LIKE UPPER(CONCAT('%',?,'%')) " +
+    		"WHERE (UPPER(TB.APP_PROVIDER) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.APP_NAME) LIKE UPPER(CONCAT('%',?,'%')) " +
-					"OR UPPER(TB.CATEGORY) LIKE UPPER(CONCAT('%',?,'%')) " +
 					"OR UPPER(TB.DESCRIPTION) LIKE UPPER(CONCAT('%',?,'%')) " +
-					"OR UPPER(TB.TITLE) LIKE UPPER(CONCAT('%',?,'%')) " +
-					"OR UPPER(TA.TAG) LIKE UPPER(CONCAT('%',?,'%')) ";
+					"OR UPPER(TB.TITLE) LIKE UPPER(CONCAT('%',?,'%'))) " +
+					"AND UPPER(TA.TAG) LIKE UPPER(CONCAT('%',?,'%')) " +
+    				"AND UPPER(TB.CATEGORY) LIKE UPPER(CONCAT('%',?,'%')) ";
     
     public static final String GET_SORTED_APP_SQL = GET_SORTED_APP_SQL_PREFIX + GET_SORTED_APP_WHERE_SQL;
     

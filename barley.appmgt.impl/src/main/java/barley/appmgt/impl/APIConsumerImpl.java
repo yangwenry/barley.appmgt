@@ -2028,8 +2028,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     
     
     @Override
-    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException {    	
-    	List<WebApp> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count, keyword);
+    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {    	
+    	List<WebApp> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count, keyword, tag, category);
     	
     	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다.
     	//return addAppAttributeFromRegistry(appList);
@@ -2037,8 +2037,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     }
     
     @Override
-    public List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
-    	List<WebApp> appList = appMDAO.getSortedSubscribersCountApp(tenantDomain, page, count, keyword);
+    public List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
+    	List<WebApp> appList = appMDAO.getSortedSubscribersCountApp(tenantDomain, page, count, keyword, tag, category);
     	
     	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다.
     	//return addAppAttributeFromRegistry(appList);
@@ -2046,8 +2046,8 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     }
     
     @Override
-    public List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count, String keyword) throws AppManagementException {
-    	List<WebApp> appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count, keyword);
+    public List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
+    	List<WebApp> appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count, keyword, tag, category);
     	
     	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다. 
     	//return addAppAttributeFromRegistry(appList);
@@ -2058,6 +2058,12 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     public int getPublicAppCount(String tenantDomain) throws AppManagementException {
     	return appMDAO.getPublicAppCount(tenantDomain);
     }
+    
+    @Override
+    public int getPagenatedAppCount(String tenantDomain, String keyword, String tag, String category) throws AppManagementException {
+    	return appMDAO.getPagenatedAppCount(tenantDomain, keyword, tag, category);
+    }
+    
     
     @Override
     public int setCommentAgreeValue(String userName, int commnetId, int agreeValue) throws AppManagementException {
