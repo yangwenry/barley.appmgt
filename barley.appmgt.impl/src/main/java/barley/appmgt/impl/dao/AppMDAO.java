@@ -7631,9 +7631,8 @@ public class AppMDAO {
 		}
 		return result;
 	}
-
-
-	/**
+    
+    /**
 	 * save applications wise policy groups
 	 *
 	 * @param connection     : SQL connection
@@ -7709,6 +7708,45 @@ public class AppMDAO {
 		}
 		return entitlementPolicyGroupList;
 
+	}
+    
+ // (추가) 2019.11.04
+    public List<EntitlementPolicyGroup> getPolicyGroupList() throws AppManagementException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<EntitlementPolicyGroup> entitlementPolicyGroupList =
+				new ArrayList<EntitlementPolicyGroup>();
+		
+		String query =
+				"SELECT POLICY_GRP_ID, NAME, THROTTLING_TIER, USER_ROLES, "  
+					+ " URL_ALLOW_ANONYMOUS, DESCRIPTION " 
+					+ " FROM APM_POLICY_GROUP "
+					+ " ORDER BY POLICY_GRP_ID ";
+		try {
+			connection = APIMgtDBUtil.getConnection();
+			ps = connection.prepareStatement(query);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				EntitlementPolicyGroup policyGroup = new EntitlementPolicyGroup();
+				policyGroup.setPolicyGroupId(rs.getInt("POLICY_GRP_ID"));
+				policyGroup.setPolicyGroupName(rs.getString("NAME"));
+				policyGroup.setThrottlingTier(rs.getString("THROTTLING_TIER"));
+				policyGroup.setUserRoles(rs.getString("USER_ROLES"));
+				policyGroup.setAllowAnonymous(rs.getBoolean("URL_ALLOW_ANONYMOUS"));
+				policyGroup.setPolicyPartials(getEntitledPartialListForPolicyGroup(rs.getInt("POLICY_GRP_ID"),
+						connection));
+				policyGroup.setPolicyDescription(rs.getString("DESCRIPTION"));
+				entitlementPolicyGroupList.add(policyGroup);
+			}
+
+		} catch (SQLException e) {
+            handleException("SQL Error while executing the query to fetch Application wise policy Group list ", e);
+        } finally {
+			APIMgtDBUtil.closeAllConnections(ps, connection, rs);
+		}
+		return entitlementPolicyGroupList;
 	}
 
 

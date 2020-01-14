@@ -1095,6 +1095,12 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
             AppManagementException {
         return appMDAO.getPolicyGroupListByApplication(appId);
     }
+    
+    // (추가) 2020.01.14 
+    @Override
+    public List<EntitlementPolicyGroup> getPolicyGroupList() throws AppManagementException {
+        return appMDAO.getPolicyGroupList();
+    }
 
     /**
      * Retrieves TRACKING_CODE sequences from APM_APP Table

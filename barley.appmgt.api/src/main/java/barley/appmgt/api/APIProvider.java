@@ -715,6 +715,15 @@ public interface APIProvider extends APIManager {
      */
     public List<EntitlementPolicyGroup> getPolicyGroupListByApplication(int appId) throws
             AppManagementException;
+    
+    
+    /**
+     * Get Application wise policy group list
+     *
+     * @return List of policy groups
+     * @throws AppManagementException on error
+     */
+    public List<EntitlementPolicyGroup> getPolicyGroupList() throws AppManagementException;
 
     /**
      * Retrieves TRACKING_CODE sequences from APM_APP Table
