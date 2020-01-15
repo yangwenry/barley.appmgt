@@ -5646,7 +5646,7 @@ public class AppMDAO {
 			conn = APIMgtDBUtil.getConnection();
 
 			// POLICY_GRP_ID 필드 추가 
-            String sqlQuery = "SELECT URL_PATTERN, HTTP_METHOD, AUTH_SCHEME, THROTTLING_TIER, USER_ROLES, MAP.POLICY_GRP_ID "
+            String sqlQuery = "SELECT URL_PATTERN, HTTP_METHOD, AUTH_SCHEME, THROTTLING_TIER, USER_ROLES, MAP.POLICY_GRP_ID, POLICY.NAME "
                     + "FROM  APM_APP_URL_MAPPING MAP "
                     + "LEFT JOIN APM_APP  APP ON MAP.APP_ID = APP.APP_ID "
                     + "LEFT JOIN APM_POLICY_GROUP POLICY ON MAP.POLICY_GRP_ID=POLICY.POLICY_GRP_ID "
@@ -5670,6 +5670,7 @@ public class AppMDAO {
 				mapping.setUserRoles(resultSet.getString("USER_ROLES"));
 				// POLICY_GRP_ID 추가
 				mapping.setPolicyGroupId(resultSet.getInt("POLICY_GRP_ID"));
+				mapping.setPolicyGroupName(resultSet.getString("NAME"));
 			}
 		} catch (SQLException e) {
 			if (conn != null) {

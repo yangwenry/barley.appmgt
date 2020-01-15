@@ -430,6 +430,7 @@ public final class AppManagerUtil {
 
 			Set<URITemplate> uriTemplates = new LinkedHashSet<URITemplate>();
 			List<String> uriTemplateNames = new ArrayList<String>();
+			List<String> uriTemplateHttpVerbs = new ArrayList<String>();
 
 			// api-manager에서는 uri-template을 registry에서 가져오지만 app-manager에서는 dao에서 가져온다. 
 			List<URLMapping> urlPatterns = AppMDAO.getURITemplatesPerAPIAsString(apiId);
@@ -443,6 +444,7 @@ public final class AppManagerUtil {
                 String userRoles = urlMapping.getUserRoles(); 
                 // (추가)
                 int policyGroupId = urlMapping.getPolicyGroupId();
+                String policyGroupName = urlMapping.getPolicyGroupName();
 
 				uriTemplate.setHTTPVerb(method);
 				uriTemplate.setAuthType(authType);
@@ -456,9 +458,12 @@ public final class AppManagerUtil {
                 uriTemplate.setUserRoles(userRoles);
                 // (추가)
                 uriTemplate.setPolicyGroupId(policyGroupId);
+                uriTemplate.setPolicyGroupName(policyGroupName);
                 
 				// Checking for duplicate uri template names
-				if (uriTemplateNames.contains(uTemplate)) {
+                // (수정) 2020.01.15 - 중복 url pattern 뿐만 아니라 Method도 체크해야 된다.  
+				if (uriTemplateNames.contains(uTemplate) && uriTemplateHttpVerbs.contains(method)) {
+				// if (uriTemplateNames.contains(uTemplate)) {
 					for (URITemplate tmp : uriTemplates) {
 						if (uTemplate.equals(tmp.getUriTemplate())) {
 							tmp.setHttpVerbs(method);
@@ -473,6 +478,7 @@ public final class AppManagerUtil {
 				}
 
 				uriTemplateNames.add(uTemplate);
+				uriTemplateHttpVerbs.add(method);
 
 			}
 			api.setUriTemplates(uriTemplates);

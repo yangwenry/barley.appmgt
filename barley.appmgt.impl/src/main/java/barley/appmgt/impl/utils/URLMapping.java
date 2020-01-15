@@ -8,8 +8,10 @@ public class URLMapping {
     private String userRoles;    
     // (추가)
     private int policyGroupId;
+    private String policyGroupName;
 
-    public String getUserRoles() { return  userRoles; }
+    
+	public String getUserRoles() { return  userRoles; }
 
     public void setUserRoles(String userRoles) { this.userRoles = userRoles; }
 
@@ -51,6 +53,14 @@ public class URLMapping {
 
 	public void setPolicyGroupId(int policyGroupId) {
 		this.policyGroupId = policyGroupId;
+	}
+
+	public String getPolicyGroupName() {
+		return policyGroupName;
+	}
+
+	public void setPolicyGroupName(String policyGroupName) {
+		this.policyGroupName = policyGroupName;
 	}
 
 }
