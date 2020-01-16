@@ -5500,7 +5500,7 @@ public class AppMDAO {
 
 		String deleteLCEventQuery = "DELETE FROM APM_APP_LC_EVENT WHERE APP_ID=? ";
 		String deleteSubscriptionQuery = "DELETE FROM APM_SUBSCRIPTION WHERE APP_ID=?";
-		String deleteConsumerQuery = "DELETE FROM APM_API_CONSUMER_APPS WHERE SAML2_SSO_ISSUER=?";
+		String deleteConsumerQuery = "DELETE FROM APM_APP_CONSUMER_APPS WHERE SAML2_SSO_ISSUER=?";
 		String deleteAPIQuery = "DELETE FROM APM_APP WHERE APP_PROVIDER=? AND APP_NAME=? AND APP_VERSION=? ";
 
 		try {
@@ -6916,7 +6916,7 @@ public class AppMDAO {
 		PreparedStatement prepStmt = null;
 		ResultSet rs = null;
 
-		String query = "INSERT INTO APM_API_CONSUMER_APPS (SAML2_SSO_ISSUER, APP_CONSUMER_KEY, API_TOKEN_ENDPOINT, " +
+		String query = "INSERT INTO APM_APP_CONSUMER_APPS (SAML2_SSO_ISSUER, APP_CONSUMER_KEY, API_TOKEN_ENDPOINT, " +
                        "API_CONSUMER_KEY, API_CONSUMER_SECRET, APP_NAME) VALUES (?,?,?,?,?,?)";
 
         //This need to be changed
@@ -6967,7 +6967,7 @@ public class AppMDAO {
 
 
         // Remove entry from APM_SUBSCRIPTION table
-        String query = "DELETE FROM APM_API_CONSUMER_APPS WHERE APP_CONSUMER_KEY = ?";
+        String query = "DELETE FROM APM_APP_CONSUMER_APPS WHERE APP_CONSUMER_KEY = ?";
 
         try {
             connection = APIMgtDBUtil.getConnection();
@@ -7005,7 +7005,7 @@ public class AppMDAO {
         Map<String,String> registeredAPIs = new HashMap<String,String>();
 
         String query = "SELECT" + " API_CONSUMER_KEY, API_CONSUMER_SECRET, APP_NAME, API_TOKEN_ENDPOINT " + " FROM"
-                       + " APM_API_CONSUMER_APPS " + " WHERE"
+                       + " APM_APP_CONSUMER_APPS " + " WHERE"
                        + " APP_CONSUMER_KEY = ?";
 
 		try {
@@ -7043,7 +7043,7 @@ public class AppMDAO {
         ResultSet rs = null;
 
         String query = "SELECT SAML2_SSO_ISSUER " +
-                       "FROM APM_API_CONSUMER_APPS " +
+                       "FROM APM_APP_CONSUMER_APPS " +
                        "WHERE APP_CONSUMER_KEY=?";
 
         String saml2SsoIssuer = null;
