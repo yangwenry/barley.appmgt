@@ -254,6 +254,8 @@ public final class AppManagerUtil {
             api.setPreview1(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW1));
             api.setPreview2(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW2));
             api.setPreview3(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW3));
+            
+            api.setAcsURL(artifact.getAttribute(AppMConstants.APP_OVERVIEW_ACS_URL));
 
 
             //api.setSandboxUrl(artifact.getAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL));
@@ -512,9 +514,9 @@ public final class AppManagerUtil {
             //}
             //api.setLifeCycleName(artifact.getLifecycleName());
             
-            api.setPreview1(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW1));
-            api.setPreview2(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW2));
-            api.setPreview3(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW3));
+//            api.setPreview1(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW1));
+//            api.setPreview2(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW2));
+//            api.setPreview3(artifact.getAttribute(AppMConstants.API_OVERVIEW_PREVIEW3));
 
 		} catch (GovernanceException e) {
 			String msg = "Failed to get WebApp from artifact ";
@@ -1157,6 +1159,7 @@ public final class AppManagerUtil {
             artifact.setAttribute(AppMConstants.APP_OVERVIEW_TREAT_AS_A_SITE, api.getTreatAsASite());
 			artifact.setAttribute(AppMConstants.API_OVERVIEW_WEBAPP_URL, api.getWebAppUrl());
             artifact.setAttribute(AppMConstants.API_OVERVIEW_LOGOUT_URL, api.getLogoutURL());
+            artifact.setAttribute(AppMConstants.APP_OVERVIEW_ACS_URL, api.getAcsURL());
             // (주석)
 //			artifact.setAttribute(AppMConstants.API_OVERVIEW_SANDBOX_URL, api.getSandboxUrl());
 //			artifact.setAttribute(AppMConstants.API_OVERVIEW_WSDL, api.getWsdlUrl());
@@ -1202,7 +1205,7 @@ public final class AppManagerUtil {
                                   api.getSubscriptionAvailableTenants());
             artifact.setAttribute(AppMConstants.APP_OVERVIEW_MAKE_AS_DEFAULT_VERSION, String.valueOf(
                     api.isDefaultVersion()));
-
+            
             /* (주석) 2018.10.05 - 아래코드로 변경.
             String tiers = "";
 			for (Tier tier : api.getAvailableTiers()) {
