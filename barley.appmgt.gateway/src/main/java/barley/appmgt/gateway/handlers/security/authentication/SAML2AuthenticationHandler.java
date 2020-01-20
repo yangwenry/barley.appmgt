@@ -212,7 +212,7 @@ public class SAML2AuthenticationHandler extends AbstractHandler implements Manag
                 }
             }
 
-            if(isJWTEnabled()){
+            if(isJWTEnabled()) {
 
                 String jwtHeaderName = getConfiguration().getFirstProperty(APISecurityConstants.API_SECURITY_CONTEXT_HEADER);
                 Map<String, String> generatedJWTs = (Map<String, String>) session.getAttribute(SESSION_ATTRIBUTE_JWTS);

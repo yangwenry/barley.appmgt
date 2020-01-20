@@ -297,6 +297,7 @@ public class GatewayUtils {
 
         String tenantDomain = BarleyContext.getThreadLocalCarbonContext().getTenantDomain();
 
+        // SSOConfiguration.IdentityProviderUrl 프로퍼티 값 + ...  
         String samlRequestURL = GatewayUtils.getIDPUrl() + "?SAMLRequest=" + encodedAuthenticationRequest + "&tenantDomain=" + tenantDomain;
         redirectToURL(messageContext, samlRequestURL);
 
