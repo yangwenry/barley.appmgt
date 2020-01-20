@@ -9858,7 +9858,7 @@ public class AppMDAO {
     }
     
     public Comment getCommentById(int commentId) throws AppManagementException {
-   	 Connection connection = null;
+   	 	Connection connection = null;
         ResultSet resultSet = null;
         PreparedStatement prepStmt = null;
         Comment comment = null;
