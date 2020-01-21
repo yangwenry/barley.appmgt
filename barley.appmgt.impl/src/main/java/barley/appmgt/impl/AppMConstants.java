@@ -19,6 +19,9 @@
 package barley.appmgt.impl;
 
 import javax.xml.namespace.QName;
+
+import barley.core.BarleyConstants;
+
 import java.io.File;
 
 /**
@@ -693,8 +696,10 @@ public final class AppMConstants {
     public static final String PUBLISHER_ROLE = "internal/app-publisher";
     public static final String STORE_ADMIN_ROLE = "internal/store-admin";
     // (수정) 2019.10.31
+    // (수정) 2020.01.20 - system 명칭은 API 관리에서 사용하기에 적절치 않다. 가능하면 system으로 시작하는 role을 없애자.
     //public static final String ANONYMOUS_ROLE = "system/wso2.anonymous.role";
-    public static final String ANONYMOUS_ROLE = "system/barley.anonymous.role";
+    //public static final String ANONYMOUS_ROLE = "system/barley.anonymous.role";
+    public static final String ANONYMOUS_ROLE = BarleyConstants.REGISTRY_ANONNYMOUS_ROLE_NAME;
 
     public static final String READ_ACTION = "2";
     public static final String WRITE_ACTION = "3";
