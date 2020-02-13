@@ -27,7 +27,7 @@
         <!-- synapse -->		
         <dependency>
             <groupId>org.apache.synapse</groupId>
-            <artifactId>synapse.core.barley</artifactId>
+            <artifactId>synapse-core</artifactId>
         </dependency>
         
         <!-- wso2 -->

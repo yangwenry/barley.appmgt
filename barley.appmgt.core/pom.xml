@@ -58,10 +58,10 @@
         </dependency>
         
         <!-- synapse -->
-        <dependency>
+        <!-- <dependency>
             <groupId>org.apache.synapse</groupId>
             <artifactId>synapse-commons</artifactId>
-        </dependency>
+        </dependency> -->
         
     </dependencies>
     

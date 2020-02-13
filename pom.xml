@@ -1177,7 +1177,7 @@
 			<!-- synapse -->		
 	        <dependency>
 	            <groupId>org.apache.synapse</groupId>
-	            <artifactId>synapse.core.barley</artifactId>
+	            <artifactId>synapse-core</artifactId>
 	            <version>${synapse.version}</version>
 		        <exclusions>
 	                <exclusion>
@@ -1186,7 +1186,7 @@
 	                </exclusion>
 	            </exclusions>         
 	        </dependency>
-	        <dependency>
+	        <!-- <dependency>
 		        <groupId>org.apache.synapse</groupId>
 		        <artifactId>synapse-commons</artifactId>
 		        <version>${synapse.wso2.version}</version>
@@ -1196,7 +1196,7 @@
 	            		<artifactId>cache-api</artifactId>
 	            	</exclusion>
 	            </exclusions>
-		    </dependency>
+		    </dependency> -->
 			
 		</dependencies>
 	</dependencyManagement>
@@ -1229,8 +1229,8 @@
 	   	<mysql.version>5.1.37</mysql.version>
 	   	<libthrift.wso2.version>0.9.2.wso2v1</libthrift.wso2.version>
 	   	
-	   	<synapse.version>3.0.0</synapse.version>
-	   	<synapse.wso2.version>2.1.7-wso2v3</synapse.wso2.version>
+	   	<synapse.version>2.1.7-cdf.v10</synapse.version>
+		<!-- <synapse.wso2.version>2.1.7-wso2v99</synapse.wso2.version> -->
 	   	
 	   	<!-- REST API Versions -->
       	<cxf.version>3.1.4</cxf.version>
