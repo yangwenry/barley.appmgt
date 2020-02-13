@@ -21,3 +21,6 @@ local.properties
 .springBeans
 .recommenders/
 .checkstyle
+logs/
+*.iml
+.idea/
