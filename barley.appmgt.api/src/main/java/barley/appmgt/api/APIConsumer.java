@@ -78,6 +78,7 @@ public interface APIConsumer extends APIManager {
      */
     public Subscriber getSubscriber(String subscriberId) throws AppManagementException;
 
+
     /**
      * Returns a list of #{@link org.wso2.carbon.apimgt.api.model.API} bearing the selected tag
      *

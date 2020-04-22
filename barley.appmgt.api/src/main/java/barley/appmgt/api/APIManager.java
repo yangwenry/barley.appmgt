@@ -164,7 +164,7 @@ public interface APIManager {
     /**
      * Creates a new subscriber. The newly created subscriber id will be set in the given object.
      *
-     * @param subscriber The subscriber to be added
+     * @param username The subscriber to be added
      * @throws AppManagementException if failed add subscriber
      */
     // (수정) apimgt와 같은 스펙으로 변경 
