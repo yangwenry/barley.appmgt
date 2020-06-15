@@ -540,13 +540,21 @@ public interface APIConsumer extends APIManager {
 
     int getUserRating(APIIdentifier apiId, String user) throws AppManagementException;
 
+    /* getPublishedApiList 로 대체
 	List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException;
 
 	List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException;
 	
 	List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException;
+	*/
 
-	int getPublicAppCount(String tenantDomain) throws AppManagementException;
+    List<WebApp> getAllAppList(String tenantDomain, int page, int count, String appState) throws AppManagementException;
+
+    int getAllAppCount(String tenantDomain, String appState) throws AppManagementException;
+
+    List<WebApp> getPublishedAppList(String tenantDomain, String orderBy, int page, int count, String keyword, String tag, String category) throws AppManagementException;
+
+    int getPublishedAppCount(String tenantDomain, String keyword, String tag, String category) throws AppManagementException;
 
 	int setCommentAgreeValue(String userName, int commnetId, int agreeValue) throws AppManagementException;
 
@@ -554,7 +562,7 @@ public interface APIConsumer extends APIManager {
 
 	Comment[] getSortedAgreeCountComments(APIIdentifier identifier, int page, int count) throws AppManagementException;
 
-	int getPagenatedAppCount(String tenantDomain, String keyword, String tag, String category)
-			throws AppManagementException;
+
+
 
 }

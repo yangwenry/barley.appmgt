@@ -18,51 +18,18 @@
 
 package barley.appmgt.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import barley.appmgt.api.APIConsumer;
 import barley.appmgt.api.AppManagementException;
-import barley.appmgt.api.model.APIIdentifier;
-import barley.appmgt.api.model.APIRating;
-import barley.appmgt.api.model.APIStatus;
-import barley.appmgt.api.model.Application;
-import barley.appmgt.api.model.BusinessOwner;
+import barley.appmgt.api.model.*;
 import barley.appmgt.api.model.Comment;
-import barley.appmgt.api.model.SubscribedAPI;
-import barley.appmgt.api.model.Subscriber;
-import barley.appmgt.api.model.Subscription;
 import barley.appmgt.api.model.Tag;
-import barley.appmgt.api.model.WebApp;
-import barley.appmgt.api.model.WebAppSearchOption;
-import barley.appmgt.api.model.WebAppSortOption;
 import barley.appmgt.impl.dto.SubscriptionWorkflowDTO;
 import barley.appmgt.impl.dto.TierPermissionDTO;
 import barley.appmgt.impl.service.ServiceReferenceHolder;
 import barley.appmgt.impl.utils.APINameComparator;
 import barley.appmgt.impl.utils.APIVersionComparator;
 import barley.appmgt.impl.utils.AppManagerUtil;
-import barley.appmgt.impl.workflow.WorkflowConstants;
-import barley.appmgt.impl.workflow.WorkflowException;
-import barley.appmgt.impl.workflow.WorkflowExecutor;
-import barley.appmgt.impl.workflow.WorkflowExecutorFactory;
-import barley.appmgt.impl.workflow.WorkflowStatus;
+import barley.appmgt.impl.workflow.*;
 import barley.core.BarleyConstants;
 import barley.core.MultitenantConstants;
 import barley.core.context.PrivilegedBarleyContext;
@@ -70,18 +37,20 @@ import barley.core.multitenancy.MultitenantUtils;
 import barley.governance.api.exception.GovernanceException;
 import barley.governance.api.generic.GenericArtifactManager;
 import barley.governance.api.generic.dataobjects.GenericArtifact;
-import barley.registry.core.ActionConstants;
-import barley.registry.core.Association;
+import barley.registry.core.*;
 import barley.registry.core.Collection;
-import barley.registry.core.Registry;
-import barley.registry.core.RegistryConstants;
-import barley.registry.core.Resource;
 import barley.registry.core.config.RegistryContext;
 import barley.registry.core.exceptions.RegistryException;
 import barley.registry.core.pagination.PaginationContext;
 import barley.registry.core.session.UserRegistry;
 import barley.registry.core.utils.RegistryUtils;
 import barley.user.api.UserStoreException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class provides the core WebApp store functionality. It is implemented in a very
@@ -2025,45 +1994,61 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
     public Comment[] getSortedAgreeCountComments(APIIdentifier identifier, int page, int count) throws AppManagementException {
         return appMDAO.getSortedAgreeCountComments(identifier, page, count);
     }
-    
+
+    @Override
+    public List<WebApp> getAllAppList(String tenantDomain, int page, int count, String appState) throws AppManagementException {
+        List<WebApp> apiList = null;
+        // api 상태체크
+        String appStateValue = "";
+        if("ALL".equals(appState)) {
+            apiList = appMDAO.getAllAppList(tenantDomain, page, count, appStateValue);
+        } else {
+            appStateValue = APIStatus.valueOf(appState).getStatus();
+            if(appState != null) {
+                apiList = appMDAO.getAllAppList(tenantDomain, page, count, appStateValue);
+            }
+        }
+        return apiList;
+    }
+
+    @Override
+    public int getAllAppCount(String tenantDomain, String appState) throws AppManagementException {
+        // app 상태체크
+        String appStateValue = "";
+        int totalCnt = 0;
+        if("ALL".equals(appState)) {
+            totalCnt = appMDAO.getAllAppCount(tenantDomain, appStateValue);
+        } else {
+            appStateValue = APIStatus.valueOf(appState).getStatus();
+            if(appState != null) {
+                totalCnt = appMDAO.getAllAppCount(tenantDomain, appStateValue);
+            }
+        }
+        return totalCnt;
+    }
+
     
     @Override
-    public List<WebApp> getSortedRatingAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {    	
-    	List<WebApp> appList = appMDAO.getSortedRatingApp(tenantDomain, page, count, keyword, tag, category);
-    	
-    	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다.
-    	//return addAppAttributeFromRegistry(appList);
-    	return appList;
+    public List<WebApp> getPublishedAppList(String tenantDomain, String orderBy, int page, int count, String keyword, String tag, String category) throws AppManagementException {
+        List<WebApp> appList = null;
+
+        if("rating".equals(orderBy)) {
+            appList = appMDAO.getSortedRatingApp(tenantDomain, page, count, keyword, tag, category);
+        } else if("subcnt".equals(orderBy)) {
+            appList = appMDAO.getSortedSubscribersCountApp(tenantDomain, page, count, keyword, tag, category);
+        } else if("createdTime".equals(orderBy)) {
+            appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count, keyword, tag, category);
+        } else {
+            appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count, keyword, tag, category);
+        }
+
+        return appList;
     }
     
     @Override
-    public List<WebApp> getSortedSubscribersCountAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
-    	List<WebApp> appList = appMDAO.getSortedSubscribersCountApp(tenantDomain, page, count, keyword, tag, category);
-    	
-    	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다.
-    	//return addAppAttributeFromRegistry(appList);
-    	return appList;
+    public int getPublishedAppCount(String tenantDomain, String keyword, String tag, String category) throws AppManagementException {
+    	return appMDAO.getPublishedAppCount(tenantDomain, keyword, tag, category);
     }
-    
-    @Override
-    public List<WebApp> getSortedCreatedTimeAppList(String tenantDomain, int page, int count, String keyword, String tag, String category) throws AppManagementException {
-    	List<WebApp> appList = appMDAO.getSortedCreatedTimeApp(tenantDomain, page, count, keyword, tag, category);
-    	
-    	//registry에서 더이상 태그를 가져오지 않고 APP_MGT 디비 테이블을 조인하여 가져온다. 
-    	//return addAppAttributeFromRegistry(appList);
-    	return appList;
-    }
-    
-    @Override
-    public int getPublicAppCount(String tenantDomain) throws AppManagementException {
-    	return appMDAO.getPublicAppCount(tenantDomain);
-    }
-    
-    @Override
-    public int getPagenatedAppCount(String tenantDomain, String keyword, String tag, String category) throws AppManagementException {
-    	return appMDAO.getPagenatedAppCount(tenantDomain, keyword, tag, category);
-    }
-    
     
     @Override
     public int setCommentAgreeValue(String userName, int commnetId, int agreeValue) throws AppManagementException {
