@@ -16,20 +16,10 @@
 
 package barley.appmgt.api;
 
-import java.util.List;
-
-import barley.appmgt.api.dto.AppHitsStatsDTO;
-import barley.appmgt.api.dto.AppPageUsageDTO;
-import barley.appmgt.api.dto.AppResourcePathUsageDTO;
-import barley.appmgt.api.dto.AppResponseFaultCountDTO;
-import barley.appmgt.api.dto.AppResponseTimeDTO;
-import barley.appmgt.api.dto.AppUsageByUserDTO;
-import barley.appmgt.api.dto.AppUsageDTO;
-import barley.appmgt.api.dto.AppVersionLastAccessTimeDTO;
-import barley.appmgt.api.dto.AppVersionUsageDTO;
-import barley.appmgt.api.dto.AppVersionUserUsageDTO;
-import barley.appmgt.api.dto.PerUserAPIUsageDTO;
+import barley.appmgt.api.dto.*;
 import barley.appmgt.api.exception.AppUsageQueryServiceClientException;
+
+import java.util.List;
 
 public interface AppUsageStatisticsClient {
 
@@ -48,7 +38,7 @@ public interface AppUsageStatisticsClient {
      * @param limit Number of entries to return
      * @param tenantDomainName
      * @return a List of AppUsageDTO objects - possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException if an error occurs while contacting backend services
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException if an error occurs while contacting backend services
      */
     public List<AppUsageDTO> getUsageByApps(String providerName, String fromDate, String toDate,
                                             int limit, String tenantDomainName)
@@ -62,7 +52,7 @@ public interface AppUsageStatisticsClient {
      * @param providerName Name of the WebApp provider
      * @param apiName      Name of th WebApp
      * @return a List of AppVersionUsageDTO objects, possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppVersionUsageDTO> getUsageByAppVersions(String providerName,
                                                           String apiName)
@@ -78,7 +68,7 @@ public interface AppUsageStatisticsClient {
      * @param fromDate
      * @param toDate
      * @return AppVersionUsageDTO
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException
      */
     public List<AppVersionUsageDTO> getUsageByAppVersions(String providerName, String apiName,
                                                           String fromDate, String toDate)
@@ -93,7 +83,7 @@ public interface AppUsageStatisticsClient {
      * @param fromDate
      * @param toDate
      * @return a List of AppResourcePathUsageDTO objects, possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppResourcePathUsageDTO> getAppUsageByResourcePath(String providerName, String fromDate,
                                                                    String toDate)
@@ -109,7 +99,7 @@ public interface AppUsageStatisticsClient {
      * @param toDate
      * @param tenantDomainName
      * @return a List of AppPageUsageDTO objects, possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppPageUsageDTO> getAppUsageByPage(String providerName, String fromDate, String toDate,
                                                    String tenantDomainName)
@@ -124,7 +114,7 @@ public interface AppUsageStatisticsClient {
      * @param toDate
      * @param tenantDomainName
      * @return a List of AppUsageByUserDTO objects, possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppUsageByUserDTO> getAppUsageByUser(String providerName, String fromDate, String toDate,
                                                      String tenantDomainName)
@@ -137,7 +127,7 @@ public interface AppUsageStatisticsClient {
      * @param toDate   String.
      * @param tenantId int.
      * @return AppHitsStatsDTO App hits stats list.
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException
      */
     public List<AppHitsStatsDTO> getAppHitsOverTime(String fromDate, String toDate, int tenantId)
             throws AppUsageQueryServiceClientException;
@@ -152,7 +142,7 @@ public interface AppUsageStatisticsClient {
      * @param limit Number of entries to return
      * @param tenantDomain
      * @return a List of AppResponseTimeDTO objects, possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppResponseTimeDTO> getResponseTimesByApps(String providerName, String fromDate, String toDate,
                                                            int limit, String tenantDomain)
@@ -169,7 +159,7 @@ public interface AppUsageStatisticsClient {
      * @param limit Number of entries to return
      * @param tenantDomainName
      * @return a list of AppVersionLastAccessTimeDTO objects, possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppVersionLastAccessTimeDTO> getLastAccessTimesByApps(String providerName, String fromDate,
                                                                       String toDate, int limit, String tenantDomainName)
@@ -184,7 +174,7 @@ public interface AppUsageStatisticsClient {
      * @param apiName      Name of the WebApp
      * @param limit        Number of sorted entries to return
      * @return a List of PerUserAPIUsageDTO objects - Possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<PerUserAPIUsageDTO> getUsageBySubscribers(String providerName, String apiName, int limit)
             throws AppUsageQueryServiceClientException;
@@ -196,7 +186,7 @@ public interface AppUsageStatisticsClient {
      * @param fromDate
      * @param toDate
      * @return a List of AppResponseFaultCountDTO objects - Possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppResponseFaultCountDTO> getAppResponseFaultCount(String providerName, String fromDate,
                                                                    String toDate)
@@ -207,7 +197,7 @@ public interface AppUsageStatisticsClient {
      *
      * @param providerName WebApp provider name
      * @return a List of AppResponseFaultCountDTO objects - Possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppResponseFaultCountDTO> getAppFaultyAnalyzeByTime(String providerName)
             throws AppUsageQueryServiceClientException;
@@ -220,7 +210,7 @@ public interface AppUsageStatisticsClient {
      * @param apiVersion
      * @param limit
      * @return a List of PerUserAPIUsageDTO objects - Possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<PerUserAPIUsageDTO> getUsageBySubscribers(String providerName, String apiName,
                                                           String apiVersion, int limit)
@@ -232,7 +222,7 @@ public interface AppUsageStatisticsClient {
      * @param subscriberName
      * @param period
      * @return a List of AppVersionUserUsageDTO objects - Possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppVersionUserUsageDTO> getUsageBySubscriber(String subscriberName, String period)
             throws Exception;
@@ -243,7 +233,7 @@ public interface AppUsageStatisticsClient {
      * @param providerName
      * @param limit
      * @return a List of String- Possibly empty
-     * @throws org.wso2.carbon.appmgt.api.exception.AppUsageQueryServiceClientException on error
+     * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<String> getFirstAccessTime(String providerName, int limit) throws AppUsageQueryServiceClientException;
 }
