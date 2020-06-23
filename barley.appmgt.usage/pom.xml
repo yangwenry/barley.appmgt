@@ -15,6 +15,7 @@
 	
 	<modules>
 		<module>barley.appmgt.usage.publisher</module>
+		<module>barley.appmgt.usage.client</module>
 	</modules>
 	
 </project>
