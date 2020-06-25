@@ -25,6 +25,11 @@ public class ResponsePublisherDTO extends PublisherDTO {
 
     private long serviceTime;
 
+    private long eventTime;
+
+    private long responseSize;
+    private int responseCode;
+
     public int getResponse(){
         return response;
     }
@@ -45,4 +50,27 @@ public class ResponsePublisherDTO extends PublisherDTO {
         return serviceTime;
     }
 
+    public long getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(long eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public long getResponseSize() {
+        return responseSize;
+    }
+
+    public void setResponseSize(long responseSize) {
+        this.responseSize = responseSize;
+    }
+
+    public int getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(int responseCode) {
+        this.responseCode = responseCode;
+    }
 }

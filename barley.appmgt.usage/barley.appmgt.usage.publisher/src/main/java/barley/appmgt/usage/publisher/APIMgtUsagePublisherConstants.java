@@ -52,23 +52,23 @@ public final class APIMgtUsagePublisherConstants {
     public static final String ANONYMOUS_USER = "anonymous.user";
     public static final String API_AUTH_CONTEXT = "__API_AUTH_CONTEXT";
 
-	public static final String API_MANAGER_STREAM_NAME_DEFINITION = API_USAGE_TRACKING + "DASEventStreams.";
+	public static final String API_MANAGER_STREAM_NAME_DEFINITION = API_USAGE_TRACKING + "Streams.";
 	public static final String API_MANAGER_REQUEST_STREAM_NAME = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "RequestStreamName";
+			+ "Request.Name";
 	public static final String API_MANAGER_REQUEST_STREAM_VERSION = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "RequestStreamVersion";
+			+ "Request.Version";
 	public static final String API_MANAGER_RESPONSE_STREAM_NAME = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "ResponseStreamName";
+			+ "Response.Name";
 	public static final String API_MANAGER_RESPONSE_STREAM_VERSION = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "ResponseStreamVersion";
+			+ "Response.Version";
 	public static final String API_MANAGER_FAULT_STREAM_NAME = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "FaultStreamName";
+			+ "Fault.Name";
 	public static final String API_MANAGER_FAULT_STREAM_VERSION = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "FaultStreamVersion";
+			+ "Fault.Version";
 	public static final String API_MANAGER_CACHE_STAT_STREAM_NAME = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "CacheStatStreamName";
+			+ "CacheStat.Name";
 	public static final String API_MANAGER_CACHE_STAT_VERSION = API_MANAGER_STREAM_NAME_DEFINITION
-			+ "CacheStatStreamVersion";
+			+ "CacheStat.Version";
 
 	// To add UI Activity DAS publisher
 	public static final String API_DAS_UI_ACTIVITY_STREAM = API_MANAGER_STREAM_NAME_DEFINITION

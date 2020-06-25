@@ -679,9 +679,9 @@ public class AppMDAO {
 	 * @param userId
 	 *            id of the user
 	 * @return APIInfoDTO[]
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get Subscribed APIs
-	 * @throws org.wso2.carbon.identity.base.IdentityException
+	 * @throws barley.identity.base.IdentityException
 	 *             if failed to get tenant id
 	 */
 	public APIInfoDTO[] getSubscribedAPIsOfUser(String userId) throws AppManagementException {
@@ -728,7 +728,7 @@ public class AppMDAO {
 	 * @param apiInfoDTO
 	 *            WebApp info
 	 * @return APIKeyInfoDTO[]
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get key info for given WebApp
 	 */
 	public APIKeyInfoDTO[] getSubscribedUsersForAPI(APIInfoDTO apiInfoDTO)
@@ -783,7 +783,7 @@ public class AppMDAO {
 	 * @return APIKeyValidationInfoDTO instance with authorization status and
 	 *         tier information if
 	 *         authorized.
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             Error when accessing the database or registry.
 	 */
 	public APIKeyValidationInfoDTO validateKey(String context, String version, String accessToken,
@@ -1963,7 +1963,7 @@ public class AppMDAO {
 	 * @param subscriberName
 	 *            id
 	 * @return Subscriber
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get Subscriber from subscriber id
 	 */
 	public Subscriber getSubscriber(String subscriberName) throws AppManagementException {
@@ -2021,7 +2021,7 @@ public class AppMDAO {
 	 * @param applicationName
 	 *            Application Name
 	 * @return Set<WebApp>
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get SubscribedAPIs
 	 */
 	public Set<SubscribedAPI> getSubscribedAPIs(Subscriber subscriber, String applicationName)
@@ -2141,7 +2141,7 @@ public class AppMDAO {
 	 * @param subscriber
 	 *            subscriber
 	 * @return Set<API>
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get SubscribedAPIs
 	 */
 	public Set<SubscribedAPI> getSubscribedAPIs(Subscriber subscriber)
@@ -3143,7 +3143,7 @@ public class AppMDAO {
 	 * @param providerName
 	 *            name of the provider
 	 * @return Set<Subscriber>
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get subscribers for given provider
 	 */
 	public Set<Subscriber> getSubscribersOfProvider(String providerName)
@@ -3284,7 +3284,7 @@ public class AppMDAO {
      * @param toDate           To Date
      * @param isSubscriptionOn if any subscription(self or enterprise) model is on or off
      * @return subscription count of apps
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public Map<String, Long> getSubscriptionCountByApp(String providerName, String fromDate, String toDate,
                                                        int tenantId, boolean isSubscriptionOn)
@@ -3392,7 +3392,7 @@ public class AppMDAO {
      * @param fromDate From Date
      * @param toDate To Date
      * @return List of apps subscribed by users.
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public Map<String, List> getSubscribedAPPsByUsers(String fromDate, String toDate, int tenantId) throws
                                                                                                 AppManagementException {
@@ -3461,7 +3461,7 @@ public class AppMDAO {
 	 *            Context of the WebApp
 	 * @param applicationId
 	 *            Application id
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to update subscriber
 	 */
 	public void updateSubscriptions(APIIdentifier identifier, String context, int applicationId)
@@ -3480,7 +3480,7 @@ public class AppMDAO {
 	 *            Subscription Status[BLOCKED/UNBLOCKED]
 	 * @param applicationId
 	 *            Application id
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to update subscriber
 	 */
 	public void updateSubscription(APIIdentifier identifier, String subStatus, int applicationId)
@@ -3589,7 +3589,7 @@ public class AppMDAO {
      * @param validityPeriod
 	 * @return
 	 * @throws IdentityException
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public void updateRefreshedApplicationAccessToken(String keyType, String newAccessToken,
 	                                                  long validityPeriod)
@@ -3657,7 +3657,7 @@ public class AppMDAO {
 	 * @param userId
 	 *            User Id
 	 * @return true if user subscribed for given APIIdentifier
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to check subscribed or not
 	 */
 	public boolean isSubscribed(APIIdentifier apiIdentifier, String userId)
@@ -3717,7 +3717,7 @@ public class AppMDAO {
 	 * @param providerName
 	 *            Name of the provider
 	 * @return UserApplicationAPIUsage of given provider
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get
 	 *             UserApplicationAPIUsage for given provider
 	 */
@@ -3924,7 +3924,7 @@ public class AppMDAO {
 	 *            Application
 	 * @param userId
 	 *            User Id
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to add Application
 	 */
 	public int addApplication(Application application, String userId, Connection conn)
@@ -4040,7 +4040,7 @@ public class AppMDAO {
 	 *
 	 * @param applicationId
 	 * @param status
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public void updateApplicationStatus(int applicationId, String status)
 	                                                                     throws
@@ -4135,7 +4135,7 @@ public class AppMDAO {
 	 * @param appName
      * @param userId
 	 * @return
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public String getApplicationStatus(String appName, String userId) throws
                                                                       AppManagementException {
@@ -4176,7 +4176,7 @@ public class AppMDAO {
 	 * @param username
 	 *            Subscriber
 	 * @return ApplicationId for given appname.
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get Applications for given subscriber.
 	 */
 	public int getApplicationId(String appName, String username) throws AppManagementException {
@@ -4220,7 +4220,7 @@ public class AppMDAO {
 	 * @param applicationId
 	 *            - applicatoin id
 	 * @return - application name
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public String getApplicationNameFromId(int applicationId) throws AppManagementException {
 
@@ -4252,7 +4252,7 @@ public class AppMDAO {
 	/**
      * @param subscriber Subscriber
      * @return Applications for given subscriber.
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException if failed to get Applications for given subscriber.
+     * @throws barley.appmgt.api.AppManagementException if failed to get Applications for given subscriber.
      */
     //ToDo: This method is added back to avoid broken UI. But we need to refactor this method since
     // AppM only using default Application
@@ -4390,7 +4390,7 @@ public class AppMDAO {
 	 *            Tenant Id
 	 * @param connection
 	 * @return Subscriber
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             if failed to get subscriber
 	 */
 	private Subscriber getSubscriber(String username, int tenantId, Connection connection)
@@ -4707,7 +4707,7 @@ public class AppMDAO {
 	 * Persists WorkflowDTO to Database
 	 *
 	 * @param workflow
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public void addWorkflowEntry(WorkflowDTO workflow) throws AppManagementException {
 		Connection connection = null;
@@ -4778,7 +4778,7 @@ public class AppMDAO {
      *
      * @param workflowReference
      * @return
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public WorkflowDTO retrieveLatestWorkflowByReference(String workflowReference) throws
                                                                                    AppManagementException {
@@ -4843,7 +4843,7 @@ public class AppMDAO {
 	 *
 	 * @param workflowReference
 	 * @return
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public WorkflowDTO retrieveWorkflow(String workflowReference) throws AppManagementException {
 		Connection connection = null;
@@ -4888,7 +4888,7 @@ public class AppMDAO {
 	 * @param apiId webapp id
 	 * @param api webapp object
 	 * @param connection db connection
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public void addURLTemplates(int apiId, WebApp api, Connection connection) throws
 			AppManagementException {
@@ -5119,7 +5119,7 @@ public class AppMDAO {
 	 *
 	 * @param api
 	 * @param connection
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public void updateURLTemplates(WebApp api, Connection connection) throws
                                                                       AppManagementException {
@@ -5193,7 +5193,7 @@ public class AppMDAO {
 	 *
 	 * @param appIdentifier application identifier
 	 * @return list of entitlement policy contexts
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public List<XACMLPolicyTemplateContext> getEntitlementPolicyTemplateContexts(APIIdentifier appIdentifier)
 			throws AppManagementException {
@@ -5547,7 +5547,7 @@ public class AppMDAO {
 	 *
 	 * @param key
 	 *            API Key to be revoked
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             on error in revoking access token
 	 */
 	public void revokeAccessToken(String key) throws AppManagementException {
@@ -5585,7 +5585,7 @@ public class AppMDAO {
 	 * @param tier
 	 *            String tier name
 	 * @return Application object array associated with tier
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 *             on error in getting applications array
 	 */
 	public Application[] getApplicationsByTier(String tier) throws AppManagementException {
@@ -5781,7 +5781,7 @@ public class AppMDAO {
      * @param policyAuthor      author of the policy partial
      * @param tenantId          logged users tenant Id
      * @return policy partial id
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public int saveEntitlementPolicyPartial(String policyPartialName, String policyPartial, boolean isSharedPartial,
 											String policyAuthor,String policyPartialDesc,int tenantId) throws AppManagementException {
@@ -5847,7 +5847,7 @@ public class AppMDAO {
      * @param isShared
 	 * @param policyPartialDesc
      * @return
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
 	public boolean updateEntitlementPolicyPartial(int policyPartialId, String policyPartial
 			, String author, boolean isShared, String policyPartialDesc) throws AppManagementException {
@@ -5905,7 +5905,7 @@ public class AppMDAO {
      * @param policyPartialId policy partial id
      * @param connection
      * @return other of policy partial
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     private String getPolicyPartialAuthor(int policyPartialId, Connection connection) throws
                                                                                       AppManagementException {
@@ -5939,7 +5939,7 @@ public class AppMDAO {
 	 *
 	 * @param policyPartialId policy partial id
 	 * @return policy partial content
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public EntitlementPolicyPartial getPolicyPartial(int policyPartialId) throws
                                                                           AppManagementException {
@@ -5987,7 +5987,7 @@ public class AppMDAO {
 	 *
 	 * @param uuid UUID of the given web application
 	 * @return webapp id
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public int getWebAppId(String uuid) throws AppManagementException {
 
@@ -6014,7 +6014,7 @@ public class AppMDAO {
 	 *
 	 * @param policyPartialId Policy Partial Id
 	 * @return apps' name
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public List<APIIdentifier> getAssociatedApps(int policyPartialId) throws AppManagementException {
 		Connection connection = null;
@@ -6055,7 +6055,7 @@ public class AppMDAO {
      *
      * @param tenantId logged users tenant Id
      * @return list of policy partial
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public List<EntitlementPolicyPartial> getSharedEntitlementPolicyPartialsList(int tenantId) throws
                                                                                    AppManagementException {
@@ -6120,7 +6120,7 @@ public class AppMDAO {
 	 * @param policyPartialId policy partial id
 	 * @param author          author of the policy partial
 	 * @return true if success else false
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	public boolean deletePolicyPartial(int policyPartialId, String author) throws
                                                                            AppManagementException {
@@ -6205,7 +6205,7 @@ public class AppMDAO {
      * @param applicationId   Applicatoin id
      * @param authorizedAdminCookie Autherized cookie to access IDP admin services
      * @param connection      DB Connection
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     private void removeApplicationsEntitlementPolicies(int applicationId, Connection connection, String authorizedAdminCookie)
             throws
@@ -6254,7 +6254,7 @@ public class AppMDAO {
      *
      * @param applicationId application id
      * @param partialIds    policy partial ids
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public void saveApplicationPolicyPartialsMappings(Connection connection, int applicationId, Object[] partialIds)
             throws AppManagementException {
@@ -6286,7 +6286,7 @@ public class AppMDAO {
      * Update URLMapping - Entittlement policy patial mappings
      *
      * @param xacmlPolicyTemplateContexts xacml poilicy partial template contexts
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public void updateURLEntitlementPolicyPartialMappings(List<XACMLPolicyTemplateContext> xacmlPolicyTemplateContexts)
             throws AppManagementException {
@@ -6567,7 +6567,7 @@ public class AppMDAO {
 	 * @param webAppUUID webapplication id
 	 * @param connection SQL Connection to the data store
 	 * @return web application unique id
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException
+	 * @throws barley.appmgt.api.AppManagementException
 	 */
 	private int getWebAppIdFromUUID(String webAppUUID, Connection connection) throws
                                                                               AppManagementException {
@@ -6808,7 +6808,7 @@ public class AppMDAO {
      * Get the all web apps with provider, name ,context and version
      *
      * @return web apps
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public List<WebApp> getAllWebApps() throws AppManagementException {
         WebApp webApp = null;
@@ -6862,7 +6862,7 @@ public class AppMDAO {
      * Get the all web apps with provider, name ,context and version
      *
      * @return web apps
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      *
      */
     public List<WebApp> getAllWebApps(String tenantDomain) throws AppManagementException {
@@ -8054,7 +8054,7 @@ public class AppMDAO {
      * @param applicationUUId
      * @param isGlobalPolicy  :if application level policy - true else if resource level policy - false
      * @return array of all available java policies
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException on error
+     * @throws barley.appmgt.api.AppManagementException on error
      */
     public static JSONArray getAvailableJavaPolicyList(String applicationUUId, boolean isGlobalPolicy)
             throws AppManagementException {
@@ -8147,7 +8147,7 @@ public class AppMDAO {
 	 * @param applicationUUId
 	 * @param isGlobalPolicy :if application level policy - true else if resource level policy - false
 	 * @return array of all available java policies
-	 * @throws org.wso2.carbon.appmgt.api.AppManagementException on error
+	 * @throws barley.appmgt.api.AppManagementException on error
 	 */
 	public static List<JavaPolicy> getMappedJavaPolicyList(String applicationUUId, boolean isGlobalPolicy)
 			throws AppManagementException {
@@ -8206,7 +8206,7 @@ public class AppMDAO {
      *
      * @param policyGroupId
      * @return url Pattens/http verbs mapped with policy group
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public NativeArray getPolicyGroupAssociatedApps(int policyGroupId) throws AppManagementException {
         Connection conn = null;
@@ -8246,7 +8246,7 @@ public class AppMDAO {
 
         String getStatisticsPolicyIdQuery = "SELECT JAVA_POLICY_ID " +
                                   "FROM APM_APP_JAVA_POLICY " +
-                                  "WHERE FULL_QUALIFI_NAME = 'org.wso2.carbon.appmgt.usage.publisher.APPMgtUsageHandler' ";
+                                  "WHERE FULL_QUALIFI_NAME = 'barley.appmgt.usage.publisher.APIMgtUsageHandler' ";
 
         String getPoliciesOfAppQuery = "SELECT JAVA_POLICY_ID " +
                                     "FROM APM_APP_JAVA_POLICY_MAPPING " +
@@ -8296,7 +8296,7 @@ public class AppMDAO {
 	 * Retrieves TRACKING_CODE sequences from APM_APP Table
 	 *@param uuid : Application UUID
 	 *@return TRACKING_CODE
-	 *@throws org.wso2.carbon.appmgt.api.AppManagementException
+	 *@throws barley.appmgt.api.AppManagementException
 	 */
 	public  String getTrackingID(String uuid) throws AppManagementException {
 		Connection conn = null;
@@ -8375,7 +8375,7 @@ public class AppMDAO {
 	 *@param version
 	 * 			   version of the web application
 	 *
-	 *@throws org.wso2.carbon.appmgt.api.AppManagementException
+	 *@throws barley.appmgt.api.AppManagementException
 	 */
 	public  static  boolean isWebAppAvailable(String webAppName,String version) throws AppManagementException {
 		Connection conn = null;
@@ -8407,7 +8407,7 @@ public class AppMDAO {
 	 *
 	 *@return seq number of the java policy
 	 *
-	 *@throws org.wso2.carbon.appmgt.api.AppManagementException
+	 *@throws barley.appmgt.api.AppManagementException
 	 */
 	public static String getDisplayOrderSeqNo() throws AppManagementException {
 		Connection conn = null;
@@ -8467,7 +8467,7 @@ public class AppMDAO {
      * Get external published APP Stores details which are stored in database.
      *
      * @param apiIdentifier WebApp Identifier
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException if failed to get external APPStores
+     * @throws barley.appmgt.api.AppManagementException if failed to get external APPStores
      */
     public Set<AppStore> getExternalAppStoresDetails(APIIdentifier apiIdentifier) throws AppManagementException {
 
@@ -8527,7 +8527,7 @@ public class AppMDAO {
      *
      * @param apiId     APIIdentifier
      * @param appStores AppStore set
-     * @throws org.wso2.carbon.appmgt.api.AppManagementException
+     * @throws barley.appmgt.api.AppManagementException
      */
     public void addExternalAppStoresDetails(APIIdentifier apiId, Set<AppStore> appStores)
             throws AppManagementException {

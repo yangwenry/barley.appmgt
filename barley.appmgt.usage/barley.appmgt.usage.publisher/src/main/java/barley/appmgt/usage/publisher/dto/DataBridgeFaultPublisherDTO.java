@@ -20,6 +20,7 @@ package barley.appmgt.usage.publisher.dto;
 
 import barley.appmgt.usage.publisher.DataPublisherUtil;
 import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
+import barley.appmgt.usage.publisher.internal.UsageComponent;
 
 public class DataBridgeFaultPublisherDTO extends FaultPublisherDTO{
 
@@ -49,12 +50,12 @@ public class DataBridgeFaultPublisherDTO extends FaultPublisherDTO{
     public static String getStreamDefinition() {
 
 		String streamDefinition = "{" + "  'name':'"
-				+ APPManagerConfigurationServiceComponent
+				+ UsageComponent
 						.getApiMgtConfigReaderService()
 						.getApiManagerFaultStreamName()
 				+ "',"
 				+ "  'version':'"
-				+ APPManagerConfigurationServiceComponent
+				+ UsageComponent
 						.getApiMgtConfigReaderService()
 						.getApiManagerFaultStreamVersion() + "',"
 				+ "  'nickName': 'WebApp Manager Fault Data',"

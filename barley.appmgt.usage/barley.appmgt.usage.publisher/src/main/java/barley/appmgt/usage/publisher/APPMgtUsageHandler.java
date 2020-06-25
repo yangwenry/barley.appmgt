@@ -18,29 +18,27 @@
 
 package barley.appmgt.usage.publisher;
 
-import java.util.Map;
-
+import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
+import barley.appmgt.usage.publisher.internal.UsageComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.AbstractHandler;
 
-import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
-import barley.appmgt.usage.publisher.internal.UsageComponent;
+import java.util.Map;
 
+@Deprecated
 public class APPMgtUsageHandler extends AbstractHandler {
 
     private static final Log log = LogFactory.getLog(APPMgtUsageHandler.class);
     private volatile APIMgtUsageDataPublisher publisher;
-    private String publisherClass =
-            APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService().getPublisherClass();
-    private boolean enabled = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService().isEnabled();
 
     public boolean handleRequest(MessageContext mc) {
 
-        try {
+        boolean enabled = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService().isEnabled();
 
+        try {
             if (enabled) {
                 long currentTime = System.currentTimeMillis();
                 org.apache.axis2.context.MessageContext axis2MC = ((Axis2MessageContext) mc).
@@ -64,6 +62,7 @@ public class APPMgtUsageHandler extends AbstractHandler {
     }
 
     public boolean handleResponse(MessageContext mc) {
+        boolean enabled = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService().isEnabled();
         try {
             if (enabled) {
                 Boolean isLogoutReqeust = (Boolean) mc.getProperty("isLogoutRequest");

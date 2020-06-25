@@ -19,6 +19,7 @@ package barley.appmgt.usage.publisher.dto;
 
 import barley.appmgt.usage.publisher.DataPublisherUtil;
 import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
+import barley.appmgt.usage.publisher.internal.UsageComponent;
 
 public class DataBridgeRequestPublisherDTO extends RequestPublisherDTO {
 
@@ -45,12 +46,12 @@ public class DataBridgeRequestPublisherDTO extends RequestPublisherDTO {
 
     public static String getStreamDefinition() {
 		String streamDefinition = "{" + "  'name':'"
-				+ APPManagerConfigurationServiceComponent
+				+ UsageComponent
 						.getApiMgtConfigReaderService()
 						.getApiManagerRequestStreamName()
 				+ "',"
 				+ "  'version':'"
-				+ APPManagerConfigurationServiceComponent
+				+ UsageComponent
 						.getApiMgtConfigReaderService()
 						.getApiManagerRequestStreamVersion() + "',"
 				+ "  'nickName': 'WebApp Manager Request Data',"

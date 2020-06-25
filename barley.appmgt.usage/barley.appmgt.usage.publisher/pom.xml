@@ -19,6 +19,10 @@
             <groupId>barley.appmgt</groupId>
             <artifactId>barley.appmgt.impl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>barley.appmgt</groupId>
+            <artifactId>barley.appmgt.gateway</artifactId>
+        </dependency>
 		<dependency>
             <groupId>barley.analytics-common</groupId>
             <artifactId>barley.databridge.agent</artifactId>
@@ -31,10 +35,10 @@
         </dependency>
         
         <!-- wso2 -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.wso2.carbon.multitenancy</groupId>
             <artifactId>org.wso2.carbon.tenant.usage.agent</artifactId>
-        </dependency>
+        </dependency>-->
         <!-- <dependency>
             <groupId>org.wso2.carbon.analytics-common</groupId>
             <artifactId>org.wso2.carbon.databridge.agent</artifactId>

@@ -19,6 +19,7 @@ package barley.appmgt.usage.publisher.dto;
 
 import barley.appmgt.usage.publisher.DataPublisherUtil;
 import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
+import barley.appmgt.usage.publisher.internal.UsageComponent;
 
 public class DataBridgeResponsePublisherDTO extends ResponsePublisherDTO {
 
@@ -32,6 +33,7 @@ public class DataBridgeResponsePublisherDTO extends ResponsePublisherDTO {
         setVersion(responsePublisherDTO.getVersion());
         setResponseTime(responsePublisherDTO.getResponseTime());
         setServiceTime(responsePublisherDTO.getServiceTime());
+        setEventTime(responsePublisherDTO.getEventTime());
         setUsername(responsePublisherDTO.getUsername());
         setTenantDomain(responsePublisherDTO.getTenantDomain());
         setHostName(DataPublisherUtil.getHostAddress());
@@ -42,17 +44,19 @@ public class DataBridgeResponsePublisherDTO extends ResponsePublisherDTO {
         //setLoggedInUSer(responsePublisherDTO.getLoggedInUSer());
         setReferer(responsePublisherDTO.getReferer());
         setResponseTime(responsePublisherDTO.getResponseTime());
+        setResponseCode(responsePublisherDTO.getResponseCode());
+        setResponseSize(responsePublisherDTO.getResponseSize());
     }
 
     public static String getStreamDefinition() {
 
 		String streamDefinition = "{" + "  'name':'"
-				+ APPManagerConfigurationServiceComponent
+				+ UsageComponent
 						.getApiMgtConfigReaderService()
 						.getApiManagerResponseStreamName()
 				+ "',"
 				+ "  'version':'"
-				+ APPManagerConfigurationServiceComponent
+				+ UsageComponent
 						.getApiMgtConfigReaderService()
 						.getApiManagerResponseStreamVersion() + "',"
 				+ "  'nickName': 'WebApp Manager Reponse Data',"
@@ -85,8 +89,8 @@ public class DataBridgeResponsePublisherDTO extends ResponsePublisherDTO {
 
     public Object createPayload(){
         return new Object[]{getContext(),getApi_version(),getApi(),getResource(),getMethod(),
-                getVersion(),getResponse(),getResponseTime(),getServiceTime(),getUsername(),getTenantDomain(),getHostName(),
-                getApiPublisher(), getApplicationName(), getApplicationId(),getTrackingCode(),getReferer()};
+                getVersion(),getResponse(),getResponseTime(),getServiceTime(),getEventTime(),getUsername(),getTenantDomain(),getHostName(),
+                getApiPublisher(), getApplicationName(), getApplicationId(),getTrackingCode(),getReferer(),getResponseCode(),getResponseSize()};
     }
 
 }

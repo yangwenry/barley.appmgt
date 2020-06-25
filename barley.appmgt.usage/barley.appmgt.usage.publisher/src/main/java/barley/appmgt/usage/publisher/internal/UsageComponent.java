@@ -59,24 +59,28 @@ public class UsageComponent {
     //private static CarbonTomcatService carbonTomcatService;
     private static ConfigurationContextService configContextService;
 
-    protected void activate() {
+    private static Map<String, DataPublisher> dataPublisherMap;
+
+    public void activate() {
         try {
             DataPublisherUtil.setEnabledMetering(Boolean.parseBoolean(ServerConfiguration.getInstance().getFirstProperty("EnableMetering")));
             responseTimeMap = new ConcurrentHashMap<String, List>();
+            dataPublisherMap = new ConcurrentHashMap<String, DataPublisher>();
+
             log.debug("WebApp Management Usage Publisher bundle is activated ");
         } catch (Throwable e) {
             log.error("WebApp Management Usage Publisher bundle ", e);
         }
     }
 
-	protected void setRealmService(RealmService realmService) {
+    public void setRealmService(RealmService realmService) {
 		if (realmService != null && log.isDebugEnabled()) {
 			log.debug("Realm service initialized");
 		}
 		UsageComponent.realmService = realmService;
 	}
 
-	protected void unsetRealmService(RealmService realmService) {
+    public void unsetRealmService(RealmService realmService) {
 		UsageComponent.realmService = null;
 	}
 	
@@ -84,7 +88,7 @@ public class UsageComponent {
 		return realmService;
 	}
 
-	protected void deactivate() {
+    public void deactivate() {
 
     }
 
@@ -93,9 +97,17 @@ public class UsageComponent {
      * @param tenantDomain - The tenant domain under which the data publisher is registered
      * @return - Instance of the DataPublisher which was registered. Null if not registered.
      */
+    /* (주석)
     public static DataPublisher getDataPublisher(String tenantDomain){
         if(APPManagerConfigurationServiceComponent.getDataPublisherMap().containsKey(tenantDomain)){
             return APPManagerConfigurationServiceComponent.getDataPublisherMap().get(tenantDomain);
+        }
+        return null;
+    }
+    */
+    public static DataPublisher getDataPublisher(String tenantDomain){
+        if(dataPublisherMap.containsKey(tenantDomain)){
+            return dataPublisherMap.get(tenantDomain);
         }
         return null;
     }
@@ -107,6 +119,7 @@ public class UsageComponent {
      * @throws DataPublisherAlreadyExistsException - If a data publisher has already been registered under the
      * tenant domain
      */
+    /* (주석)
     public static void addDataPublisher(String tenantDomain, DataPublisher dataPublisher)
             throws DataPublisherAlreadyExistsException {
         if(APPManagerConfigurationServiceComponent.getDataPublisherMap().containsKey(tenantDomain)){
@@ -115,6 +128,16 @@ public class UsageComponent {
         }
 
         APPManagerConfigurationServiceComponent.getDataPublisherMap().put(tenantDomain, dataPublisher);
+    }
+    */
+    public static void addDataPublisher(String tenantDomain, DataPublisher dataPublisher)
+            throws DataPublisherAlreadyExistsException {
+        if(dataPublisherMap.containsKey(tenantDomain)){
+            throw new DataPublisherAlreadyExistsException("A DataPublisher has already been created for the tenant " +
+                    tenantDomain);
+        }
+
+        dataPublisherMap.put(tenantDomain, dataPublisher);
     }
 
 
@@ -162,13 +185,13 @@ public class UsageComponent {
         }
     }
 
-    protected void setAPIMGTSampleService(APIMGTSampleService registryService) {
+    public void setAPIMGTSampleService(APIMGTSampleService registryService) {
         if (registryService != null && log.isDebugEnabled()) {
             log.debug("Application mgt service initialized.");
         }
     }
 
-    protected void unsetAPIMGTSampleService(APIMGTSampleService registryService) {
+    public void unsetAPIMGTSampleService(APIMGTSampleService registryService) {
         if (registryService != null && log.isDebugEnabled()) {
             log.debug("Application mgt service destroyed.");
         }
@@ -189,9 +212,20 @@ public class UsageComponent {
         UsageComponent.carbonTomcatService = null;
     }*/
 
-    protected void setAPIManagerConfigurationService(AppManagerConfigurationService service) {
+    public void setAPIManagerConfigurationService(AppManagerConfigurationService service) {
         log.debug("WebApp manager configuration service bound to the WebApp usage handler");
         amConfigService = service;
+        apimgtConfigReaderService = new APIMGTConfigReaderService(amConfigService.getAPIManagerConfiguration());
     }
+
+    public static AppManagerConfigurationService getAPIManagerConfigurationService() {
+        return amConfigService;
+    }
+
+    public static APIMGTConfigReaderService getApiMgtConfigReaderService() {
+        return apimgtConfigReaderService;
+    }
+
+
 
 }

@@ -44,6 +44,7 @@ import barley.databridge.agent.DataPublisher;
  * cardinality="1..1" policy="dynamic"  bind="setConfigurationContextService"
  * unbind="unsetConfigurationContextService"
  */
+@Deprecated
 public class APPManagerConfigurationServiceComponent {
 
     private static final Log log = LogFactory.getLog(APPManagerConfigurationServiceComponent.class);

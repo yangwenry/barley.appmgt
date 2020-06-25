@@ -17,6 +17,7 @@
 */
 package barley.appmgt.usage.publisher;
 
+import barley.appmgt.usage.publisher.internal.UsageComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -51,7 +52,7 @@ public class APIMgtUsageDataBridgeDataPublisher implements APIMgtUsageDataPublis
 
     public void publishEvent(RequestPublisherDTO requestPublisherDTO) {
         DataBridgeRequestPublisherDTO dataBridgeRequestPublisherDTO = new DataBridgeRequestPublisherDTO(requestPublisherDTO);
-        APIMGTConfigReaderService apimgtConfigReaderService = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService();
+        APIMGTConfigReaderService apimgtConfigReaderService = UsageComponent.getApiMgtConfigReaderService();
 
         String streamId = apimgtConfigReaderService.getApiManagerRequestStreamName() + ":"
                 + apimgtConfigReaderService.getApiManagerRequestStreamVersion();
@@ -64,10 +65,10 @@ public class APIMgtUsageDataBridgeDataPublisher implements APIMgtUsageDataPublis
 
     public void publishEvent(ResponsePublisherDTO responsePublisherDTO) {
         DataBridgeResponsePublisherDTO dataBridgeResponsePublisherDTO = new DataBridgeResponsePublisherDTO(responsePublisherDTO);
-        APIMGTConfigReaderService apimgtConfigReaderService = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService();
+        APIMGTConfigReaderService apimgtConfigReaderService = UsageComponent.getApiMgtConfigReaderService();
 
         String streamId = apimgtConfigReaderService.getApiManagerResponseStreamName() + ":"
-                + apimgtConfigReaderService.getApiManagerResponseStreamName();
+                + apimgtConfigReaderService.getApiManagerResponseStreamVersion();
 
         //Publish Response Data
         dataPublisher.publish(streamId, System.currentTimeMillis(), new Object[]{"external"}, null,
@@ -76,7 +77,7 @@ public class APIMgtUsageDataBridgeDataPublisher implements APIMgtUsageDataPublis
 
     public void publishEvent(FaultPublisherDTO faultPublisherDTO) {
         DataBridgeFaultPublisherDTO dataBridgeFaultPublisherDTO = new DataBridgeFaultPublisherDTO(faultPublisherDTO);
-        APIMGTConfigReaderService apimgtConfigReaderService = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService();
+        APIMGTConfigReaderService apimgtConfigReaderService = UsageComponent.getApiMgtConfigReaderService();
 
         String streamId = apimgtConfigReaderService.getApiManagerFaultStreamName() + ":"
                 + apimgtConfigReaderService.getApiManagerFaultStreamVersion();
@@ -90,7 +91,7 @@ public class APIMgtUsageDataBridgeDataPublisher implements APIMgtUsageDataPublis
 	@Override
 	public void publishEvent(CacheStatPublisherDTO cacheDataPublisherDTO) {
 		DataBridgeCacheStatPublisherDTO dataBridgeCacheStatPublisherDTO = new DataBridgeCacheStatPublisherDTO(cacheDataPublisherDTO);
-        APIMGTConfigReaderService apimgtConfigReaderService = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService();
+        APIMGTConfigReaderService apimgtConfigReaderService = UsageComponent.getApiMgtConfigReaderService();
 
         String streamId = apimgtConfigReaderService.getApiManagerCacheStatStreamName() + ":"
                 + apimgtConfigReaderService.getApiManagerCacheStatStreamVersion();

@@ -18,6 +18,28 @@
 
 package barley.appmgt.usage.publisher;
 
+import barley.appmgt.api.AppManagementException;
+import barley.appmgt.api.model.APIIdentifier;
+import barley.appmgt.api.model.WebApp;
+import barley.appmgt.impl.AppMConstants;
+import barley.appmgt.impl.dao.AppMDAO;
+import barley.appmgt.impl.utils.APIMgtDBUtil;
+import barley.appmgt.usage.publisher.dto.RequestPublisherDTO;
+import barley.appmgt.usage.publisher.internal.UsageComponent;
+import barley.core.MultitenantConstants;
+import barley.core.context.PrivilegedBarleyContext;
+import barley.user.api.UserStoreException;
+import org.apache.axis2.Constants;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.MessageContext;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.apache.synapse.rest.AbstractHandler;
+import org.apache.synapse.rest.RESTConstants;
+
+import javax.cache.Cache;
+import javax.cache.Caching;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,45 +51,16 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.cache.Cache;
-import javax.cache.Caching;
-
-import org.apache.axis2.Constants;
-import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.synapse.MessageContext;
-import org.apache.synapse.core.axis2.Axis2MessageContext;
-import org.apache.synapse.rest.AbstractHandler;
-import org.apache.synapse.rest.RESTConstants;
-import org.wso2.carbon.usage.agent.beans.APIManagerRequestStats;
-import org.wso2.carbon.usage.agent.util.PublisherUtils;
-
-import barley.appmgt.api.AppManagementException;
-import barley.appmgt.api.model.APIIdentifier;
-import barley.appmgt.api.model.WebApp;
-import barley.appmgt.impl.AppMConstants;
-import barley.appmgt.impl.dao.AppMDAO;
-import barley.appmgt.impl.dto.WebAppInfoDTO;
-import barley.appmgt.impl.utils.APIMgtDBUtil;
-import barley.appmgt.usage.publisher.dto.RequestPublisherDTO;
-import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
-import barley.appmgt.usage.publisher.internal.UsageComponent;
-import barley.core.MultitenantConstants;
-import barley.core.context.PrivilegedBarleyContext;
-import barley.user.api.UserStoreException;
-
 public class APIMgtUsageHandler extends AbstractHandler {
 
     private static final Log log   = LogFactory.getLog(APIMgtUsageHandler.class);
 
     private volatile APIMgtUsageDataPublisher publisher;
 
-    private boolean enabled = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService().isEnabled();
-
-    private String publisherClass = APPManagerConfigurationServiceComponent.getApiMgtConfigReaderService().getPublisherClass();
-
     public boolean handleRequest(MessageContext mc) {
+
+        boolean enabled = UsageComponent.getApiMgtConfigReaderService().isEnabled();
+        String publisherClass = UsageComponent.getApiMgtConfigReaderService().getPublisherClass();
 
         try{
             long currentTime = System.currentTimeMillis();
@@ -101,15 +94,20 @@ public class APIMgtUsageHandler extends AbstractHandler {
                     org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
 
             String referer = headers.get("Referer");
-            String contextAndVersion[] = getContextWithVersion(referer);
+            String contextAndVersion[] = DataPublisherUtil.getContextWithVersion(referer);
             String context = "/" + contextAndVersion[0];
-            String trackingCode = headers.get("trackingCode");
-            WebAppInfoDTO webAppInfoDTO = AppMDAO.getWebAppByTrackingCode(trackingCode);
-            String version = webAppInfoDTO.getVersion();
+
+            // (수정) 2020.06.24 - 트래킹코드로 webapp version 정보를 가져온다. -> messageContext에서 가져오기
+            //String trackingCode = headers.get("trackingCode");
+            //WebAppInfoDTO webAppInfoDTO = AppMDAO.getWebAppByTrackingCode(trackingCode);
+            //String version = webAppInfoDTO.getVersion();
+            String version = (String) mc.getProperty(RESTConstants.SYNAPSE_REST_API_VERSION);
+
             String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
             if (context.contains("/t/")) {
             	tenantDomain = contextAndVersion[1];
             }
+            String apiPublisher = DataPublisherUtil.getApiPublisher(mc);
 
             String usageCacheKey = tenantDomain + ":" + context;
             if (version != null) {
@@ -183,7 +181,9 @@ public class APIMgtUsageHandler extends AbstractHandler {
             }
 
             boolean trackingCodeExist = false;
-            String tracking_code = headers.get("trackingCode");    
+            // (수정)
+            // String tracking_code = headers.get("trackingCode");
+            String tracking_code = webApp.getTrackingCode();
             if (tracking_code != null) {
             	String[] tracking_code_list = tracking_code.split(",");
             	trackingCodeExist = Arrays.asList(tracking_code_list).contains(hashcode);
@@ -205,11 +205,8 @@ public class APIMgtUsageHandler extends AbstractHandler {
                 for (int x = 0; x < timeList.size(); x++) {
                     Long [] timaArray =   timeList.get(x);
                     totalTime = totalTime + timaArray[0];
-
                 }
-
                 serviceTime = totalTime/timeList.size();
-
             }
 
             UsageComponent.deleteResponseTime(page,System.currentTimeMillis());
@@ -227,7 +224,7 @@ public class APIMgtUsageHandler extends AbstractHandler {
                 requestPublisherDTO.setUsername(username);
                 requestPublisherDTO.setTenantDomain(tenantDomain);
                 requestPublisherDTO.setHostName(hostName);
-                requestPublisherDTO.setApiPublisher(tenantDomain);
+                requestPublisherDTO.setApiPublisher(apiPublisher);
                 requestPublisherDTO.setApplicationName(applicationName);
                 requestPublisherDTO.setApplicationId(applicationId);
                 requestPublisherDTO.setTrackingCode(hashcode);
@@ -236,6 +233,7 @@ public class APIMgtUsageHandler extends AbstractHandler {
 
                 publisher.publishEvent(requestPublisherDTO);
                 //We check if usage metering is enabled for billing purpose
+                /* (주석) 빌링 미터링을 사용하지 않음.
                 if (DataPublisherUtil.isEnabledMetering()) {
                     //If usage metering enabled create new usage stat object and publish to bam
                     APIManagerRequestStats stats = new APIManagerRequestStats();
@@ -251,6 +249,7 @@ public class APIMgtUsageHandler extends AbstractHandler {
                         log.error("Error occurred while publishing request statistics. Full stacktrace available in debug logs. " + e.getMessage());
                     }
                 }
+                */
 
                 mc.setProperty(APIMgtUsagePublisherConstants.USER_ID, username);
                 mc.setProperty(APIMgtUsagePublisherConstants.CONTEXT, context);
@@ -261,7 +260,7 @@ public class APIMgtUsageHandler extends AbstractHandler {
                 mc.setProperty(APIMgtUsagePublisherConstants.HTTP_METHOD, method);
                 mc.setProperty(APIMgtUsagePublisherConstants.REQUEST_TIME, currentTime);
                 mc.setProperty(APIMgtUsagePublisherConstants.HOST_NAME,hostName);
-                mc.setProperty(APIMgtUsagePublisherConstants.API_PUBLISHER,tenantDomain);
+                mc.setProperty(APIMgtUsagePublisherConstants.API_PUBLISHER,apiPublisher);
                 mc.setProperty(APIMgtUsagePublisherConstants.APPLICATION_NAME, applicationName);
                 mc.setProperty(APIMgtUsagePublisherConstants.APPLICATION_ID, applicationId);
                 mc.setProperty(APIMgtUsagePublisherConstants.TRACKING_CODE,hashcode);
@@ -305,35 +304,6 @@ public class APIMgtUsageHandler extends AbstractHandler {
             }
         }
         return "";
-    }
-
-
-    public String[] getContextWithVersion(String refer) {
-        String webapp[]= new String[3];
-        if (refer != null && refer.length() > 0) {
-           
-        	if (refer.contains("/t/")) {
-        		// e.g URL pattern : "http://localhost:8281/t/lakmali.com/united-airline/";
-        		String s[] = refer.split("/t/");
-        		if (s.length >= 2) {
-        			String stringAfterSlashT = s[1];
-        			String result[] = stringAfterSlashT.split("/");
-        			if (result.length >= 2) {
-        				webapp[0] = "t/" + result[0] + "/" + result[1];
-        				webapp[1] = result[0];
-        			}
-        		}
-        		
-        	} else {
-        		// e.g URL pattern : "http://localhost:8281/united-airline/";
-                String s[]=refer.split("/");
-                if (s.length >= 4) {
-	                webapp[0] = s[3];
-                }
-        	}
-             return webapp;
-        }
-        return webapp;
     }
 
 
