@@ -25,6 +25,7 @@ import barley.appmgt.usage.publisher.dto.RequestPublisherDTO;
 import barley.appmgt.usage.publisher.dto.ResponsePublisherDTO;
 import barley.core.MultitenantConstants;
 
+@Deprecated
 public class APIStatsPublisher {
 
     private static final Log log = LogFactory.getLog(APIStatsPublisher.class);

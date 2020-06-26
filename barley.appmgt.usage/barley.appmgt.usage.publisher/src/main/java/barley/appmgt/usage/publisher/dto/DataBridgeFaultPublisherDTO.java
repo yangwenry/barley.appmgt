@@ -19,7 +19,6 @@
 package barley.appmgt.usage.publisher.dto;
 
 import barley.appmgt.usage.publisher.DataPublisherUtil;
-import barley.appmgt.usage.publisher.internal.APPManagerConfigurationServiceComponent;
 import barley.appmgt.usage.publisher.internal.UsageComponent;
 
 public class DataBridgeFaultPublisherDTO extends FaultPublisherDTO{
@@ -91,7 +90,7 @@ public class DataBridgeFaultPublisherDTO extends FaultPublisherDTO{
 
     public Object createPayload(){
         return new Object[]{getContext(),getApi_version(),getApi(),getResource(),getMethod(),
-                getVersion(),getErrorCode(),getErrorMessage(), String.valueOf(getRequestTime()),getUsername(),
+                getVersion(),getErrorCode(),getErrorMessage(), getRequestTime(), getUsername(),
                 getTenantDomain(),getHostName(),getApiPublisher(), getApplicationName(), getApplicationId(),getTrackingCode(),getReferer()};
     }
 }

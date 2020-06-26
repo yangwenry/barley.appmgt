@@ -95,7 +95,9 @@ public class APIMgtUsageHandler extends AbstractHandler {
 
             String referer = headers.get("Referer");
             String contextAndVersion[] = DataPublisherUtil.getContextWithVersion(referer);
-            String context = "/" + contextAndVersion[0];
+            // (수정) 2020.06.24 - messageContext에서 가져오기
+            //String context = "/" + contextAndVersion[0];
+            String context = (String) mc.getProperty(RESTConstants.REST_API_CONTEXT);
 
             // (수정) 2020.06.24 - 트래킹코드로 webapp version 정보를 가져온다. -> messageContext에서 가져오기
             //String trackingCode = headers.get("trackingCode");
@@ -124,6 +126,10 @@ public class APIMgtUsageHandler extends AbstractHandler {
                     webApp = getNonVersionedWebApp(context, tenantDomain);
                 }
                 getUsageCache().put(usageCacheKey, webApp);
+            }
+
+            if(webApp == null) {
+                return true;
             }
 
             String appName = webApp.getId().getApiName();
@@ -267,9 +273,9 @@ public class APIMgtUsageHandler extends AbstractHandler {
                 mc.setProperty(APIMgtUsagePublisherConstants.REFERER,referer);
                 mc.setProperty(APIMgtUsagePublisherConstants.SERVICE_TIME_OF_PAGE,serviceTime);
 
-        }
+            }
 
-        }catch (Throwable e){
+        } catch (Throwable e) {
             log.error("Cannot publish event. " + e.getMessage(), e);
         }
         return true;

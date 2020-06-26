@@ -3,6 +3,7 @@ package barley.appmgt.usage.publisher;
 import barley.appmgt.gateway.APIMgtGatewayConstants;
 import barley.appmgt.usage.publisher.dto.ResponsePublisherDTO;
 import barley.appmgt.usage.publisher.internal.UsageComponent;
+import barley.core.multitenancy.MultitenantUtils;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.commons.logging.Log;
@@ -34,7 +35,7 @@ public class APIMgtResponseHandler extends AbstractMediator {
         }
 
         if(publisher == null) {
-            this.initDataPublisher();
+            this.loadDataPublisher();
         }
 
         long responseSize = 0;
@@ -86,7 +87,7 @@ public class APIMgtResponseHandler extends AbstractMediator {
             }
         }
 
-        // request(APIMgtUsageHandler)에서 처리 후 messageContext에 저장된 값을 다시 불러온다.
+        // request(APIMgtUsageHandler)에서 처리한 messageContext에 저장된 값을 가져온다.
         String context = (String) mc.getProperty(APIMgtUsagePublisherConstants.CONTEXT);
         String userId = (String) mc.getProperty(APIMgtUsagePublisherConstants.USER_ID);
         String apiVersion = (String) mc.getProperty(APIMgtUsagePublisherConstants.APP_VERSION);
@@ -99,7 +100,7 @@ public class APIMgtResponseHandler extends AbstractMediator {
         String applicationId = (String) mc.getProperty(APIMgtUsagePublisherConstants.APPLICATION_ID);
         String trackingCode = (String) mc.getProperty(APIMgtUsagePublisherConstants.TRACKING_CODE);
         String referer = (String) mc.getProperty(APIMgtUsagePublisherConstants.REFERER);
-        String apiPublisher = DataPublisherUtil.getApiPublisher(mc);
+        String apiPublisher = (String) mc.getProperty(APIMgtUsagePublisherConstants.API_PUBLISHER);
         String tenantDomain = DataPublisherUtil.getTenantDomain(mc);
 
         //When start time not properly set
@@ -148,7 +149,7 @@ public class APIMgtResponseHandler extends AbstractMediator {
         return true;
     }
 
-    private void initDataPublisher() {
+    private void loadDataPublisher() {
         String publisherClass = UsageComponent.getApiMgtConfigReaderService().getPublisherClass();
 
         if (publisher == null) {
