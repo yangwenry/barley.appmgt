@@ -72,4 +72,16 @@ public class AppUsageByUserDTO {
     public void setCount(long count) {
         this.count = count;
     }
+
+    @Override
+    public String toString() {
+        return "AppUsageByUserDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", version='" + version + '\'' +
+                ", userID='" + userID + '\'' +
+                ", count=" + count +
+                ", context='" + context + '\'' +
+                ", requestDate='" + requestDate + '\'' +
+                '}';
+    }
 }

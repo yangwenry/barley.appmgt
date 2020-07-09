@@ -63,4 +63,15 @@ public class AppResourcePathUsageDTO {
     public void setCount(long count) {
         this.count = count;
     }
+
+    @Override
+    public String toString() {
+        return "AppResourcePathUsageDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", version='" + version + '\'' +
+                ", context='" + context + '\'' +
+                ", method='" + method + '\'' +
+                ", count=" + count +
+                '}';
+    }
 }

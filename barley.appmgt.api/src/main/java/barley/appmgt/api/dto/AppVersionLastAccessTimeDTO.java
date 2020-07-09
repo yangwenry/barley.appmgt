@@ -54,4 +54,14 @@ public class AppVersionLastAccessTimeDTO {
     public void setLastAccessTime(String lastAccessTime) {
         this.lastAccessTime = lastAccessTime;
     }
+
+    @Override
+    public String toString() {
+        return "AppVersionLastAccessTimeDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", apiVersion='" + apiVersion + '\'' +
+                ", user='" + user + '\'' +
+                ", lastAccessTime='" + lastAccessTime + '\'' +
+                '}';
+    }
 }

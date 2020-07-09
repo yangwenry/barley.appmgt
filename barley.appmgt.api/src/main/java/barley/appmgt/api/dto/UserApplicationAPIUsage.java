@@ -17,10 +17,10 @@
 */
 package barley.appmgt.api.dto;
 
+import barley.appmgt.api.model.SubscribedAPI;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import barley.appmgt.api.model.SubscribedAPI;
 
 /**
  * This class is used to transfer data for User/Keys UI in Provider view.
@@ -83,5 +83,18 @@ public class UserApplicationAPIUsage {
     }
     public String getAccessTokenStatus(){
         return accessTokenStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "UserApplicationAPIUsage{" +
+                "userId='" + userId + '\'' +
+                ", appId=" + appId +
+                ", applicationName='" + applicationName + '\'' +
+                ", subStatus='" + subStatus + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", accessTokenStatus='" + accessTokenStatus + '\'' +
+                ", apiSubscriptions=" + apiSubscriptions +
+                '}';
     }
 }

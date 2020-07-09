@@ -17,9 +17,12 @@
 package barley.appmgt.api.dto;
 
 public class AppUsageDTO {
-    
+
     private String apiName;
+    private String version;
+    private String context;
     private long count;
+    private String time;
 
     public String getApiName() {
         return apiName;
@@ -29,11 +32,46 @@ public class AppUsageDTO {
         this.apiName = apiName;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
     public long getCount() {
         return count;
     }
 
     public void setCount(long count) {
         this.count = count;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return "AppUsageDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", version='" + version + '\'' +
+                ", context='" + context + '\'' +
+                ", count=" + count +
+                ", time='" + time + '\'' +
+                '}';
     }
 }

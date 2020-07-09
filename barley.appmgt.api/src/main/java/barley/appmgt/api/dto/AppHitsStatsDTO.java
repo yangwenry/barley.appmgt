@@ -97,4 +97,13 @@ public class AppHitsStatsDTO {
         this.appName = appName;
     }
 
+    @Override
+    public String toString() {
+        return "AppHitsStatsDTO{" +
+                "appName='" + appName + '\'' +
+                ", totalHitCount=" + totalHitCount +
+                ", context='" + context + '\'' +
+                ", userHitsList=" + userHitsList +
+                '}';
+    }
 }

@@ -30,7 +30,7 @@ public class APIMgtFaultHandler extends AbstractMediator{
             //If request time is null in the message context,this code paragraph will set the system time as request time
             //In here request time can be null because in happy case senario request time will be set in the Usage handler
             if(messageContext.getProperty(APIMgtUsagePublisherConstants.REQUEST_TIME) != null) {
-              requestTime =  ((Long) messageContext.getProperty(APIMgtUsagePublisherConstants.REQUEST_TIME)).longValue();
+                requestTime =  ((Long) messageContext.getProperty(APIMgtUsagePublisherConstants.REQUEST_TIME)).longValue();
             } else {
                 Date date = new Date();
                 requestTime = date.getTime();
@@ -75,7 +75,7 @@ public class APIMgtFaultHandler extends AbstractMediator{
         String publisherClass = UsageComponent.getApiMgtConfigReaderService().getPublisherClass();
 
         if (publisher == null) {
-            synchronized (this){
+            synchronized (this) {
                 if (publisher == null) {
                     try {
                         log.debug("Instantiating Data Publisher");

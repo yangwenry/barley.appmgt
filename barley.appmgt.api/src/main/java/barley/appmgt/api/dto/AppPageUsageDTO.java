@@ -21,7 +21,7 @@ public class AppPageUsageDTO {
     private String apiName;
     private String version;
     private String context;
-    private String userid;
+    //private String userid;
     private String referer;
     private long count;
 
@@ -49,13 +49,13 @@ public class AppPageUsageDTO {
         this.context = context;
     }
 
-    public String getUserId() {
+    /*public String getUserId() {
         return userid;
     }
 
     public void setUserId(String userid) {
         this.userid = userid;
-    }
+    }*/
 
     public String getReferer() {
         return referer;
@@ -71,5 +71,17 @@ public class AppPageUsageDTO {
 
     public void setCount(long count) {
         this.count = count;
+    }
+
+    @Override
+    public String toString() {
+        return "AppPageUsageDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", version='" + version + '\'' +
+                ", context='" + context + '\'' +
+//                ", userid='" + userid + '\'' +
+                ", referer='" + referer + '\'' +
+                ", count=" + count +
+                '}';
     }
 }

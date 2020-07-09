@@ -26,8 +26,9 @@ import javax.xml.namespace.QName;
 
 public class AppUsageByPage {
 
+    private String apiName;
     private String apiVersion;
-    private String userId;
+    //private String userId;
     private String context;
     private String referer;
     private long requestCount;
@@ -37,8 +38,8 @@ public class AppUsageByPage {
                 APIUsageStatisticsClientConstants.API)).getText();
         apiVersion = row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.VERSION)).getText();
-        userId = row.getFirstChildWithName(new QName(
-                APIUsageStatisticsClientConstants.USER_ID)).getText();
+//        userId = row.getFirstChildWithName(new QName(
+//                APIUsageStatisticsClientConstants.USER_ID)).getText();
         context = row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.CONTEXT)).getText();
         referer = row.getFirstChildWithName(new QName(APIUsageStatisticsClientConstants.REFERER)).getText();
@@ -54,8 +55,6 @@ public class AppUsageByPage {
         this.apiName = apiName;
     }
 
-    private String apiName;
-
     public String getApiVersion() {
         return apiVersion;
     }
@@ -64,13 +63,13 @@ public class AppUsageByPage {
         this.apiVersion = apiVersion;
     }
 
-    public String getUserId() {
+    /*public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
+    }*/
 
     public String getContext() {
         return context;

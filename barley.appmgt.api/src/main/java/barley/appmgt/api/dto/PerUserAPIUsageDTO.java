@@ -20,8 +20,26 @@ package barley.appmgt.api.dto;
 
 public class PerUserAPIUsageDTO {
 
+    private String apiName;
+    private String version;
     private String user;
     private long count;
+
+    public String getApiName() {
+        return apiName;
+    }
+
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public long getCount(){
         return count;
@@ -37,5 +55,15 @@ public class PerUserAPIUsageDTO {
 
     public void setUsername(String user){
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "PerUserAPIUsageDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", version='" + version + '\'' +
+                ", user='" + user + '\'' +
+                ", count=" + count +
+                '}';
     }
 }

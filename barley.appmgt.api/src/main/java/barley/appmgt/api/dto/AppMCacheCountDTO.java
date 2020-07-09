@@ -59,4 +59,16 @@ public class AppMCacheCountDTO {
     public void setRequestDate(String requestDate) {
         this.requestDate = requestDate;
     }
+
+    @Override
+    public String toString() {
+        return "AppMCacheCountDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", version='" + version + '\'' +
+                ", cacheHit=" + cacheHit +
+                ", fullRequestPath='" + fullRequestPath + '\'' +
+                ", totalRequestCount=" + totalRequestCount +
+                ", requestDate='" + requestDate + '\'' +
+                '}';
+    }
 }

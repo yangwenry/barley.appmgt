@@ -269,7 +269,7 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
      *
      * @param providerId , provider id
      * @return set of WebApp
-     * @throws barley.apimgt.api.APIManagementException
+     * @throws barley.appmgt.api.AppManagementException
      *          if failed to get set of WebApp
      */
     public List<WebApp> getAPIsByProvider(String providerId) throws AppManagementException {

@@ -20,15 +20,17 @@ package barley.appmgt.usage.client;
 public final class APIUsageStatisticsClientConstants {
 
 
-    public static final String API_VERSION_SERVICE_TIME_SUMMARY = "API_RESPONSE_SUMMARY";
+    public static final String API_VERSION_SERVICE_TIME_SUMMARY = "APP_RESPONSE_SUMMARY";
 
     public static final String API_VERSION_SERVICE_TIME_SUMMARY_INDEX = "APIVersionServiceTimeSummaryIndex";
 
-    public static final String API_Resource_Path_USAGE_SUMMARY = "API_Resource_USAGE_SUMMARY";
+    public static final String API_Resource_Path_USAGE_SUMMARY = "APP_Resource_USAGE_SUMMARY";
 
-    public static final String API_PAGE_USAGE_SUMMARY = "API_REQUEST_SUMMARY";
+    public static final String API_PAGE_USAGE_SUMMARY = "APP_REQUEST_SUMMARY";
 
-    public static final String API_VERSION_USAGE_SUMMARY = "API_VERSION_USAGE_SUMMARY";
+    public static final String API_REQUEST_SUMMARY = "APP_REQUEST_SUMMARY";
+
+    public static final String API_VERSION_USAGE_SUMMARY = "APP_VERSION_USAGE_SUMMARY";
 
     public static final String API_VERSION_USAGE_SUMMARY_INDEX = "APIVersionUsageSummaryIndex";
 
@@ -36,19 +38,19 @@ public final class APIUsageStatisticsClientConstants {
 
     public static final String API_VERSION_KEY_USAGE_SUMMARY_INDEX = "APIVersionKeyUsageSummaryIndex";
 
-    public static final String API_VERSION_KEY_LAST_ACCESS_SUMMARY = "API_REQUEST_SUMMARY";
+    public static final String API_VERSION_KEY_LAST_ACCESS_SUMMARY = "APP_REQUEST_SUMMARY";
 
     public static final String API_VERSION_KEY_LAST_ACCESS_SUMMARY_INDEX = "APIVersionKeyLastAccessSummaryIndex";
 
-    public static final String KEY_USAGE_SUMMARY = "API_REQUEST_SUMMARY";
+    public static final String KEY_USAGE_SUMMARY = "APP_REQUEST_SUMMARY";
 
-    public static final String KEY_USAGE_MONTH_SUMMARY = "API_REQUEST_MONTHLY_SUMMARY";
+    public static final String KEY_USAGE_MONTH_SUMMARY = "APP_REQUEST_MONTHLY_SUMMARY";
 
     public static final String MONTH = "month";
 
-    public static final String API_FAULT_SUMMARY = " API_FAULT_SUMMARY";
+    public static final String API_FAULT_SUMMARY = " APP_FAULT_SUMMARY";
 
-    public static final String API_REQUEST_TIME_FAULT_SUMMARY = "API_REQUEST_TIME_FAULT_SUMMARY";
+    public static final String API_REQUEST_TIME_FAULT_SUMMARY = "APP_REQUEST_TIME_FAULT_SUMMARY";
 
     public static final String KEY_USAGE_SUMMARY_INDEX = "KeyUsageSummaryIndex";
 
@@ -66,7 +68,7 @@ public final class APIUsageStatisticsClientConstants {
 
     public static final String SERVICE_TIME = "servicetime";
 
-    public static final String API_PUBLISHER = "APIPUBLISHER";
+    public static final String API_PUBLISHER = "apipublisher";
 
     public static final String VERSION = "version";
 
@@ -95,7 +97,7 @@ public final class APIUsageStatisticsClientConstants {
 
     public static final String TIME = "time";
 
-    public static final int DEFAULT_RESULTS_LIMIT = 10;
+    public static final int DEFAULT_RESULTS_LIMIT = 100;
 
     public static final String ALL_PROVIDERS = "__all_providers__";
 
@@ -118,6 +120,8 @@ public final class APIUsageStatisticsClientConstants {
     public static final String CACHE_HIT = "CACHEHIT";
 
     public static final String TOTAL_REQUEST_COUNT = "TOTAL_REQUEST_COUNT";
+
+    public static final String TOTAL_RESPONSE_COUNT = "TOTAL_RESPONSE_COUNT";
 
     public static final String CACHE_REQUEST_SUMMARY = "CACHE_REQUEST_SUMMARY";
 

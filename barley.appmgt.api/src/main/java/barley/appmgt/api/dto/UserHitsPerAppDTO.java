@@ -72,4 +72,12 @@ public class UserHitsPerAppDTO {
         this.userHitsCount = userHitsCount;
     }
 
+    @Override
+    public String toString() {
+        return "UserHitsPerAppDTO{" +
+                "context='" + context + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userHitsCount=" + userHitsCount +
+                '}';
+    }
 }

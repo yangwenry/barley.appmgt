@@ -35,7 +35,6 @@ public class AppResponseTime {
     private String pageName[];
 
     public AppResponseTime(OMElement row) {
-        referer = "";
         String nameVersion = row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.APP_VERSION)).getText();
         int index = nameVersion.lastIndexOf(":");
@@ -45,6 +44,10 @@ public class AppResponseTime {
                 APIUsageStatisticsClientConstants.CONTEXT)).getText();
         responseTime = Double.parseDouble(row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.SERVICE_TIME)).getText());
+        responseCount = (long) Double.parseDouble(row.getFirstChildWithName(new QName(
+                APIUsageStatisticsClientConstants.RESPONSE)).getText());
+
+        referer = "";
         page = row.getFirstChildWithName(new QName(APIUsageStatisticsClientConstants.REFERER)).getText();
         pageName = page.split("//")[1].split("/");
         for(int x = 1;x<pageName.length;x++){

@@ -69,4 +69,15 @@ public class AppVersionUserUsageDTO {
         this.context = context;
     }
 
+    @Override
+    public String toString() {
+        return "AppVersionUserUsageDTO{" +
+                "apiname='" + apiname + '\'' +
+                ", context='" + context + '\'' +
+                ", version='" + version + '\'' +
+                ", count=" + count +
+                ", cost='" + cost + '\'' +
+                ", costPerAPI='" + costPerAPI + '\'' +
+                '}';
+    }
 }

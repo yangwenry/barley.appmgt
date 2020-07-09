@@ -19,6 +19,7 @@ package barley.appmgt.usage.client.internal;
 import barley.appmgt.api.exception.AppUsageQueryServiceClientException;
 import barley.appmgt.impl.AppManagerConfiguration;
 import barley.appmgt.impl.AppManagerConfigurationService;
+import barley.appmgt.usage.client.impl.AppUsageStatisticsRdbmsClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -34,11 +35,15 @@ public class AppMUsageClientServiceComponent {
 
     private static AppManagerConfiguration configuration = null;
 
-    protected void activate()
+    public void activate()
             throws AppUsageQueryServiceClientException {
         if (log.isDebugEnabled()) {
             log.debug("barley.appmgt.usage.client component has been activating");
         }
+
+        // (추가) - 데이터베이스 초기화
+        AppUsageStatisticsRdbmsClient.initializeDataSource();
+
         // (임시주석)
         /*
         BundleContext bundleContext = componentContext.getBundleContext();
@@ -47,16 +52,16 @@ public class AppMUsageClientServiceComponent {
                                       null);*/
     }
 
-    protected void deactivate() {
+    public void deactivate() {
         log.debug("App usage client component deactivated");
     }
 
-    protected void setAPIManagerConfigurationService(AppManagerConfigurationService amcService) {
+    public void setAPIManagerConfigurationService(AppManagerConfigurationService amcService) {
         log.debug("App manager configuration service bound to the WebApp usage client component");
         configuration = amcService.getAPIManagerConfiguration();
     }
 
-    protected void unsetAPIManagerConfigurationService(AppManagerConfigurationService amcService) {
+    public void unsetAPIManagerConfigurationService(AppManagerConfigurationService amcService) {
         log.debug("App manager configuration service unbound from the WebApp usage client component");
         configuration = null;
     }

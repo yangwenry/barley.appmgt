@@ -30,6 +30,9 @@ public class AppResponseFaultCount {
     private String context;
     private long faultCount;
     private String requestTime;
+    private String referer;
+    private String page;
+    private String pageName[];
 
     public AppResponseFaultCount(OMElement row) {
         apiName = row.getFirstChildWithName(new QName(
@@ -47,6 +50,13 @@ public class AppResponseFaultCount {
         }
         if (faultCountEle != null) {
             faultCount = (long) Double.parseDouble(faultCountEle.getText());
+        }
+
+        referer = "";
+        page = row.getFirstChildWithName(new QName(APIUsageStatisticsClientConstants.REFERER)).getText();
+        pageName = page.split("//")[1].split("/");
+        for(int x = 1;x<pageName.length;x++){
+            referer =referer + "/"+pageName[x] ;
         }
     }
 
@@ -88,6 +98,14 @@ public class AppResponseFaultCount {
 
     public void setRequestTime(String requestTime) {
         this.requestTime = requestTime;
+    }
+
+    public String getReferer() {
+        return referer;
+    }
+
+    public void setReferer(String referer) {
+        this.referer = referer;
     }
 
 

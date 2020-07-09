@@ -25,6 +25,21 @@ public interface AppUsageStatisticsClient {
 
     public void initialize(String username) throws AppUsageQueryServiceClientException;
 
+
+
+/**
+     * 일자별 app request 사용량 가져오기
+     * @param providerName
+     * @param apiName
+     * @param fromDate
+     * @param toDate
+     * @param tenantDomain
+     * @return
+     * @throws AppUsageQueryServiceClientException
+     */
+    public List<AppUsageDTO> getAppUsage(String providerName, String apiName, String fromDate, String toDate,
+                                             String tenantDomain) throws AppUsageQueryServiceClientException;
+
     /**
      * Returns a list of AppUsageDTO objects that contain information related to Apps that
      * belong to a particular provider and the number of total WebApp calls each WebApp has processed
@@ -36,12 +51,12 @@ public interface AppUsageStatisticsClient {
      * @param fromDate
      * @param toDate
      * @param limit Number of entries to return
-     * @param tenantDomainName
+     * @param tenantDomain
      * @return a List of AppUsageDTO objects - possibly empty
      * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException if an error occurs while contacting backend services
      */
     public List<AppUsageDTO> getUsageByApps(String providerName, String fromDate, String toDate,
-                                            int limit, String tenantDomainName)
+                                            int limit, String tenantDomain)
             throws AppUsageQueryServiceClientException;
 
     /**
@@ -97,12 +112,12 @@ public interface AppUsageStatisticsClient {
      * @param providerName Name of the WebApp provider
      * @param fromDate
      * @param toDate
-     * @param tenantDomainName
+     * @param tenantDomain
      * @return a List of AppPageUsageDTO objects, possibly empty
      * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppPageUsageDTO> getAppUsageByPage(String providerName, String fromDate, String toDate,
-                                                   String tenantDomainName)
+                                                   String tenantDomain)
             throws AppUsageQueryServiceClientException;
 
     /**
@@ -112,12 +127,12 @@ public interface AppUsageStatisticsClient {
      * @param providerName Name of the WebApp provider
      * @param fromDate
      * @param toDate
-     * @param tenantDomainName
+     * @param tenantDomain
      * @return a List of AppUsageByUserDTO objects, possibly empty
      * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppUsageByUserDTO> getAppUsageByUser(String providerName, String fromDate, String toDate,
-                                                     String tenantDomainName)
+                                                     String tenantDomain)
             throws AppUsageQueryServiceClientException;
 
     /**
@@ -157,12 +172,12 @@ public interface AppUsageStatisticsClient {
      * @param fromDate
      * @param toDate
      * @param limit Number of entries to return
-     * @param tenantDomainName
+     * @param tenantDomain
      * @return a list of AppVersionLastAccessTimeDTO objects, possibly empty
      * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
     public List<AppVersionLastAccessTimeDTO> getLastAccessTimesByApps(String providerName, String fromDate,
-                                                                      String toDate, int limit, String tenantDomainName)
+                                                                      String toDate, int limit, String tenantDomain)
             throws AppUsageQueryServiceClientException;
 
     /**

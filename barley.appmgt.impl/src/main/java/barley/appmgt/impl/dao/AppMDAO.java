@@ -10828,6 +10828,7 @@ public class AppMDAO {
     	app.setDescription(resultSet.getString("DESCRIPTION"));
     	app.setTitle(resultSet.getString("TITLE"));
     	app.setTag(resultSet.getString("TAG"));
+    	app.setContext(resultSet.getString("CONTEXT"));
 
     	return app;
     }

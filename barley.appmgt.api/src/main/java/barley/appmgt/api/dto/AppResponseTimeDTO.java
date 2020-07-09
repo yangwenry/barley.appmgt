@@ -64,5 +64,14 @@ public class AppResponseTimeDTO {
         return version;
     }
 
-
+    @Override
+    public String toString() {
+        return "AppResponseTimeDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", serviceTime=" + serviceTime +
+                ", referer='" + referer + '\'' +
+                ", context='" + context + '\'' +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }

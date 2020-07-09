@@ -24,6 +24,7 @@ public class AppResponseFaultCountDTO {
     private double faultPercentage;
 	private String requestTime;
     private long count;
+    private String referer;
 
     public String getApiName() {
         return apiName;
@@ -72,4 +73,26 @@ public class AppResponseFaultCountDTO {
     public void setFaultPercentage(double faultPercentage) {
         this.faultPercentage = faultPercentage;
     }
+
+    public String getReferer() {
+        return referer;
+    }
+
+    public void setReferer(String referer) {
+        this.referer = referer;
+    }
+
+    @Override
+    public String toString() {
+        return "AppResponseFaultCountDTO{" +
+                "apiName='" + apiName + '\'' +
+                ", version='" + version + '\'' +
+                ", context='" + context + '\'' +
+                ", faultPercentage=" + faultPercentage +
+                ", requestTime='" + requestTime + '\'' +
+                ", count=" + count +
+                ", referer='" + referer + '\'' +
+                '}';
+    }
+
 }

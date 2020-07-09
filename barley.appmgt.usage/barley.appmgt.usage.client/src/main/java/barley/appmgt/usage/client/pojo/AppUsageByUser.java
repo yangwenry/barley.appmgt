@@ -25,20 +25,31 @@ import org.apache.axiom.om.OMElement;
 import javax.xml.namespace.QName;
 
 public class AppUsageByUser {
+    private String apiName;
     private String context;
     private String username;
     private long requestCount;
     private String apiVersion;
 
     public AppUsageByUser(OMElement row) {
+        apiName = row.getFirstChildWithName(new QName(
+                APIUsageStatisticsClientConstants.API)).getText();
+        apiVersion = row.getFirstChildWithName(new QName(
+                APIUsageStatisticsClientConstants.VERSION)).getText();
         context = row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.CONTEXT)).getText();
         username = row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.USER_ID)).getText();
         requestCount = (long) Double.parseDouble(row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.REQUEST)).getText());
-        apiVersion = row.getFirstChildWithName(new QName(
-                APIUsageStatisticsClientConstants.VERSION)).getText();
+    }
+
+    public String getApiName() {
+        return apiName;
+    }
+
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
     }
 
     public String getContext() {
