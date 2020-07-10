@@ -20,12 +20,20 @@ package barley.appmgt.api.dto;
 
 public class AppVersionUserUsageDTO {
 
-    private String apiname;
+    private String appName;
     private String context;
     private String version;
     private long count;
     private String cost;
     private String costPerAPI;
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public long getCount() {
         return count;
@@ -38,10 +46,6 @@ public class AppVersionUserUsageDTO {
 
     public String getVersion() {
         return version;
-    }
-
-    public String getApiname() {
-        return apiname;
     }
 
     public String getContext() {
@@ -61,10 +65,6 @@ public class AppVersionUserUsageDTO {
         this.version = version;
     }
 
-    public void setApiname(String apiName) {
-        this.apiname = apiName;
-    }
-
     public void setContext(String context) {
         this.context = context;
     }
@@ -72,7 +72,7 @@ public class AppVersionUserUsageDTO {
     @Override
     public String toString() {
         return "AppVersionUserUsageDTO{" +
-                "apiname='" + apiname + '\'' +
+                "appName='" + appName + '\'' +
                 ", context='" + context + '\'' +
                 ", version='" + version + '\'' +
                 ", count=" + count +

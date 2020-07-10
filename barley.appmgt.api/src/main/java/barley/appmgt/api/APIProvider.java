@@ -17,36 +17,17 @@
 */
 package barley.appmgt.api;
 
+import barley.appmgt.api.dto.UserApplicationAPIUsage;
+import barley.appmgt.api.model.*;
+import barley.appmgt.api.model.Documentation.DocumentSourceType;
+import barley.appmgt.api.model.entitlement.EntitlementPolicy;
+import barley.appmgt.api.model.entitlement.EntitlementPolicyPartial;
+import barley.appmgt.api.model.entitlement.EntitlementPolicyValidationResult;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import barley.appmgt.api.dto.UserApplicationAPIUsage;
-import barley.appmgt.api.model.APIIdentifier;
-import barley.appmgt.api.model.APIStatus;
-import barley.appmgt.api.model.App;
-import barley.appmgt.api.model.AppDefaultVersion;
-import barley.appmgt.api.model.AppStore;
-import barley.appmgt.api.model.BusinessOwner;
-import barley.appmgt.api.model.Documentation;
-import barley.appmgt.api.model.DuplicateAPIException;
-import barley.appmgt.api.model.Documentation.DocumentSourceType;
-import barley.appmgt.api.model.EntitlementPolicyGroup;
-import barley.appmgt.api.model.FileContent;
-import barley.appmgt.api.model.LifeCycleEvent;
-import barley.appmgt.api.model.MobileApp;
-import barley.appmgt.api.model.OneTimeDownloadLink;
-import barley.appmgt.api.model.Provider;
-import barley.appmgt.api.model.SSOProvider;
-import barley.appmgt.api.model.Subscriber;
-import barley.appmgt.api.model.Tag;
-import barley.appmgt.api.model.Tier;
-import barley.appmgt.api.model.Usage;
-import barley.appmgt.api.model.WebApp;
-import barley.appmgt.api.model.entitlement.EntitlementPolicy;
-import barley.appmgt.api.model.entitlement.EntitlementPolicyPartial;
-import barley.appmgt.api.model.entitlement.EntitlementPolicyValidationResult;
 
 /**
  * APIProvider responsible for providing helper functionality
@@ -702,8 +683,8 @@ public interface APIProvider extends APIManager {
      * @throws AppManagementException
      */
 
-    public Map<String, Long> getSubscriptionCountByAPPs(String provider, String fromDate, String toDate,
-                                                        boolean isSubscriptionOn) throws AppManagementException;
+    public List<SubscriptionCount> getSubscriptionCountByAPPs(String provider, String fromDate, String toDate,
+                                                               boolean isSubscriptionOn) throws AppManagementException;
 
 
     /**

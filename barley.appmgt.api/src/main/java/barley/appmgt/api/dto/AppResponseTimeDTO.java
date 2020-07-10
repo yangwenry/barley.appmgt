@@ -18,18 +18,18 @@ package barley.appmgt.api.dto;
 
 public class AppResponseTimeDTO {
 
-    private String apiName;
+    private String appName;
     private double serviceTime;
     private String referer;
     private String context;
     private String version;
 
-    public String getApiName() {
-        return apiName;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public double getServiceTime() {
@@ -67,7 +67,7 @@ public class AppResponseTimeDTO {
     @Override
     public String toString() {
         return "AppResponseTimeDTO{" +
-                "apiName='" + apiName + '\'' +
+                "appName='" + appName + '\'' +
                 ", serviceTime=" + serviceTime +
                 ", referer='" + referer + '\'' +
                 ", context='" + context + '\'' +

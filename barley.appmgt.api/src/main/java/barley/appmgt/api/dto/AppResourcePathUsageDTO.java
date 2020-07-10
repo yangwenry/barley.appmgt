@@ -18,18 +18,18 @@ package barley.appmgt.api.dto;
 
 public class AppResourcePathUsageDTO {
 
-    private String apiName;
+    private String appName;
     private String version;
     private String context;
     private String method;
     private long count;
 
-    public String getApiName() {
-        return apiName;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public String getVersion() {
@@ -67,7 +67,7 @@ public class AppResourcePathUsageDTO {
     @Override
     public String toString() {
         return "AppResourcePathUsageDTO{" +
-                "apiName='" + apiName + '\'' +
+                "appName='" + appName + '\'' +
                 ", version='" + version + '\'' +
                 ", context='" + context + '\'' +
                 ", method='" + method + '\'' +

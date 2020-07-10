@@ -44,8 +44,9 @@ public class AppUsageByUserName {
         context = row.getFirstChildWithName(new QName(APIUsageStatisticsClientConstants.CONTEXT)) .getText();
         requestCount = (long) Double.parseDouble(row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.REQUEST)).getText());
-        accessTime =row.getFirstChildWithName(new QName(
-                APIUsageStatisticsClientConstants.TIME)).getText();
+
+//        accessTime =row.getFirstChildWithName(new QName(
+//                APIUsageStatisticsClientConstants.TIME)).getText();
     }
 
     public String getApiName() {

@@ -18,16 +18,16 @@ package barley.appmgt.api.dto;
 
 public class AppVersionUsageDTO {
 
-    private String apiName;
+    private String appName;
     private String version;
     private long count;
 
-    public String getApiName() {
-        return apiName;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public long getCount() {
@@ -49,7 +49,7 @@ public class AppVersionUsageDTO {
     @Override
     public String toString() {
         return "AppVersionUsageDTO{" +
-                "apiName='" + apiName + '\'' +
+                "appName='" + appName + '\'' +
                 ", version='" + version + '\'' +
                 ", count=" + count +
                 '}';

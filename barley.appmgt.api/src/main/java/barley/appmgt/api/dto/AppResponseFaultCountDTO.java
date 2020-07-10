@@ -18,7 +18,7 @@ package barley.appmgt.api.dto;
 
 public class AppResponseFaultCountDTO {
 
-    private String apiName;
+    private String appName;
     private String version;
     private String context;
     private double faultPercentage;
@@ -26,12 +26,12 @@ public class AppResponseFaultCountDTO {
     private long count;
     private String referer;
 
-    public String getApiName() {
-        return apiName;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public String getVersion() {
@@ -85,7 +85,7 @@ public class AppResponseFaultCountDTO {
     @Override
     public String toString() {
         return "AppResponseFaultCountDTO{" +
-                "apiName='" + apiName + '\'' +
+                "appName='" + appName + '\'' +
                 ", version='" + version + '\'' +
                 ", context='" + context + '\'' +
                 ", faultPercentage=" + faultPercentage +

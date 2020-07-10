@@ -18,97 +18,20 @@
 
 package barley.appmgt.impl.dao;
 
-import java.io.ByteArrayInputStream;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
-
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.EntitlementService;
 import barley.appmgt.api.SubscriptionAlreadyExistingException;
 import barley.appmgt.api.dto.UserApplicationAPIUsage;
-import barley.appmgt.api.model.APIIdentifier;
-import barley.appmgt.api.model.APIKey;
-import barley.appmgt.api.model.APIStatus;
-import barley.appmgt.api.model.AppDefaultVersion;
-import barley.appmgt.api.model.AppStore;
-import barley.appmgt.api.model.Application;
-import barley.appmgt.api.model.AuthenticatedIDP;
-import barley.appmgt.api.model.BusinessOwner;
-import barley.appmgt.api.model.BusinessOwnerProperty;
-import barley.appmgt.api.model.Comment;
-import barley.appmgt.api.model.EntitlementPolicyGroup;
-import barley.appmgt.api.model.JavaPolicy;
-import barley.appmgt.api.model.LifeCycleEvent;
-import barley.appmgt.api.model.SubscribedAPI;
-import barley.appmgt.api.model.Subscriber;
-import barley.appmgt.api.model.Subscription;
-import barley.appmgt.api.model.Tier;
-import barley.appmgt.api.model.URITemplate;
-import barley.appmgt.api.model.WebApp;
-import barley.appmgt.api.model.WebAppSearchOption;
-import barley.appmgt.api.model.WebAppSortOption;
+import barley.appmgt.api.model.*;
 import barley.appmgt.api.model.entitlement.EntitlementPolicyPartial;
 import barley.appmgt.api.model.entitlement.XACMLPolicyTemplateContext;
 import barley.appmgt.impl.APIGatewayManager;
 import barley.appmgt.impl.AppMConstants;
 import barley.appmgt.impl.AppManagerConfiguration;
-import barley.appmgt.impl.dto.APIInfoDTO;
-import barley.appmgt.impl.dto.APIKeyInfoDTO;
-import barley.appmgt.impl.dto.APIKeyValidationInfoDTO;
-import barley.appmgt.impl.dto.TierPermissionDTO;
-import barley.appmgt.impl.dto.VerbInfoDTO;
-import barley.appmgt.impl.dto.WebAppInfoDTO;
-import barley.appmgt.impl.dto.WorkflowDTO;
+import barley.appmgt.impl.dto.*;
 import barley.appmgt.impl.entitlement.EntitlementServiceFactory;
 import barley.appmgt.impl.service.ServiceReferenceHolder;
-import barley.appmgt.impl.utils.APIMgtDBUtil;
-import barley.appmgt.impl.utils.APIVersionComparator;
-import barley.appmgt.impl.utils.AppManagerUtil;
-import barley.appmgt.impl.utils.LRUCache;
-import barley.appmgt.impl.utils.RemoteUserManagerClient;
-import barley.appmgt.impl.utils.URLMapping;
+import barley.appmgt.impl.utils.*;
 import barley.appmgt.impl.workflow.WorkflowStatus;
 import barley.core.BarleyConstants;
 import barley.core.MultitenantConstants;
@@ -133,6 +56,29 @@ import barley.registry.core.session.UserRegistry;
 import barley.user.api.UserRealmService;
 import barley.user.api.UserStoreException;
 import barley.user.core.util.UserCoreUtil;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeObject;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Data Access Layer for App Management
@@ -3286,14 +3232,16 @@ public class AppMDAO {
      * @return subscription count of apps
      * @throws barley.appmgt.api.AppManagementException
      */
-    public Map<String, Long> getSubscriptionCountByApp(String providerName, String fromDate, String toDate,
+    public List<SubscriptionCount> getSubscriptionCountByApp(String providerName, String fromDate, String toDate,
                                                        int tenantId, boolean isSubscriptionOn)
             throws AppManagementException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet result = null;
         String sqlQuery;
-        Map<String, Long> subscriptions = new TreeMap<String, Long>();
+        // (수정)
+        // Map<String, Long> subscriptions = new TreeMap<String, Long>();
+        List<SubscriptionCount> subscriptions = new ArrayList<>();
 
         try {
             connection = APIMgtDBUtil.getConnection();
@@ -3373,8 +3321,15 @@ public class AppMDAO {
                 String appVersion = result.getString("APP_VERSION");
                 String appuuid = result.getString("uuid");
                 long count = result.getLong("SUB_ID");
-                String key = appName + "/" + appVersion + "&" + appuuid;
-                subscriptions.put(key, count);
+                // (수정) 객체로 변경
+                //String key = appName + "/" + appVersion + "&" + appuuid;
+                //subscriptions.put(key, count);
+                SubscriptionCount subscriptionCount = new SubscriptionCount();
+                subscriptionCount.setAppName(appName);
+                subscriptionCount.setAppVersion(appVersion);
+                subscriptionCount.setAppId(appuuid);
+                subscriptionCount.setSubscriptionCount(count);
+                subscriptions.add(subscriptionCount);
             }
         } catch (SQLException e) {
             handleException("Failed to get subscriptionCount of apps for provider :" + providerName +

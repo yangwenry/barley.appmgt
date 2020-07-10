@@ -18,67 +18,14 @@
 
 package barley.appmgt.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.SecureRandom;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.cache.Cache;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.util.AXIOMUtil;
-import org.apache.axis2.Constants;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONObject;
-
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.EntitlementService;
 import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.dto.UserApplicationAPIUsage;
-import barley.appmgt.api.model.APIIdentifier;
-import barley.appmgt.api.model.APIStatus;
-import barley.appmgt.api.model.APPLifecycleActions;
-import barley.appmgt.api.model.App;
-import barley.appmgt.api.model.AppDefaultVersion;
-import barley.appmgt.api.model.AppStore;
-import barley.appmgt.api.model.BusinessOwner;
-import barley.appmgt.api.model.Documentation;
+import barley.appmgt.api.model.*;
 import barley.appmgt.api.model.Documentation.DocumentSourceType;
-import barley.appmgt.api.model.DuplicateAPIException;
-import barley.appmgt.api.model.EntitlementPolicyGroup;
-import barley.appmgt.api.model.ExternalAppStorePublisher;
-import barley.appmgt.api.model.FileContent;
-import barley.appmgt.api.model.JavaPolicy;
-import barley.appmgt.api.model.LifeCycleEvent;
-import barley.appmgt.api.model.MobileApp;
-import barley.appmgt.api.model.OneTimeDownloadLink;
-import barley.appmgt.api.model.Provider;
-import barley.appmgt.api.model.SSOProvider;
-import barley.appmgt.api.model.Subscriber;
 import barley.appmgt.api.model.Tag;
-import barley.appmgt.api.model.Tier;
-import barley.appmgt.api.model.Usage;
-import barley.appmgt.api.model.WebApp;
 import barley.appmgt.api.model.entitlement.EntitlementPolicy;
 import barley.appmgt.api.model.entitlement.EntitlementPolicyPartial;
 import barley.appmgt.api.model.entitlement.EntitlementPolicyValidationResult;
@@ -105,12 +52,7 @@ import barley.governance.api.generic.GenericArtifactManager;
 import barley.governance.api.generic.dataobjects.GenericArtifact;
 import barley.governance.api.util.GovernanceUtils;
 import barley.registry.common.CommonConstants;
-import barley.registry.core.ActionConstants;
-import barley.registry.core.Association;
-import barley.registry.core.CollectionImpl;
-import barley.registry.core.Registry;
-import barley.registry.core.RegistryConstants;
-import barley.registry.core.Resource;
+import barley.registry.core.*;
 import barley.registry.core.config.RegistryContext;
 import barley.registry.core.exceptions.RegistryException;
 import barley.registry.core.jdbc.realm.RegistryAuthorizationManager;
@@ -119,6 +61,28 @@ import barley.registry.core.session.UserRegistry;
 import barley.registry.core.utils.RegistryUtils;
 import barley.user.api.AuthorizationManager;
 import barley.user.api.UserStoreException;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.axis2.Constants;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONObject;
+
+import javax.cache.Cache;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.SecureRandom;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class provides the core WebApp provider functionality. It is implemented in a very
@@ -2738,9 +2702,10 @@ class APIProviderImpl extends AbstractAPIManager implements APIProvider {
     }
 
     @Override
-    public Map<String, Long> getSubscriptionCountByAPPs(String provider, String fromDate, String toDate,
-                                                        boolean isSubscriptionOn) throws AppManagementException {
-        Map<String, Long> subscriptions = null;
+    public List<SubscriptionCount> getSubscriptionCountByAPPs(String provider, String fromDate, String toDate,
+                                                              boolean isSubscriptionOn) throws AppManagementException {
+        //Map<String, Long> subscriptions = null;
+        List<SubscriptionCount> subscriptions = null;
         try {
             subscriptions = appMDAO.getSubscriptionCountByApp(provider, fromDate, toDate, tenantId, isSubscriptionOn);
         } catch (AppManagementException e) {

@@ -18,17 +18,17 @@ package barley.appmgt.api.dto;
 
 public class AppVersionLastAccessTimeDTO {
     
-    private String apiName;
+    private String appName;
     private String apiVersion;
     private String user;
     private String lastAccessTime;
 
-    public String getApiName() {
-        return apiName;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public String getApiVersion() {
@@ -58,7 +58,7 @@ public class AppVersionLastAccessTimeDTO {
     @Override
     public String toString() {
         return "AppVersionLastAccessTimeDTO{" +
-                "apiName='" + apiName + '\'' +
+                "appName='" + appName + '\'' +
                 ", apiVersion='" + apiVersion + '\'' +
                 ", user='" + user + '\'' +
                 ", lastAccessTime='" + lastAccessTime + '\'' +

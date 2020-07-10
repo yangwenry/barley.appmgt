@@ -120,7 +120,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         List<AppUsageDTO> usageByAPIs = new ArrayList<AppUsageDTO>();
         for (AppUsageDTO usage : usageData) {
             for (WebApp providerAPI : providerAPIs) {
-                if (providerAPI.getId().getApiName().equals(usage.getApiName()) &&
+                if (providerAPI.getId().getApiName().equals(usage.getAppName()) &&
                         providerAPI.getId().getVersion().equals(usage.getVersion()) &&
                         providerAPI.getContext().equals(usage.getContext())) {
 
@@ -150,7 +150,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
             //String usageApiName = usage.getApiName() + " (" + usage.getApiPublisher() + ")";
 
             AppUsageDTO usageDTO = new AppUsageDTO();
-            usageDTO.setApiName(usage.getApiName());
+            usageDTO.setAppName(usage.getApiName());
             usageDTO.setCount(usage.getRequestCount());
             usageDTO.setVersion(usage.getApiVersion());
             usageDTO.setContext(usage.getContext());
@@ -187,7 +187,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         usageDTO.setCount(usageDTO.getCount() + usage.getRequestCount());
                     } else {
                         usageDTO = new AppUsageDTO();
-                        usageDTO.setApiName(apiName);
+                        usageDTO.setAppName(apiName);
                         usageDTO.setCount(usage.getRequestCount());
                         usageByAPIs.put(apiName, usageDTO);
                     }
@@ -223,7 +223,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         providerAPI.getId().getProviderName().equals(usage.getApiPublisher())) {
 
                     AppVersionUsageDTO usageDTO = new AppVersionUsageDTO();
-                    usageDTO.setApiName(usage.getApiName());
+                    usageDTO.setAppName(usage.getApiName());
                     usageDTO.setVersion(usage.getApiVersion());
                     usageDTO.setCount(usage.getRequestCount());
                     usageByVersions.put(usage.getApiVersion(), usageDTO);
@@ -282,7 +282,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         providerAPI.getContext().equals(usage.getContext())) {
 
                     AppResourcePathUsageDTO usageDTO = new AppResourcePathUsageDTO();
-                    usageDTO.setApiName(usage.getApiName());
+                    usageDTO.setAppName(usage.getApiName());
                     usageDTO.setVersion(usage.getApiVersion());
                     usageDTO.setMethod(usage.getMethod());
                     usageDTO.setContext(usage.getContext());
@@ -313,7 +313,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     AppPageUsageDTO usageDTO = new AppPageUsageDTO();
 //                    String apiName = usage.getApiName() + "(v" + providerAPI.getId().getVersion() + ")";
                     String apiName = usage.getApiName();
-                    usageDTO.setApiName(apiName);
+                    usageDTO.setAppName(apiName);
                     usageDTO.setVersion(usage.getApiVersion());
 //                    usageDTO.setUserId(usage.getUserId());
 
@@ -350,7 +350,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     AppUsageByUserDTO usageDTO = new AppUsageByUserDTO();
                     //String apiName = usage.getApiName() + "(v" + providerAPI.getId().getVersion() + ")";
                     String apiName = usage.getApiName();
-                    usageDTO.setApiName(apiName);
+                    usageDTO.setAppName(apiName);
                     usageDTO.setVersion(usage.getApiVersion());
                     usageDTO.setUserID(usage.getUserID());
                     usageDTO.setContext(usage.getContext());
@@ -382,7 +382,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         usageDTO.setCount(usageDTO.getCount() + usageEntry.getRequestCount());
                     } else {
                         usageDTO = new PerUserAPIUsageDTO();
-                        usageDTO.setApiName(usageEntry.getApiName());
+                        usageDTO.setAppName(usageEntry.getApiName());
                         usageDTO.setVersion(usageEntry.getApiVersion());
                         usageDTO.setUsername(usageEntry.getUsername());
                         usageDTO.setCount(usageEntry.getRequestCount());
@@ -518,7 +518,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     //String apiName = responseTime.getApiName() + "(v" + providerAPI.getId().getVersion() + ")";
                     String apiName = responseTime.getApiName();
                     responseTimeDTO = new AppResponseTimeDTO();
-                    responseTimeDTO.setApiName(apiName);
+                    responseTimeDTO.setAppName(apiName);
                     responseTimeDTO.setVersion(responseTime.getApiVersion());
                     responseTimeDTO.setContext(responseTime.getContext());
                     responseTimeDTO.setReferer(responseTime.getReferer());
@@ -571,7 +571,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         DateFormat dateFormat = new SimpleDateFormat();
         for (Map.Entry<String, AppAccessTime> entry : lastAccessTimes.entrySet()) {
             AppVersionLastAccessTimeDTO accessTimeDTO = new AppVersionLastAccessTimeDTO();
-            accessTimeDTO.setApiName(entry.getKey());
+            accessTimeDTO.setAppName(entry.getKey());
             AppAccessTime lastAccessTime = entry.getValue();
             accessTimeDTO.setApiVersion(lastAccessTime.getApiVersion());
             accessTimeDTO.setLastAccessTime(dateFormat.format(lastAccessTime.getAccessTime()));
@@ -600,7 +600,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         providerAPI.getContext().equals(fault.getContext())) {
 
                     AppResponseFaultCountDTO faultyDTO = new AppResponseFaultCountDTO();
-                    faultyDTO.setApiName(fault.getApiName());
+                    faultyDTO.setAppName(fault.getApiName());
                     faultyDTO.setVersion(fault.getApiVersion());
                     faultyDTO.setContext(fault.getContext());
                     faultyDTO.setCount(fault.getFaultCount());
@@ -642,7 +642,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         providerAPI.getContext().equals(fault.getContext())) {
 
                     AppResponseFaultCountDTO faultyDTO = new AppResponseFaultCountDTO();
-                    faultyDTO.setApiName(fault.getApiName() + ":" + providerAPI.getId().getProviderName());
+                    faultyDTO.setAppName(fault.getApiName() + ":" + providerAPI.getId().getProviderName());
                     faultyDTO.setVersion(fault.getApiVersion());
                     faultyDTO.setContext(fault.getContext());
                     faultyDTO.setRequestTime(fault.getRequestTime());
@@ -704,7 +704,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                 if (usageEntry.getUsername().equals(subscriberName) && usageEntry.getMonth().equals(period)) {
 
                     AppVersionUserUsageDTO userUsageDTO = new AppVersionUserUsageDTO();
-                    userUsageDTO.setApiname(usageEntry.getApiName());
+                    userUsageDTO.setAppName(usageEntry.getApiName());
                     userUsageDTO.setContext(usageEntry.getContext());
                     userUsageDTO.setVersion(usageEntry.getApiVersion());
                     userUsageDTO.setCount(usageEntry.getRequestCount());
@@ -729,7 +729,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                 if (usageEntry.getUsername().equals(subscriberName)) {
 
                     AppVersionUserUsageDTO userUsageDTO = new AppVersionUserUsageDTO();
-                    userUsageDTO.setApiname(usageEntry.getApiName());
+                    userUsageDTO.setAppName(usageEntry.getApiName());
                     userUsageDTO.setContext(usageEntry.getContext());
                     userUsageDTO.setVersion(usageEntry.getApiVersion());
                     userUsageDTO.setCount(usageEntry.getRequestCount());
@@ -1253,115 +1253,48 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         try {
             connection = dataSource.getConnection();
             String query;
-            String oracleQuery;
+
+            String querySelect = "SELECT " +
+                    APIUsageStatisticsClientConstants.API + "," +
+                    APIUsageStatisticsClientConstants.API_VERSION + "," +
+                    APIUsageStatisticsClientConstants.VERSION + "," +
+                    APIUsageStatisticsClientConstants.USERID + "," +
+                    " SUM(" + APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ") AS " +
+                    APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ", " +
+                    APIUsageStatisticsClientConstants.CONTEXT;
+
+            String queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
+                    APIUsageStatisticsClientConstants.API_VERSION + "," +
+                    APIUsageStatisticsClientConstants.VERSION + "," +
+                    APIUsageStatisticsClientConstants.USERID + "," +
+                    APIUsageStatisticsClientConstants.CONTEXT;
+
             if (fromDate != null && toDate != null) {
 
-                if ((connection.getMetaData().getDriverName()).contains("Oracle")) {
-                    query = "SELECT " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            " SUM(" + APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ") AS " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ", " +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
-                            " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ? AND " +
-                            APIUsageStatisticsClientConstants.TIME + " BETWEEN ? AND ? AND ROWNUM <= ? " +
-                            " GROUP BY " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " ORDER BY " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, "%" + tenantDomain);
-                    statement.setString(2, fromDate);
-                    statement.setString(3, toDate);
-                    statement.setInt(4, resultsLimit);
+                query = querySelect +
+                        " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
+                        " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ? AND " +
+                        APIUsageStatisticsClientConstants.TIME + " BETWEEN ? AND ? " +
+                        " GROUP BY " +
+                        queryGroupBy +
+                        " ORDER BY " +
+                        APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
 
-                } else {
-                    query = "SELECT " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            " SUM(" + APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ") AS " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ", " +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
-                            " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ? AND " +
-                            APIUsageStatisticsClientConstants.TIME + " BETWEEN ? AND ? " +
-                            " GROUP BY " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " ORDER BY " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
-
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, "%" + tenantDomain);
-                    statement.setString(2, fromDate);
-                    statement.setString(3, toDate);
-                }
+                statement = connection.prepareStatement(query);
+                statement.setString(1, "%" + tenantDomain);
+                statement.setString(2, fromDate);
+                statement.setString(3, toDate);
             } else {
 
-                if ((connection.getMetaData().getDriverName()).contains("Oracle")) {
-                    query = "SELECT " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            " SUM(" + APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ") AS " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ", " +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
-                            " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ? AND ROWNUM <= ?" +
-                            " GROUP BY " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " ORDER BY " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, "%" + tenantDomain);
-                    statement.setInt(2, resultsLimit);
-                }else{
-                    query = "SELECT " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            " SUM(" + APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ") AS " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ", " +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
-                            " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ?" +
-                            " GROUP BY " +
-                            APIUsageStatisticsClientConstants.API + "," +
-                            APIUsageStatisticsClientConstants.API_VERSION + "," +
-                            APIUsageStatisticsClientConstants.VERSION + "," +
-                            APIUsageStatisticsClientConstants.USERID + "," +
-                            APIUsageStatisticsClientConstants.CONTEXT + "," +
-                            APIUsageStatisticsClientConstants.TIME +
-                            " ORDER BY " +
-                            APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, "%" + tenantDomain);
-                }
+                query = querySelect +
+                        " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
+                        " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ?" +
+                        " GROUP BY " +
+                        queryGroupBy +
+                        " ORDER BY " +
+                        APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
+                statement = connection.prepareStatement(query);
+                statement.setString(1, "%" + tenantDomain);
             }
 
             rs = statement.executeQuery();
@@ -1934,7 +1867,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         });
         if (usageData.size() > limit) {
             AppUsageDTO other = new AppUsageDTO();
-            other.setApiName("[Other]");
+            other.setAppName("[Other]");
             for (int i = limit; i < usageData.size(); i++) {
                 other.setCount(other.getCount() + usageData.get(i).getCount());
             }

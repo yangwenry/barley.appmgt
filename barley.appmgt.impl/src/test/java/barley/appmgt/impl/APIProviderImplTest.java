@@ -16,60 +16,31 @@
 
 package barley.appmgt.impl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import barley.appmgt.api.APIProvider;
 import barley.appmgt.api.AppManagementException;
 import barley.appmgt.api.FaultGatewaysException;
 import barley.appmgt.api.dto.UserApplicationAPIUsage;
-import barley.appmgt.api.model.APIIdentifier;
-import barley.appmgt.api.model.APIStatus;
-import barley.appmgt.api.model.AppDefaultVersion;
-import barley.appmgt.api.model.AppStore;
-import barley.appmgt.api.model.BusinessOwner;
-import barley.appmgt.api.model.Documentation;
-import barley.appmgt.api.model.DocumentationType;
-import barley.appmgt.api.model.EntitlementPolicyGroup;
-import barley.appmgt.api.model.FileContent;
-import barley.appmgt.api.model.LifeCycleEvent;
-import barley.appmgt.api.model.Provider;
-import barley.appmgt.api.model.SSOProvider;
-import barley.appmgt.api.model.Subscriber;
-import barley.appmgt.api.model.Tag;
-import barley.appmgt.api.model.Tier;
-import barley.appmgt.api.model.URITemplate;
-import barley.appmgt.api.model.Usage;
-import barley.appmgt.api.model.WebApp;
-import barley.appmgt.api.model.entitlement.EntitlementPolicy;
+import barley.appmgt.api.model.*;
 import barley.appmgt.impl.AppMConstants.LifecycleActions;
 import barley.appmgt.impl.internal.AppManagerComponent;
 import barley.appmgt.impl.service.ServiceReferenceHolder;
 import barley.core.BarleyConstants;
-import barley.core.utils.BarleyUtils;
 import barley.identity.core.util.IdentityConfigParser;
 import barley.identity.core.util.IdentityTenantUtil;
-import barley.registry.core.ActionConstants;
 import barley.registry.core.Registry;
 import barley.registry.core.exceptions.RegistryException;
 import barley.registry.core.service.TenantRegistryLoader;
-import barley.registry.core.utils.UUIDGenerator;
 import barley.registry.indexing.service.TenantIndexingLoader;
-import barley.user.core.UserMgtConstants;
-import barley.user.core.service.RealmService;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 public class APIProviderImplTest extends BaseTestCase {
 
@@ -431,7 +402,7 @@ public class APIProviderImplTest extends BaseTestCase {
     	boolean isSubscriptionOn = true;
     	String fromDate = "2018-01-05";
     	String toDate = "2018-05-15";
-    	Map<String, Long> subCount = provider.getSubscriptionCountByAPPs(userName, fromDate, toDate, isSubscriptionOn);
+		List<SubscriptionCount> subCount = provider.getSubscriptionCountByAPPs(userName, fromDate, toDate, isSubscriptionOn);
     	assertEquals(2, subCount.size());
     	
     	// 구독카운트 
