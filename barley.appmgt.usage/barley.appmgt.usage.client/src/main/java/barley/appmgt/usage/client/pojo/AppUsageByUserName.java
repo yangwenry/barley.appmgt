@@ -25,52 +25,14 @@ import org.apache.axiom.om.OMElement;
 import javax.xml.namespace.QName;
 
 public class AppUsageByUserName {
-    private String apiName;
-    private String apiVersion;
-    private String context;
     private String userID;
-    private String apiPublisher;
     private long requestCount;
-    private String accessTime;
-    private String requestDate;
 
     public AppUsageByUserName(OMElement row) {
-        apiName = row.getFirstChildWithName(new QName(
-                APIUsageStatisticsClientConstants.API)).getText();
-        apiVersion = row.getFirstChildWithName(new QName(
-                APIUsageStatisticsClientConstants.VERSION)).getText();
         userID = row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.USER_ID)).getText();
-        context = row.getFirstChildWithName(new QName(APIUsageStatisticsClientConstants.CONTEXT)) .getText();
         requestCount = (long) Double.parseDouble(row.getFirstChildWithName(new QName(
                 APIUsageStatisticsClientConstants.REQUEST)).getText());
-
-//        accessTime =row.getFirstChildWithName(new QName(
-//                APIUsageStatisticsClientConstants.TIME)).getText();
-    }
-
-    public String getApiName() {
-        return apiName;
-    }
-
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
-    }
-
-    public String getApiVersion() {
-        return apiVersion;
-    }
-
-    public void setApiVersion(String apiVersion) {
-        this.apiVersion = apiVersion;
-    }
-
-    public String getContext() {
-        return context;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
     }
 
     public String getUserID() {
@@ -81,14 +43,6 @@ public class AppUsageByUserName {
         this.userID = userID;
     }
 
-    public String getApiPublisher() {
-        return apiPublisher;
-    }
-
-    public void setApiPublisher(String apiPublisher) {
-        this.apiPublisher = apiPublisher;
-    }
-
     public long getRequestCount() {
         return requestCount;
     }
@@ -97,20 +51,6 @@ public class AppUsageByUserName {
         this.requestCount = requestCount;
     }
 
-    public String getRequestDate() {
-        return requestDate;
-    }
 
-    public void setRequestDate(String requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public String getAccessTime() {
-        return accessTime;
-    }
-
-    public void setAccessTime(String accessTime) {
-        this.accessTime = accessTime;
-    }
 
 }

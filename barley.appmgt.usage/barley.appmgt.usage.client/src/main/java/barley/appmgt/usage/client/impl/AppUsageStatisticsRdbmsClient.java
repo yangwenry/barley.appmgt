@@ -337,11 +337,12 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                                                      String tenantDomain)
             throws AppUsageQueryServiceClientException {
 
-        OMElement omElement = this.queryBetweenTwoDaysForAPIUsageByUser(fromDate, toDate, null, tenantDomain);
+        OMElement omElement = this.queryBetweenTwoDaysForAPIUsageByUser(fromDate, toDate, null);
         Collection<AppUsageByUserName> usageData = getUsageDataByAPIName(omElement);
-        List<WebApp> providerAPIs = getAPIsByProvider(providerName, tenantDomain);
         List<AppUsageByUserDTO> usageByName = new ArrayList<AppUsageByUserDTO>();
 
+        /*
+        List<WebApp> providerAPIs = getAPIsByProvider(providerName, tenantDomain);
         for (AppUsageByUserName usage : usageData) {
             for (WebApp providerAPI : providerAPIs) {
                 if (providerAPI.getId().getApiName().equals(usage.getApiName()) &&
@@ -359,6 +360,13 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     usageByName.add(usageDTO);
                 }
             }
+        }
+        */
+        for (AppUsageByUserName usage : usageData) {
+            AppUsageByUserDTO usageDTO = new AppUsageByUserDTO();
+            usageDTO.setUserId(usage.getUserID());
+            usageDTO.setCount(usage.getRequestCount());
+            usageByName.add(usageDTO);
         }
         return usageByName;
     }
@@ -676,6 +684,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     } else {
                         usageDTO = new PerUserAPIUsageDTO();
                         usageDTO.setUsername(usageEntry.getUsername());
+                        usageDTO.setVersion(usageEntry.getApiVersion());
                         usageDTO.setCount(usageEntry.getRequestCount());
                         usageByUsername.put(usageEntry.getUsername(), usageDTO);
                     }
@@ -1235,8 +1244,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         }
     }
 
-    private OMElement queryBetweenTwoDaysForAPIUsageByUser(String fromDate, String toDate, Integer limit,
-                                                           String tenantDomain)
+    private OMElement queryBetweenTwoDaysForAPIUsageByUser(String fromDate, String toDate, Integer limit)
             throws AppUsageQueryServiceClientException {
         if (dataSource == null) {
             throw new AppUsageQueryServiceClientException(errorMsg);
@@ -1255,25 +1263,18 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
             String query;
 
             String querySelect = "SELECT " +
-                    APIUsageStatisticsClientConstants.API + "," +
-                    APIUsageStatisticsClientConstants.API_VERSION + "," +
-                    APIUsageStatisticsClientConstants.VERSION + "," +
                     APIUsageStatisticsClientConstants.USERID + "," +
-                    " SUM(" + APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ") AS " +
-                    APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + ", " +
-                    APIUsageStatisticsClientConstants.CONTEXT;
+                    " SUM(" + APIUsageStatisticsClientConstants.SUCCESS_REQUEST_COUNT + ") AS " +
+                    APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT;
 
-            String queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
-                    APIUsageStatisticsClientConstants.API_VERSION + "," +
-                    APIUsageStatisticsClientConstants.VERSION + "," +
-                    APIUsageStatisticsClientConstants.USERID + "," +
-                    APIUsageStatisticsClientConstants.CONTEXT;
+            String queryGroupBy =
+                    APIUsageStatisticsClientConstants.USERID;
 
             if (fromDate != null && toDate != null) {
 
                 query = querySelect +
-                        " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
-                        " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ? AND " +
+                        " FROM " + APIUsageStatisticsClientConstants.API_USER_USAGE_SUMMARY +
+                        " WHERE 1=1 AND " +
                         APIUsageStatisticsClientConstants.TIME + " BETWEEN ? AND ? " +
                         " GROUP BY " +
                         queryGroupBy +
@@ -1281,20 +1282,18 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
 
                 statement = connection.prepareStatement(query);
-                statement.setString(1, "%" + tenantDomain);
-                statement.setString(2, fromDate);
-                statement.setString(3, toDate);
+                statement.setString(1, fromDate);
+                statement.setString(2, toDate);
             } else {
 
                 query = querySelect +
-                        " FROM " + APIUsageStatisticsClientConstants.API_PAGE_USAGE_SUMMARY +
-                        " WHERE " + APIUsageStatisticsClientConstants.API_PUBLISHER + " LIKE ?" +
+                        " FROM " + APIUsageStatisticsClientConstants.API_USER_USAGE_SUMMARY +
+                        " WHERE 1=1 " +
                         " GROUP BY " +
                         queryGroupBy +
                         " ORDER BY " +
                         APIUsageStatisticsClientConstants.TOTAL_REQUEST_COUNT + " DESC ";
                 statement = connection.prepareStatement(query);
-                statement.setString(1, "%" + tenantDomain);
             }
 
             rs = statement.executeQuery();

@@ -30,6 +30,8 @@ public final class APIUsageStatisticsClientConstants {
 
     public static final String API_REQUEST_SUMMARY = "APP_REQUEST_SUMMARY";
 
+    public static final String API_USER_USAGE_SUMMARY = "APP_USER_USAGE_SUMMARY";
+
     public static final String API_VERSION_USAGE_SUMMARY = "APP_VERSION_USAGE_SUMMARY";
 
     public static final String API_VERSION_USAGE_SUMMARY_INDEX = "APIVersionUsageSummaryIndex";
@@ -58,8 +60,6 @@ public final class APIUsageStatisticsClientConstants {
 
     public static final String ROW = "row";
 
-    public static final String REQUEST = "total_request_count";
-
     public static final String API = "api";
 
     public static final String API_VERSION = "API_VERSION";
@@ -78,11 +78,15 @@ public final class APIUsageStatisticsClientConstants {
 
     public static final String CONTEXT = "context";
 
+    public static final String SUCCESS_REQUEST_COUNT = "success_request_count";
+
+    public static final String REQUEST = "total_request_count";
+
     public static final String RESPONSE = "total_response_count";
 
-    public static final String INVOCATION_TIME = "requesttime";
-
     public static final String FAULT = "total_fault_count";
+
+    public static final String INVOCATION_TIME = "requesttime";
 
     public static final String REQUEST_TIME = "max_request_time";
 
