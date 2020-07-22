@@ -538,7 +538,7 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     responseTimeDTO.setAppName(apiNameValue);
                     responseTimeDTO.setVersion(responseTime.getApiVersion());
                     responseTimeDTO.setContext(responseTime.getContext());
-                    //responseTimeDTO.setReferer(responseTime.getReferer());
+                    responseTimeDTO.setReferer(responseTime.getReferer());
                     //calculate the average response time
                     double avgTime = responseTime.getResponseTime() / responseTime.getResponseCount();
                     //format the time
