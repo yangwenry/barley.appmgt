@@ -1381,21 +1381,40 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         try {
             connection = dataSource.getConnection();
             String query;
+            String querySelect;
+            String queryGroupBy;
 
-            String querySelect = "SELECT " +
-                    APIUsageStatisticsClientConstants.API + "," +
-                    APIUsageStatisticsClientConstants.API_VERSION + "," +
-                    APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
-                    APIUsageStatisticsClientConstants.CONTEXT + "," +
-                    //APIUsageStatisticsClientConstants.REFERER + "," +
-                    "SUM(" + APIUsageStatisticsClientConstants.RESPONSE + ") AS " + APIUsageStatisticsClientConstants.RESPONSE + "," +
-                    "AVG(" + APIUsageStatisticsClientConstants.SERVICE_TIME + ") AS " + APIUsageStatisticsClientConstants.SERVICE_TIME;
+            if(compositeIndex != null) {
+                querySelect = "SELECT " +
+                        APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.API_VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT + "," +
+                        APIUsageStatisticsClientConstants.REFERER + "," +
+                        "SUM(" + APIUsageStatisticsClientConstants.RESPONSE + ") AS " + APIUsageStatisticsClientConstants.RESPONSE + "," +
+                        "AVG(" + APIUsageStatisticsClientConstants.SERVICE_TIME + ") AS " + APIUsageStatisticsClientConstants.SERVICE_TIME;
 
-            String queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
-                    APIUsageStatisticsClientConstants.API_VERSION + "," +
-                    APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
-                    //APIUsageStatisticsClientConstants.REFERER + "," +
-                    APIUsageStatisticsClientConstants.CONTEXT;
+                queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.API_VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        APIUsageStatisticsClientConstants.REFERER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT;
+            } else {
+                querySelect = "SELECT " +
+                        APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.API_VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT + "," +
+                        "'///'" + " as " + APIUsageStatisticsClientConstants.REFERER + "," +
+                        "SUM(" + APIUsageStatisticsClientConstants.RESPONSE + ") AS " + APIUsageStatisticsClientConstants.RESPONSE + "," +
+                        "AVG(" + APIUsageStatisticsClientConstants.SERVICE_TIME + ") AS " + APIUsageStatisticsClientConstants.SERVICE_TIME;
+
+                queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.API_VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        //APIUsageStatisticsClientConstants.REFERER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT;
+            }
 
             if (fromDate != null && toDate != null) {
                 if (selectRowsByColumnName != null) {
@@ -1510,20 +1529,40 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         try {
             connection = dataSource.getConnection();
             String query;
-            String querySelect = "SELECT " +
-                    APIUsageStatisticsClientConstants.API + "," +
-                    APIUsageStatisticsClientConstants.VERSION + "," +
-                    APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
-                    APIUsageStatisticsClientConstants.CONTEXT + "," +
-                    //APIUsageStatisticsClientConstants.REFERER + "," +
-                    "SUM(" + APIUsageStatisticsClientConstants.FAULT + ") as " +
-                    APIUsageStatisticsClientConstants.FAULT;
+            String querySelect;
+            String queryGroupBy;
 
-            String queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
-                    APIUsageStatisticsClientConstants.VERSION + "," +
-                    APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
-                    //APIUsageStatisticsClientConstants.REFERER + "," +
-                    APIUsageStatisticsClientConstants.CONTEXT;
+            if(compositeIndex != null) {
+                querySelect = "SELECT " +
+                        APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT + "," +
+                        APIUsageStatisticsClientConstants.REFERER + "," +
+                        "SUM(" + APIUsageStatisticsClientConstants.FAULT + ") as " +
+                        APIUsageStatisticsClientConstants.FAULT;
+
+                queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        APIUsageStatisticsClientConstants.REFERER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT;
+            } else {
+                querySelect = "SELECT " +
+                        APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT + "," +
+                        "'///'" + " as " + APIUsageStatisticsClientConstants.REFERER + "," +
+                        "SUM(" + APIUsageStatisticsClientConstants.FAULT + ") as " +
+                        APIUsageStatisticsClientConstants.FAULT;
+
+                queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
+                        APIUsageStatisticsClientConstants.VERSION + "," +
+                        APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
+                        //APIUsageStatisticsClientConstants.REFERER + "," +
+                        APIUsageStatisticsClientConstants.CONTEXT;
+            }
 
             if (selectRowsByColumnName != null) {
 

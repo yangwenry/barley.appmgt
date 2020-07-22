@@ -25,6 +25,7 @@ public class SubscriptionCount {
     private String appVersion;
     private String appId;
     private Long subscriptionCount;
+    private String providerName;
 
     public String getAppName() {
         return appName;
@@ -56,5 +57,13 @@ public class SubscriptionCount {
 
     public void setSubscriptionCount(Long subscriptionCount) {
         this.subscriptionCount = subscriptionCount;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
     }
 }

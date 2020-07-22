@@ -3329,6 +3329,7 @@ public class AppMDAO {
                 subscriptionCount.setAppVersion(appVersion);
                 subscriptionCount.setAppId(appuuid);
                 subscriptionCount.setSubscriptionCount(count);
+                subscriptionCount.setProviderName(appProvider);
                 subscriptions.add(subscriptionCount);
             }
         } catch (SQLException e) {
