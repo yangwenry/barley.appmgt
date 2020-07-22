@@ -501,12 +501,21 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
         }
     }
 
-    public List<AppResponseTimeDTO> getResponseTimesByApps(String providerName, String fromDate, String toDate,
+    public List<AppResponseTimeDTO> getResponseTimesByApps(String providerName, String apiName, String fromDate, String toDate,
                                                            int limit, String tenantDomain)
             throws AppUsageQueryServiceClientException {
 
+        QueryServiceStub.CompositeIndex[] compositeIndex = null;
+        if(!"ALL".equals(apiName)) {
+            compositeIndex = new QueryServiceStub.CompositeIndex[1];
+            compositeIndex[0] = new QueryServiceStub.CompositeIndex();
+            compositeIndex[0].setIndexName("api");
+            compositeIndex[0].setRangeFirst(apiName);
+            compositeIndex[0].setRangeLast(getNextStringInLexicalOrder(apiName));
+        }
+
         OMElement omElement = this.queryBetweenTwoDaysForResponseTime(
-                APIUsageStatisticsClientConstants.API_VERSION_SERVICE_TIME_SUMMARY, fromDate, toDate, null);
+                APIUsageStatisticsClientConstants.API_VERSION_SERVICE_TIME_SUMMARY, fromDate, toDate, compositeIndex);
 //        OMElement omElement = this.queryBetweenTwoDays(
 //                APIUsageStatisticsClientConstants.API_VERSION_SERVICE_TIME_SUMMARY, fromDate, toDate, null, tenantDomain, limit);
         Collection<AppResponseTime> responseTimes = getResponseTimeData(omElement);
@@ -524,12 +533,12 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                         providerAPI.getId().getVersion().equals(responseTime.getApiVersion()) &&
                         providerAPI.getContext().equals(responseTime.getContext())) {
                     //String apiName = responseTime.getApiName() + "(v" + providerAPI.getId().getVersion() + ")";
-                    String apiName = responseTime.getApiName();
+                    String apiNameValue = responseTime.getApiName();
                     responseTimeDTO = new AppResponseTimeDTO();
-                    responseTimeDTO.setAppName(apiName);
+                    responseTimeDTO.setAppName(apiNameValue);
                     responseTimeDTO.setVersion(responseTime.getApiVersion());
                     responseTimeDTO.setContext(responseTime.getContext());
-                    responseTimeDTO.setReferer(responseTime.getReferer());
+                    //responseTimeDTO.setReferer(responseTime.getReferer());
                     //calculate the average response time
                     double avgTime = responseTime.getResponseTime() / responseTime.getResponseCount();
                     //format the time
@@ -590,11 +599,20 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
 
     }
 
-    public List<AppResponseFaultCountDTO> getAppResponseFaultCount(String providerName, String fromDate, String toDate)
+    public List<AppResponseFaultCountDTO> getAppResponseFaultCount(String providerName, String apiName, String fromDate, String toDate)
             throws AppUsageQueryServiceClientException {
 
+        QueryServiceStub.CompositeIndex[] compositeIndex = null;
+        if(!"ALL".equals(apiName)) {
+            compositeIndex = new QueryServiceStub.CompositeIndex[1];
+            compositeIndex[0] = new QueryServiceStub.CompositeIndex();
+            compositeIndex[0].setIndexName("api");
+            compositeIndex[0].setRangeFirst(apiName);
+            compositeIndex[0].setRangeLast(getNextStringInLexicalOrder(apiName));
+        }
+
         OMElement omElement = this.queryBetweenTwoDaysForFaulty(
-                APIUsageStatisticsClientConstants.API_FAULT_SUMMARY, fromDate, toDate, null);
+                APIUsageStatisticsClientConstants.API_FAULT_SUMMARY, fromDate, toDate, compositeIndex);
         Collection<AppResponseFaultCount> faultyData = getAPIResponseFaultCount(omElement);
         String tenantDomain = PrivilegedBarleyContext.getThreadLocalCarbonContext().getTenantDomain(true);
         List<WebApp> providerAPIs = getAPIsByProvider(providerName, tenantDomain);
@@ -1369,15 +1387,15 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     APIUsageStatisticsClientConstants.API_VERSION + "," +
                     APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
                     APIUsageStatisticsClientConstants.CONTEXT + "," +
-                    APIUsageStatisticsClientConstants.REFERER + "," +
+                    //APIUsageStatisticsClientConstants.REFERER + "," +
                     "SUM(" + APIUsageStatisticsClientConstants.RESPONSE + ") AS " + APIUsageStatisticsClientConstants.RESPONSE + "," +
                     "AVG(" + APIUsageStatisticsClientConstants.SERVICE_TIME + ") AS " + APIUsageStatisticsClientConstants.SERVICE_TIME;
 
             String queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
                     APIUsageStatisticsClientConstants.API_VERSION + "," +
                     APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
-                    APIUsageStatisticsClientConstants.CONTEXT + "," +
-                    APIUsageStatisticsClientConstants.REFERER;
+                    //APIUsageStatisticsClientConstants.REFERER + "," +
+                    APIUsageStatisticsClientConstants.CONTEXT;
 
             if (fromDate != null && toDate != null) {
                 if (selectRowsByColumnName != null) {
@@ -1497,14 +1515,14 @@ public class AppUsageStatisticsRdbmsClient implements AppUsageStatisticsClient {
                     APIUsageStatisticsClientConstants.VERSION + "," +
                     APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
                     APIUsageStatisticsClientConstants.CONTEXT + "," +
-                    APIUsageStatisticsClientConstants.REFERER + "," +
+                    //APIUsageStatisticsClientConstants.REFERER + "," +
                     "SUM(" + APIUsageStatisticsClientConstants.FAULT + ") as " +
                     APIUsageStatisticsClientConstants.FAULT;
 
             String queryGroupBy = APIUsageStatisticsClientConstants.API + "," +
                     APIUsageStatisticsClientConstants.VERSION + "," +
                     APIUsageStatisticsClientConstants.API_PUBLISHER + "," +
-                    APIUsageStatisticsClientConstants.REFERER + "," +
+                    //APIUsageStatisticsClientConstants.REFERER + "," +
                     APIUsageStatisticsClientConstants.CONTEXT;
 
             if (selectRowsByColumnName != null) {

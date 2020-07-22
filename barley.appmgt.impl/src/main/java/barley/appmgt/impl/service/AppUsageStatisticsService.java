@@ -16,24 +16,13 @@
 
 package barley.appmgt.impl.service;
 
-import java.util.List;
-
+import barley.appmgt.api.AppUsageStatisticsClient;
+import barley.appmgt.api.dto.*;
+import barley.appmgt.api.exception.AppUsageQueryServiceClientException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import barley.appmgt.api.AppUsageStatisticsClient;
-import barley.appmgt.api.dto.AppHitsStatsDTO;
-import barley.appmgt.api.dto.AppPageUsageDTO;
-import barley.appmgt.api.dto.AppResourcePathUsageDTO;
-import barley.appmgt.api.dto.AppResponseFaultCountDTO;
-import barley.appmgt.api.dto.AppResponseTimeDTO;
-import barley.appmgt.api.dto.AppUsageByUserDTO;
-import barley.appmgt.api.dto.AppUsageDTO;
-import barley.appmgt.api.dto.AppVersionLastAccessTimeDTO;
-import barley.appmgt.api.dto.AppVersionUsageDTO;
-import barley.appmgt.api.dto.AppVersionUserUsageDTO;
-import barley.appmgt.api.dto.PerUserAPIUsageDTO;
-import barley.appmgt.api.exception.AppUsageQueryServiceClientException;
+import java.util.List;
 
 public class AppUsageStatisticsService {
 
@@ -49,12 +38,12 @@ public class AppUsageStatisticsService {
         this.userName = userName;
     }
 
-    public List<AppResponseTimeDTO> getResponseTimesByApps(String providerName, String fromDate, String toDate,
+    public List<AppResponseTimeDTO> getResponseTimesByApps(String providerName, String appName, String fromDate, String toDate,
                                                            int limit, String tenantDomain)
             throws AppUsageQueryServiceClientException {
         synchronized (userName) {
             appUsageStatisticsClient.initialize(userName);
-            return appUsageStatisticsClient.getResponseTimesByApps(providerName, fromDate, toDate, limit, tenantDomain);
+            return appUsageStatisticsClient.getResponseTimesByApps(providerName, appName, fromDate, toDate, limit, tenantDomain);
         }
     }
 
@@ -142,11 +131,11 @@ public class AppUsageStatisticsService {
         }
     }
 
-    public List<AppResponseFaultCountDTO> getAppResponseFaultCount(String providerName, String fromDate, String toDate)
+    public List<AppResponseFaultCountDTO> getAppResponseFaultCount(String providerName, String appName, String fromDate, String toDate)
             throws AppUsageQueryServiceClientException {
         synchronized (userName) {
             appUsageStatisticsClient.initialize(userName);
-            return appUsageStatisticsClient.getAppResponseFaultCount(providerName, fromDate, toDate);
+            return appUsageStatisticsClient.getAppResponseFaultCount(providerName, appName, fromDate, toDate);
         }
     }
 

@@ -52,12 +52,14 @@ public class AppResponseFaultCount {
             faultCount = (long) Double.parseDouble(faultCountEle.getText());
         }
 
+        /*
         referer = "";
         page = row.getFirstChildWithName(new QName(APIUsageStatisticsClientConstants.REFERER)).getText();
         pageName = page.split("//")[1].split("/");
         for(int x = 1;x<pageName.length;x++){
             referer =referer + "/"+pageName[x] ;
         }
+        */
     }
 
     public String getApiName() {

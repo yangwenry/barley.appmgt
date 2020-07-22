@@ -159,7 +159,7 @@ public interface AppUsageStatisticsClient {
      * @return a List of AppResponseTimeDTO objects, possibly empty
      * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
-    public List<AppResponseTimeDTO> getResponseTimesByApps(String providerName, String fromDate, String toDate,
+    public List<AppResponseTimeDTO> getResponseTimesByApps(String providerName, String apiName, String fromDate, String toDate,
                                                            int limit, String tenantDomain)
             throws AppUsageQueryServiceClientException;
 
@@ -203,7 +203,7 @@ public interface AppUsageStatisticsClient {
      * @return a List of AppResponseFaultCountDTO objects - Possibly empty
      * @throws barley.appmgt.api.exception.AppUsageQueryServiceClientException on error
      */
-    public List<AppResponseFaultCountDTO> getAppResponseFaultCount(String providerName, String fromDate,
+    public List<AppResponseFaultCountDTO> getAppResponseFaultCount(String providerName, String apiName, String fromDate,
                                                                    String toDate)
             throws AppUsageQueryServiceClientException;
 
