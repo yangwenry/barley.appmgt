@@ -925,6 +925,10 @@
     					<groupId>wsdl4j.wso2</groupId>
     					<artifactId>wsdl4j</artifactId>
     				</exclusion>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
 		        </exclusions>
 			</dependency>
 			<dependency>
@@ -1046,6 +1050,10 @@
 		        		<groupId>org.apache.httpcomponents.wso2</groupId>
     					<artifactId>httpcore</artifactId>
 		        	</exclusion>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
 		        </exclusions>
 		   	</dependency>
 		   	<!-- <dependency>
